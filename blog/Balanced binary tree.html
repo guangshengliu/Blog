@@ -1,0 +1,267 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Balanced binary tree</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="highly balanced binary search tree" />
+		<meta name="author" content="Guangsheng Liu" />
+
+		<!-- Animate.css -->
+		<link rel="stylesheet" href="css/animate.css">
+		<!-- Icomoon Icon Fonts-->
+		<link rel="stylesheet" href="css/icomoon.css">
+		<!-- Bootstrap  -->
+		<link rel="stylesheet" href="css/bootstrap.css">
+
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Modernizr JS -->
+		<script src="js/modernizr-2.6.2.min.js"></script>
+		<!-- FOR IE9 below -->
+		<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+	</head>
+	<body class="single">
+
+		<div class="fh5co-loader"></div>
+
+		<div id="page">
+			<div id="fh5co-aside" style="background-image: url(images/image_2.jpg)" data-stellar-background-ratio="0.5">
+				<div class="overlay"></div>
+				<nav role="navigation">
+					<ul>
+						<li><a href="blogindex.html"><i class="icon-home"></i></a></li>
+					</ul>
+				</nav>
+				<div class="page-title">
+					<img src="images/person_1.jpg" alt="Free HTML5 by FreeHTMl5.co">
+					<span>October 20, 2019</span>
+					<h2>Balanced binary tree</h2>
+				</div>
+			</div>
+			<div id="fh5co-main-content">
+				<div class="fh5co-post">
+					<div class="fh5co-entry padding">
+						<h1>1.Definition of balanced binary tree</h1>
+						<p>The emergence of balanced binary tree is to solve the situation similar to chain tree in binary search tree. The time complexity of searching nodes of chain tree is <strong>O(n)</strong>, which can not play the purpose of optimizing data query by binary search tree. After adjusting the chain tree structure, the balanced binary tree can recover to the level of <strong>O(logn)</strong> search time complexity.  </p>	
+						<p>The balanced binary tree was proposed by G.M.Adelse-velskil and E.M.Landis, two mathematicians of the former Soviet Union, so it is also called AVL tree. In essence, balanced binary tree is a binary search tree, only on the basis of which &quot;balanced&quot; requirements are added. The so-called balance means that for any node of AVL tree, the absolute value of the height difference between the left subtree and the right subtree does not exceed 1, and the height difference between the left subtree and the right subtree is called the balance factor of the node.</p>						
+						<h1>2.The establishment of balanced binary tree</h1>					
+						<p>As long as the absolute value of the balance factor of each node is no more than 1, the height of AVL can always maintain the O (logn) level. Due to the need to get the balance factor for each node, a variable height needs to be added to the tree structure to record the height of the subtree with the current node as the root node.            </p>						
+						<p>Define the structure:					
+						<code><pre>
+struct node{
+	//Data is the node weight and height is the current subtree height 
+	int data,height;
+	node *lchild,*rchild;	//Left and right child node address 
+};						</pre></code></p>
+						<p>New node:
+						<code><pre>
+node* newNode(int v){
+	node* Node=new node;	//Apply for the address space of a node variable
+	Node->data=v;		//Node weight is v
+	Node->height=1;		//Node height is initially 1
+	//No left or right children in the initial state
+	Node->lchild=Node->rchild=NULL;		
+	return Node; 	//Return the address of the new node
+} 						</pre></code></p>
+						<p>Obtain the current node height through the following function:</p>
+						<pre><code>
+//Get the current height of the subtree with root as the root node
+int getHeight(node* root){
+	if(root==NULL)
+		return 0;
+	return root->height;
+} 						</code></pre>
+						<p>Calculate the equilibrium factor by the following function:</p>						
+						<pre><code>
+//Calculation of equilibrium factor
+int getBalanceFactor(node* root){
+	//Left subtree height minus right subtree height
+	return getHeight(root->lchild)-getHeight(root->rchild); 
+} 						</code></pre>
+						<p>Obviously, the height of the subtree where the node root is located is equal to the greater value of the height of its left subtree and the height of its right subtree plus 1, so the height can be updated by the following function: </p>						
+						<pre><code>
+//Update height of node root
+void updateHeight(node* root){
+	//Max (left child's height, right child's height) + 1
+	root->height=max(getHeight(root->lchild),getHeight(root->rchild))+1; 
+} 						</code></pre>						
+						<p>The balanced binary tree is created by the following functions:</p>					
+						<pre><code>
+//Create balanced binary tree 
+node* Create(int data[],int n){
+	node* root=NULL;	//New root
+	for(int i=0;i&ltn;i++){
+		//Insert data [0] - data [n-1] into the binary search tree
+		insert(root,data[i]);		
+	}
+	return root;	//return root 
+}						</code></pre>						
+						<h1>3.The search of balanced binary tree</h1>						
+						<p>AVL tree is a binary search tree, so its search operation is similar to binary search tree:</p>						
+						<pre><code>
+//Search function to find the node whose data field is x in AVL tree 
+void search(node* root,int x){
+	if(root==NULL){			//Empty tree, failed to find 
+		printf("search failed\n");
+		return ;
+	}
+	if(x==root->data){			//Found successfully, visit 
+		printf("%d\n",root->data);
+	}
+	//If x is smaller than the data field of the root node, X is in the left subtree.
+	else if(x<root->data){		
+		search(root->lchild,x);		//Search left subtree for X
+	}
+	else{			
+	//If x is larger than the data field of the root node, it means that x is in the right subtree. 
+		search(root->rchild,x);		//Search right subtree for X 
+	}
+}						</code></pre>						
+						<h1>4. Balanced binary tree insertion</h1>						
+						<p>The insertion process is similar to finding a binary tree, but the balance factor should be adjusted according to the left and right rotation. So first we need to discuss how to carry out left and right turns.</p>						
+						<div><img src="images/Balanced binary tree picture/left.jpg"/></div>
+						<p>The left-hand adjustment procedure is as follows:          <br/>
+						1. Let the left subtree of B become the right subtree of a          <br/>
+						2. Let a be the left subtree of B          <br/>
+						3. Set the root node as node B</p>
+						<pre><code>
+//left rotation
+void L(node* &root){
+	node* temp=root->rchild;	//Root points to node a, temp points to node B
+	root->rchild=temp->lchild;		//Step 1
+	temp->lchild=root;		//Step 2 
+	updateHeight(root);		//Update height of node a
+	updateHeight(temp);		//Update height of node b
+	root=temp;		//Step 3 
+} 						</code></pre>
+						<p>Since there is a left turn, there must be a right turn. In fact, right-hand and left-hand rotation are symmetrical processes, so left-hand reverse operation can be carried out.        </p>						
+						<div><img src="images/Balanced binary tree picture/right.jpg"/></div>
+						<p>Right turn adjustment steps are as follows:          <br/>
+						1. Let the right subtree of a become the left subtree of B          <br/>
+						2. Let B be the left subtree of a          <br/>
+						3. Set the root node as node a</p>						
+						<pre><code>
+//right rotation
+void R(node* &root){
+	node* temp=root->lchild;	//Root points to node B, temp points to node a
+	root->lchild=temp->rchild;		//Step 1 
+	temp->rchild=root;		//Step 2 
+	updateHeight(root);		//Update height of node a
+	updateHeight(temp);		//Update height of node b
+	root=temp;		//Step 3 
+}						</code></pre>
+						<p>For a balanced binary tree, when a node is inserted into it, the absolute value of the balance factor of some nodes may be greater than 1. In this way, the node needs to be adjusted. It can be proved that as long as the imbalance node closest to the inserted node is adjusted to normal, all nodes on the path will be balanced. (see <em>Algorithm</em> for details) </p>						
+						<p>In the process of inserting, it is necessary to judge whether the nodes are unbalanced from the bottom to the top, so it is necessary to update the height of the current subtree after each insert function, and then adjust the balance according to four tree types. </p>						
+						<p>This is a LL type binary tree and its adjustment plan.</p>
+						<div><img src="images/Balanced binary tree picture/LL.jpg"/></div>
+						<p>This is a LR type binary tree and its adjustment plan.</p>
+						<div><img src="images/Balanced binary tree picture/LR.jpg"/></div>
+						<p>This is a RR type binary tree and its adjustment plan</p>
+						<div><img src="images/Balanced binary tree picture/RR.jpg"/></div>
+						<p>This is a RL type binary tree and its adjustment plan</p>
+						<div><img src="images/Balanced binary tree picture/RL.jpg"/></div>
+						<p>The type of tree can be determined according to the balance factor of node a. the criteria are as follows:</p>						
+						<pre><code>
+//insert root 
+void insert(node* &root,int v){
+	if(root==NULL){			//Arrive at empty node
+		root=newNode(v);
+		return ;
+	}
+	if(v<root->data){		//V is smaller than the weight of node
+		insert(root->lchild,v);		//Insert to left subtree 
+		updateHeight(root);		//Update tree height
+		if(getBalanceFactor(root)==2){
+			if(getBalanceFactor(root->lchild)==1){	//Type LL 
+				R(root);
+			}
+			else if(getBalanceFactor(root->lchild)==-1){	//Type LR
+				L(root->lchild);
+				R(root);
+			} 
+		}
+	}
+	else{		//V is larger than the weight of root node
+		insert(root->rchild,v);		//Insert right subtree 
+		updateHeight(root);		//Update tree height
+		if(getBalanceFactor(root)==-2){
+			if(getBalanceFactor(root->rchild)==-1){	//Type RR
+				L(root);
+			}
+			else if(getBalanceFactor(root->rchild)==1){	//Type RL
+				R(root->rchild);
+				L(root);
+			} 
+		} 
+	}
+} 						</code></pre>						
+						<h1>5. Deletion of balanced binary tree:</h1>					
+						<p>Limited to the author&#39;s ability, this part is not described.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="fh5co-navigation">
+			<div class="fh5co-cover prev fh5co-cover-sm" style="background-image: url(images/project_2.jpg)">
+				<div class="overlay"></div>
+
+				<a class="copy" href="#">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Previous Post</span>
+								<h2>How to be an affective web developer</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+			<div class="fh5co-cover next fh5co-cover-sm" style="background-image: url(images/project_3.jpg)">
+				<div class="overlay"></div>
+				<a class="copy" href="#">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Next Post</span>
+								<h2>How to be an affective web developer</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+		</div>
+
+		<footer>
+			<div>
+				&copy; Copyright MyWebSite. Designed by Guangsheng Liu.
+			</div>
+		</footer>
+
+		<div class="gototop js-top">
+			<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+		</div>
+
+		<!-- jQuery -->
+		<script src="js/jquery.min.js"></script>
+		<!-- jQuery Easing -->
+		<script src="js/jquery.easing.1.3.js"></script>
+		<!-- Bootstrap -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- Waypoints -->
+		<script src="js/jquery.waypoints.min.js"></script>
+		<!-- Stellar Parallax -->
+		<script src="js/jquery.stellar.min.js"></script>
+		<!-- Main -->
+		<script src="js/main.js"></script>
+
+	</body>
+</html>
