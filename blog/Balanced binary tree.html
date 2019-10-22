@@ -125,7 +125,7 @@ void search(node* root,int x){
 }						</code></pre>						
 						<h1>4. Balanced binary tree insertion</h1>						
 						<p>The insertion process is similar to finding a binary tree, but the balance factor should be adjusted according to the left and right rotation. So first we need to discuss how to carry out left and right turns.</p>						
-						<div><img src="images/Balanced binary tree picture/left.jpg"/></div>
+						<div><img src="images/Balanced binary tree picture/left.jpg" width="100%" height="100%"/></div>
 						<p>The left-hand adjustment procedure is as follows:          <br/>
 						1. Let the left subtree of B become the right subtree of a          <br/>
 						2. Let a be the left subtree of B          <br/>
@@ -141,7 +141,7 @@ void L(node* &root){
 	root=temp;		//Step 3 
 } 						</code></pre>
 						<p>Since there is a left turn, there must be a right turn. In fact, right-hand and left-hand rotation are symmetrical processes, so left-hand reverse operation can be carried out.        </p>						
-						<div><img src="images/Balanced binary tree picture/right.jpg"/></div>
+						<div><img src="images/Balanced binary tree picture/right.jpg" width="100%" height="100%"/></div>
 						<p>Right turn adjustment steps are as follows:          <br/>
 						1. Let the right subtree of a become the left subtree of B          <br/>
 						2. Let B be the left subtree of a          <br/>
@@ -159,14 +159,31 @@ void R(node* &root){
 						<p>For a balanced binary tree, when a node is inserted into it, the absolute value of the balance factor of some nodes may be greater than 1. In this way, the node needs to be adjusted. It can be proved that as long as the imbalance node closest to the inserted node is adjusted to normal, all nodes on the path will be balanced. (see <em>Algorithm</em> for details) </p>						
 						<p>In the process of inserting, it is necessary to judge whether the nodes are unbalanced from the bottom to the top, so it is necessary to update the height of the current subtree after each insert function, and then adjust the balance according to four tree types. </p>						
 						<p>This is a LL type binary tree and its adjustment plan.</p>
-						<div><img src="images/Balanced binary tree picture/LL.jpg"/></div>
+						<div><img src="images/Balanced binary tree picture/LL.jpg" width="100%" height="100%"/></div>
 						<p>This is a LR type binary tree and its adjustment plan.</p>
-						<div><img src="images/Balanced binary tree picture/LR.jpg"/></div>
+						<div><img src="images/Balanced binary tree picture/LR.jpg" width="100%" height="100%"/></div>
 						<p>This is a RR type binary tree and its adjustment plan</p>
-						<div><img src="images/Balanced binary tree picture/RR.jpg"/></div>
+						<div><img src="images/Balanced binary tree picture/RR.jpg" width="100%" height="100%"/></div>
 						<p>This is a RL type binary tree and its adjustment plan</p>
-						<div><img src="images/Balanced binary tree picture/RL.jpg"/></div>
-						<p>The type of tree can be determined according to the balance factor of node a. the criteria are as follows:</p>						
+						<div><img src="images/Balanced binary tree picture/RL.jpg" width="100%" height="100%"/></div>
+						<p>The type of tree can be determined according to the balance factor of node A. the criteria are as follows:</p>
+						<table frame="border" rules="all">
+							<tr align="center">
+								<th>Tree type</th><th>Decision condition</th><th>Adjustment method</th>
+							</tr>
+							<tr>
+								<td>LL</td><td>BF(root)=2,BF(root-&gt;lchild)=1</td><td>Right turn root</td>
+							</tr>
+							<tr>
+								<td>LR</td><td>BF(root)=2,BF(root-&gt;lchild)=-1</td><td>First left rotate root-&gt; lchild left, then rotate root right</td>
+							</tr>
+							<tr>
+								<td>RR</td><td>BF(root)=-2,BF(root-&gt;lchild)=-1</td><td>Rotate root left</td>
+							</tr>
+							<tr>
+								<td>RR</td><td>BF(root)=-2,BF(root-&gt;lchild)=1</td><td>First right rotate root-&gt; lchild, then left turn root</td>
+							</tr>
+						</table></br>	
 						<pre><code>
 //insert root 
 void insert(node* &root,int v){
