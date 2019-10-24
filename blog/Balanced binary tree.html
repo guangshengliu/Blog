@@ -52,48 +52,42 @@
 						<p>The balanced binary tree was proposed by G.M.Adelse-velskil and E.M.Landis, two mathematicians of the former Soviet Union, so it is also called AVL tree. In essence, balanced binary tree is a binary search tree, only on the basis of which &quot;balanced&quot; requirements are added. The so-called balance means that for any node of AVL tree, the absolute value of the height difference between the left subtree and the right subtree does not exceed 1, and the height difference between the left subtree and the right subtree is called the balance factor of the node.</p>						
 						<h1>2.The establishment of balanced binary tree</h1>					
 						<p>As long as the absolute value of the balance factor of each node is no more than 1, the height of AVL can always maintain the O (logn) level. Due to the need to get the balance factor for each node, a variable height needs to be added to the tree structure to record the height of the subtree with the current node as the root node.            </p>						
-						<p>Define the structure:					
-						<code><pre>
-struct node{
+						<p>Define the structure:</p>					
+<pre><code>struct node{
 	//Data is the node weight and height is the current subtree height 
 	int data,height;
 	node *lchild,*rchild;	//Left and right child node address 
-};						</pre></code></p>
-						<p>New node:
-						<code><pre>
-node* newNode(int v){
+};</pre></code>
+						<p>New node:</p>
+<pre><code>node* newNode(int v){
 	node* Node=new node;	//Apply for the address space of a node variable
 	Node->data=v;		//Node weight is v
 	Node->height=1;		//Node height is initially 1
 	//No left or right children in the initial state
 	Node->lchild=Node->rchild=NULL;		
 	return Node; 	//Return the address of the new node
-} 						</pre></code></p>
+}</pre></code>
 						<p>Obtain the current node height through the following function:</p>
-						<pre><code>
-//Get the current height of the subtree with root as the root node
+<pre><code>//Get the current height of the subtree with root as the root node
 int getHeight(node* root){
 	if(root==NULL)
 		return 0;
 	return root->height;
-} 						</code></pre>
+}</code></pre>
 						<p>Calculate the equilibrium factor by the following function:</p>						
-						<pre><code>
-//Calculation of equilibrium factor
+<pre><code>//Calculation of equilibrium factor
 int getBalanceFactor(node* root){
 	//Left subtree height minus right subtree height
 	return getHeight(root->lchild)-getHeight(root->rchild); 
-} 						</code></pre>
+}</code></pre>
 						<p>Obviously, the height of the subtree where the node root is located is equal to the greater value of the height of its left subtree and the height of its right subtree plus 1, so the height can be updated by the following function: </p>						
-						<pre><code>
-//Update height of node root
+<pre><code>//Update height of node root
 void updateHeight(node* root){
 	//Max (left child's height, right child's height) + 1
 	root->height=max(getHeight(root->lchild),getHeight(root->rchild))+1; 
-} 						</code></pre>						
+}</code></pre>						
 						<p>The balanced binary tree is created by the following functions:</p>					
-						<pre><code>
-//Create balanced binary tree 
+<pre><code>//Create balanced binary tree 
 node* Create(int data[],int n){
 	node* root=NULL;	//New root
 	for(int i=0;i&ltn;i++){
@@ -101,11 +95,10 @@ node* Create(int data[],int n){
 		insert(root,data[i]);		
 	}
 	return root;	//return root 
-}						</code></pre>						
+}</code></pre>						
 						<h1>3.The search of balanced binary tree</h1>						
 						<p>AVL tree is a binary search tree, so its search operation is similar to binary search tree:</p>						
-						<pre><code>
-//Search function to find the node whose data field is x in AVL tree 
+<pre><code>//Search function to find the node whose data field is x in AVL tree 
 void search(node* root,int x){
 	if(root==NULL){			//Empty tree, failed to find 
 		printf("search failed\n");
@@ -122,7 +115,7 @@ void search(node* root,int x){
 	//If x is larger than the data field of the root node, it means that x is in the right subtree. 
 		search(root->rchild,x);		//Search right subtree for X 
 	}
-}						</code></pre>						
+}</code></pre>						
 						<h1>4. Balanced binary tree insertion</h1>						
 						<p>The insertion process is similar to finding a binary tree, but the balance factor should be adjusted according to the left and right rotation. So first we need to discuss how to carry out left and right turns.</p>						
 						<div><img src="images/Balanced binary tree picture/left.jpg" width="100%" height="100%"/></div>
@@ -130,8 +123,7 @@ void search(node* root,int x){
 						1. Let the left subtree of B become the right subtree of a          <br/>
 						2. Let a be the left subtree of B          <br/>
 						3. Set the root node as node B</p>
-						<pre><code>
-//left rotation
+<pre><code>//left rotation
 void L(node* &root){
 	node* temp=root->rchild;	//Root points to node a, temp points to node B
 	root->rchild=temp->lchild;		//Step 1
@@ -139,15 +131,14 @@ void L(node* &root){
 	updateHeight(root);		//Update height of node a
 	updateHeight(temp);		//Update height of node b
 	root=temp;		//Step 3 
-} 						</code></pre>
+}</code></pre>
 						<p>Since there is a left turn, there must be a right turn. In fact, right-hand and left-hand rotation are symmetrical processes, so left-hand reverse operation can be carried out.        </p>						
 						<div><img src="images/Balanced binary tree picture/right.jpg" width="100%" height="100%"/></div>
 						<p>Right turn adjustment steps are as follows:          <br/>
 						1. Let the right subtree of a become the left subtree of B          <br/>
 						2. Let B be the left subtree of a          <br/>
 						3. Set the root node as node a</p>						
-						<pre><code>
-//right rotation
+<pre><code>//right rotation
 void R(node* &root){
 	node* temp=root->lchild;	//Root points to node B, temp points to node a
 	root->lchild=temp->rchild;		//Step 1 
@@ -155,7 +146,7 @@ void R(node* &root){
 	updateHeight(root);		//Update height of node a
 	updateHeight(temp);		//Update height of node b
 	root=temp;		//Step 3 
-}						</code></pre>
+}</code></pre>
 						<p>For a balanced binary tree, when a node is inserted into it, the absolute value of the balance factor of some nodes may be greater than 1. In this way, the node needs to be adjusted. It can be proved that as long as the imbalance node closest to the inserted node is adjusted to normal, all nodes on the path will be balanced. (see <em>Algorithm</em> for details) </p>						
 						<p>In the process of inserting, it is necessary to judge whether the nodes are unbalanced from the bottom to the top, so it is necessary to update the height of the current subtree after each insert function, and then adjust the balance according to four tree types. </p>						
 						<p>This is a LL type binary tree and its adjustment plan.</p>
@@ -184,8 +175,7 @@ void R(node* &root){
 								<td>RR</td><td>BF(root)=-2,BF(root-&gt;lchild)=1</td><td>First right rotate root-&gt; lchild, then left turn root</td>
 							</tr>
 						</table></br>	
-						<pre><code>
-//insert root 
+<pre><code>//insert root 
 void insert(node* &root,int v){
 	if(root==NULL){			//Arrive at empty node
 		root=newNode(v);
@@ -217,7 +207,7 @@ void insert(node* &root,int v){
 			} 
 		} 
 	}
-} 						</code></pre>						
+}</code></pre>						
 						<h1>5. Deletion of balanced binary tree:</h1>					
 						<p>Limited to the author&#39;s ability, this part is not described.</p>
 					</div>
@@ -243,12 +233,12 @@ void insert(node* &root,int v){
 			</div>
 			<div class="fh5co-cover next fh5co-cover-sm" style="background-image: url(images/project_3.jpg)">
 				<div class="overlay"></div>
-				<a class="copy" href="#">
+				<a class="copy" href="Binary search tree.html">
 					<div class="display-t">
 						<div class="display-tc">
 							<div>
 								<span>Next Post</span>
-								<h2>How to be an affective web developer</h2>
+								<h2>Binary search tree</h2>
 							</div>
 						</div>
 					</div>
