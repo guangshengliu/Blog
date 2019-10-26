@@ -51,179 +51,418 @@
 						<p>The binary search tree is actually a binary tree with ordered data fields, that is to say, for each node on the tree, the data fields of all nodes on the left subtree are smaller than or equal to the data fields of the root node, and the data fields of all nodes on the right subtree are larger than the data fields of the root node.            </p>						
 						<h1>2. Storage structure of binary search tree</h1>						
 						<p>In general, binary trees are defined using linked lists. The difference between a binary tree and an ordinary linked list is that since each node of the binary tree has two outgoing edges, the pointer field becomes two -- pointing to the root address of the left subtree and the root address of the right subtree respectively. If a subtree does not exist, it points to null, which is the same as the common linked list in other places. Therefore, this kind of linked list is also called a binary linked list. Its definition is as follows:</p>
-<pre><code>struct node{            
-	int data; // data field.            
-	node * lchild, * rchild; // pointer field.            
-}Node;</code></pre>
-						<p>Since the root node does not exist before the binary tree is built, its address is generally set to null:						
-						<pre><code>Node * root = null;</code></pre></p>						
-						<p>If you need to create a new node (for example, when inserting a node into a binary tree), you can use the following functions:</p>
-<pre><code>//Generate a new node, V is the node weight            
-node * newNode (int V){
-	node * node = new node; // request the address space of a node variable.            
-	node - > data = V; 	// node weight is v.
-	node - > lchild = node - > rchild = null; 	// there are no left or right children in the initial state.
-	return node; 	// returns the address of the new node.            
+<pre><code>#ifndef _BINARY_SEARCH_TREE_HPP_
+#define _BINARY_SEARCH_TREE_HPP_
+
+#include &lt;iomanip&gt
+#include &lt;iostream&gt
+using namespace std;
+template &lt class T &gt
+class BSTNode{
+    public:
+        T key;            // Key (key value)
+        BSTNode *left;    // left child
+        BSTNode *right;    // right child
+        BSTNode *parent;// Parent node
+        BSTNode(T value, BSTNode *p, BSTNode *l, BSTNode *r):
+            key(value),parent(),left(l),right(r) {}
+};</code></pre>								
+						<h1>3. Basic operation of binary search tree</h1>
+						<p>It contains the root node of binary search tree and the operation of binary search tree. There are many overloaded functions in the binary search tree operation, such as the insert() function. One is the internal interface, the other is the external interface.</p>	
+<pre><code>template &lt;class T&gt;
+class BSTree {
+    private:
+        BSTNode&lt;T&gt; *mRoot;    // Root node.
+    public:
+        BSTree();
+        ~BSTree();
+		
+        // Preorder traversal binary tree.
+        void preOrder();
+		
+        // Inorder traversal binary tree.
+        void inOrder();
+		
+        // Postorder ergodic binary tree.
+        void postOrder();
+		
+        // (recursive implementation) find the node whose key value is key in binary tree.
+        bool search(T key);
+		
+        // (non recursive implementation) find the node whose key value is key in binary tree.
+        BSTNode&lt;T&gt;* iterativeSearch(T key);
+		
+        // Find the minimum node: returns the key value of the minimum node.
+        T minimum();
+		
+        // Find Max node: returns the key value of the max node.
+        T maximum();
+		
+        // Find the successor node of node (x). That is to find the smallest node whose data value is greater than the node in the binary tree.
+        BSTNode&lt;T&gt;* successor(BSTNode&lt;T&gt; *x);
+		
+        // Find the precursor node of node (x). That is to find the largest node whose data value is less than the node in the binary tree.。
+        BSTNode&lt;T&gt;* predecessor(BSTNode&lt;T&gt; *x);
+		
+        // Insert the node (key is the node key value) into the binary tree.
+        void insert(T key);
+		
+        // Delete node (key is node key value).
+        void remove(T key);
+		
+        // Destroy binary tree.
+        void destroy();
+		
+        // Print binary tree.
+        void print();
+    private:
+        // Preorder traversal binary tree.
+        void preOrder(BSTNode&lt;T&gt;* tree) const;
+		
+        // Inorder traversal binary tree.
+        void inOrder(BSTNode&lt;T&gt;* tree) const;
+		
+        // Postorder traversal binary tree.
+        void postOrder(BSTNode&lt;T&gt;* tree) const;
+		
+        // (recursive implementation) find the node whose key value is key in binary tree.
+        bool search(BSTNode&lt;T&gt;* root, T key) const;
+		
+        // (non recursive implementation) find the node whose key value is key in binary tree.
+        BSTNode&lt;T&gt;* iterativeSearch(BSTNode&lt;T&gt;* root, T key) const;
+		
+        // Find the minimum node: returns the key value of the minimum node.
+        BSTNode&lt;T&gt;* minimum(BSTNode&lt;T&gt;* tree);
+		
+        // Find the maximum node: returns the maximum node of the binary tree whose tree is the root node.
+        BSTNode&lt;T&gt;* maximum(BSTNode&lt;T&gt;* tree);
+		
+        //  Insert node (z) into a binary tree.
+        void insert(BSTNode&lt;T&gt;* &amp;tree, BSTNode&lt;T&gt;* z);
+		
+        // Delete the node (z) in the binary tree and return the deleted node.
+        BSTNode&lt;T&gt;* remove(BSTNode&lt;T&gt;* &root, T key);
+		
+        // Destroy binary tree.
+        void destroy(BSTNode&lt;T&gt;* &amp;tree);
+		
+        // Print binary tree.
+        void print(BSTNode&lt;T&gt;* tree, T key, int direction);
+};
+//constructor functions
+template &lt; class T &gt;
+BSTree&lt;T&gt;::BSTree():mRoot(NULL)
+{
+}
+//destructor functions
+template &lt; class T &gt;
+BSTree&lt;T&gt;::~BSTree() 
+{
+    destroy();
 }</code></pre>
-						<h1>3. Basic operation of binary search tree</h1>						
 						<h2>(1) searching nodes of binary search tree</h2>						
 						<p>The search will be a path from the root of the tree to the search node, so the worst complexity is O (H), where h is the height of the binary search tree. The data domain order of binary search tree is always left subtree &lt; root node &lt; right subtree, so we can get the basic idea of search operation:          <br/>1. If the current root node root is empty, the search fails and returns.
 						2. If the value x to be searched is equal to the data domain root - &gt; data of the current root node, it indicates that the search is successful and the data is accessed.          <br/>3. If the value x to be found is less than the data domain root - &gt; data of the current root node, it means that the search should be done to the left subtree, so recursion to root - &gt; lchild.          <br/>4. If the value x to be found is greater than the data domain root - &gt; data of the current root node, it means that the search should be done to the right subtree, so recursion to root - &gt; rchild.</br>						
-						From this, you can write the following code:</p>
-<pre><code>void search (node * root, int x){            
-	if (root == NULL) {
-		// empty tree, failed to find.
-		printf ("search failed\n");
-		return;
-	}
-	if (x == root->data) {
-		// found successfully, visit. 
-		printf ("%d\n",root -> data);
-	}
-	else if (x < root->data) {
-		// if x is smaller than the data field of the root node, then x is in the left subtree.            
-		search (root->lchild, x); 
-		// search X in the left subtree.            
-	}
-	else {
-		// if x is larger than the data field of the root node, X is in the right subtree. 
-		search (root->rchild, x); / / search X in the right subtree.
-	}
-}</code></pre>	
+						From this, you can write the following code.
+						Recursive version of code:</p>
+<pre><code>template &lt;class T&gt;
+bool BSTree&lt;T&gt;::search(BSTNode&lt;T&gt;* root, T key) const
+{
+    //Fail to find and return false.
+    if(root==NULL)
+        return false;
+    //Return to find value if found.
+    if (root->key==key)
+        return true;
+    if (key < root->key)
+        search(root->left, key);
+    else
+        search(root->right, key);
+}
+template &lt;class T&gt;
+bool BSTree&lt;T&gt;::search(T key) 
+{
+    search(mRoot, key);
+}</code></pre>
+						<p>Non recursive version of code:</p>
+<pre><code>template &lt;class T&gt;
+BSTNode&lt;T&gt;* BSTree&lt;T&gt;::iterativeSearch(BSTNode&lt;T&gt;* root, T key) const
+{
+    while ((root!=NULL) && (root->key!=key))
+    {
+        if (key < root->key)
+            root = root->left;
+        else
+            root = root->right;
+    }
+
+    return root;
+}
+template &lt;class T&gt;
+BSTNode&lt;T&gt;* BSTree&lt;T&gt;::iterativeSearch(T key)
+{
+    iterativeSearch(mRoot, key);
+}</code></pre>
 						<h2>(2) insertion of binary search tree nodes</h2>						
 						<p>For a binary search tree, when a value to be searched is successfully searched in the binary search tree, the node already exists; otherwise, if the value to be searched fails to be searched in the binary search tree, the node must be inserted. Therefore, on the basis of the above search operation, you can create a new node to insert when root == null. Obviously, the time complexity of insertion is also o (H), where h is the height of binary search tree. </br>						
 						The code is as follows:</p>
-<pre><code>//The insert function inserts a new node with data field x into the binary tree (note that the parameter root should be referenced &)
-void insert(node* &root,int x){
-	if(root==NULL){			//empty tree, indicating that the search failed, that is, the insertion location.
-		root=newNode(x);	//create a new node with a weight of x.
-		return ;
-	}
-	if(x==root->data){		// the query succeeds, indicating that the node is pure and returns directly.
-		return ;
-	}
-	else if(x<root->data){		//if x is smaller than the data field of the root node, X needs to be inserted in the left subtree. 
-		insert(root->lchild,x);		//search the left subtree for x.
-	}
-	else{			//if x is larger than the data field of the root node, X needs to be inserted in the right subtree. 
-		insert(root->rchild,x);		//search x in the right subtree 
-	}
+<pre><code>template &lt;class T&gt;
+void BSTree&lt;T&gt;::insert(BSTNode&lt;T&gt;* &tree, BSTNode&lt;T&gt;* z)
+{
+    BSTNode&lt;T&gt; *y = NULL;
+    BSTNode&lt;T&gt; *x = tree;
+    // Find the insertion location of Z.
+    while (x != NULL)
+    {
+        y = x;
+        if (z->key < x->key)
+            x = x->left;
+        else
+            x = x->right;
+    }
+    z->parent = y;
+    if (y==NULL)
+        tree = z;
+    else if (z->key < y->key)
+        y->left = z;
+    else
+        y->right = z;
+}
+template &lt;class T&gt;
+void BSTree&lt;T&gt;::insert(T key)
+{
+    BSTNode&lt;T&gt; *z=NULL;
+	
+    // If the new node fails, retur.
+    if ((z=new BSTNode&lt;T&gt;(key,NULL,NULL,NULL)) == NULL)
+        return ;
+    insert(mRoot, z);
 }</code></pre>
-						<h2>(3) creation of binary search tree</h2>						
-						<p>Building a binary search tree is the process of inserting n nodes successively, which is exactly the same as the process of building a general binary tree, so the code is basically the same:</p>						
-<pre><code>//Create a binary tree
-node* Create(int data[],int n){
-	node* root=NULL;	//new root. 
-	for(int i=0;i&ltn;i++)
-		insert(root,data[i]);	//insert data [0] - Data [n-1] into the binary. 
-	return root;	//returns the root node. 
-}</code></pre>
-						<h2>(4) delete the node of binary search tree</h2>						
+						<h2>(3) delete the node of binary search tree</h2>						
 						<p>The most right node in the left subtree or the most left node in the right subtree of the node is used to replace the deleted node.
 						Therefore, the basic idea of deletion is as follows: </p>						
 						<ol><li>If the root of the current node is empty, there is no node with the given weight of X, which is returned directly.</li><li><p>If the weight of the current node root is exactly the given weight x, it indicates that the node to be deleted has been found. At this time, the deletion process is started.
 						A) if the current node root does not have left and right children, it means that it is a leaf node and is deleted directly.
 						B) if the current node root has a left child, look for the node precursor pre in the left subtree, then let the pre data cover the root, and then delete the node pre in the left subtree. (the precursor of the node is the rightmost node in the left subtree of the node, that is, the node that starts from the root node of the left subtree and continues to follow the rchild until the rchild is null.)
 						C). If the current node root has a right child, look for the next node in the right subtree, then let the next data cover the root, and then delete the next node in the right subtree. (the successor of the node is the leftmost node in the right subtree of the node, that is, the node that starts from the root node of the right subtree and continues to follow lchild until lchild is null.)</p></li><li><p>If the weight of current node root is greater than the given weight x, then the node with weight x will be deleted recursively in the left subtree.</p></li><li>If the weight of current node root is less than the given weight x, then the node with weight x will be deleted recursively in the right subtree.</li><li>It is better to release the space of nodes while deleting them.</li></ol>						
-<pre><code>//Find the maximum weight node in the tree with root as root node.
-node* findMax(node* root){
-	while(root->rchild!=NULL){
-		root=root->rchild;		//keep going right until there is no right child. 
-	}
-	return root;
+						<p>Find the code of the precursor node:</p>
+<pre><code>template &lt;class T&gt;
+BSTNode&lt;T&gt;* BSTree&lt;T&gt;::predecessor(BSTNode&lt;T&gt; *x)
+{
+    // If x has a left child, the leading node of X is the largest node of the subtree whose root is the left child.
+    if (x->left != NULL)
+        return maximum(x->left);
+
+    // If x doesn't have a left child. Then x has the following two possibilities:
+    //  x is a right child node, then the precursor node of X is its parent node.
+    //  If x is a left child node, find the lowest parent node of X, and the parent node must have a right child. The lowest parent node found is the precursor node of X.
+    BSTNode&lt;T&gt;* y = x->parent;
+    while ((y!=NULL) && (x==y->left))
+    {
+        x = y;
+        y = y->parent;
+    }
+    return y;
+}</code></pre>
+						<p>Find the code of the successor node:</p>
+<pre><code>template &lt;class T&gt;
+BSTNode&lt;T&gt;* BSTree&lt;T&gt;::successor(BSTNode&lt;T&gt; *x)
+{
+    // If x has a right child, the successor node of X is the smallest node of the subtree whose root is the right child.
+    if (x->right != NULL)
+        return minimum(x->right);
+
+    //  If x has no right child. Then x has the following two possibilities:            
+	//  X is a left child node, then the successor node of X is its parent node.            
+	//  If x is a right child node, then find the lowest parent node of X, and the parent node must have a left child. The lowest parent node found is the successor node of X.
+    BSTNode&lt;T&gt;* y = x->parent;
+    while ((y!=NULL) && (x==y->right))
+    {
+        x = y;
+        y = y->parent;
+    }
+    return y;
+}</code></pre>
+						<p>Delete node code:</p>
+<pre><code>template &lt; class T &gt;
+BSTNode&lt;T&gt;* BSTree&lt;T&gt;::remove(BSTNode&lt;T&gt;* &root, T key)
+{
+    if(root->key==key)	//Find the node to delete.
+    {
+    	if(root->left==NULL && root->right==NULL)
+        {
+    	    root=NULL;
+        }
+        else if(root->left!=NULL)
+        {
+            BSTNode&lt;T&gt;* pre=predecessor(root);	//Find the root precursor.
+            root->key=pre->key;
+            BSTree&lt;T&gt;::remove(root->left,pre->key);
+        }
+        else{
+            BSTNode&lt;T&gt;* next=successor(root);	//Find root successor.
+            root->key=next->key;
+            BSTree&lt;T&gt;::remove(root->right,next->key);
+        } 
+    }
+    else if(root->key > key )	//Delete X in left subtree
+    {
+        BSTree&lt;T&gt;::remove(root->left,key);
+    }
+    else{		//Delete X in right subtree
+        BSTree&lt;T&gt;::remove(root->right,key);
+    }
 }
-//Finding the minimum weight node in the tree with root as root node.
-node* findMin(node* root){
-	while(root->lchild!=NULL){
-		root=root->lchild;		//keep going left until there is no left child.
-	}
-	return root;
-} 
-//Delete the node with weight X in the tree with root as root node.
-void deleteNode(node* &root,int x){
-	if(root==NULL)		//no node with weight x exists 
-		return ;
-	if(root->data==x){		//find the node to delete
-		if(root->lchild==NULL&&root->rchild==NULL){		//the leaf node is deleted directly
-			root=NULL;
-		}
-		else if(root->lchild!=NULL){	//left subtree is not empty. 
-			node* pre=findMax(root->lchild);	//find the root precursor. 
-			root->data=pre->data;		//overwrite root with precursor. 
-			deleteNode(root->lchild,pre->data);		//delete node pre to the left subtree. 
-		}
-		else{			//right subtree is not empty.
-			node* next=findMin(root->rchild);		//find the root successor.
-			root->data=next->data;		//overwrite root with successor.
-			deleteNode(root->rchild,next->data);		//delete the node next in the right subtree.
-		}
-	}
-	else if(root->data>x){
-		deleteNode(root->lchild,x);		// delete to the left subtree 
-	} 
-	else{
-		deleteNode(root->rchild,x);		//delete to the right subtree
-	}
-}</code></pre>						
-						<h1>4. Traversal of binary search tree</h1>						
+template &lt; class T &gt;
+void BSTree&lt;T&gt;::remove(T key)
+{
+	//If the value is found in the binary search tree.
+    if (search(mRoot, key)){
+    	remove(mRoot, key);
+    }
+    else{
+        cout<<"The node cannot be deleted because it does not exist in the binary search tree."<&lt;endl; 
+    } 
+}</code></pre>			
+						<h1>4. Print data of binary search tree</h1>
+						<p>Output a binary search tree on the screen.The code is as follows</p>
+<pre><code>template &lt; class T &gt;
+void BSTree&lt;T&gt;::print(BSTNode&lt;T&gt;* tree, T key, int direction)
+{
+    if(tree != NULL)
+    {
+        if(direction==0)    // Tree is the root node
+            cout << setw(2) << tree->key << " is root" << endl;
+        else                // Tree is a branch node
+            cout << setw(2) << tree->key << " is " << setw(2) << key << "'s "  << setw(12) << (direction==1?"right child" : "left child") << endl;
+
+        print(tree->left, tree->key, -1);
+        print(tree->right,tree->key,  1);
+    }
+}
+template &lt; class T &gt;
+void BSTree&lt;T&gt;::print()
+{
+    if (mRoot != NULL)
+        print(mRoot, mRoot->key, 0);
+}</code></pre>
+						<h1>5. Destroy binary search tree</h1>
+						<p>Code to destroy binary search tree:</p>
+<pre><code>template &lt; class T &gt;
+void BSTree&lt;T&gt;::destroy(BSTNode&lt;T&gt;* &tree)
+{
+    if (tree==NULL)
+        return ;
+
+    if (tree->left != NULL)
+        return destroy(tree->left);
+    if (tree->right != NULL)
+        return destroy(tree->right);
+
+    delete tree;
+    tree=NULL;
+}
+template &lt; class T &gt;
+void BSTree&lt;T&gt;::destroy()
+{
+    destroy(mRoot);
+}</code></pre>
+						<h1>6. Maximum and minimum.</h1>
+						<p>Output binary search tree maximum and minimum values.The following code:</p>
+<pre><code>template &lt; class T &gt;
+BSTNode&lt;T&gt;* BSTree&lt;T&gt;::minimum(BSTNode&lt;T&gt;* tree)
+{
+    if (tree == NULL)
+        return NULL;
+
+    while(tree->left != NULL)
+        tree = tree->left;
+    return tree;
+}
+template &lt; class T &gt;
+T BSTree&lt;T&gt;::minimum()
+{
+    BSTNode&lt;T&gt; *p = minimum(mRoot);
+    if (p != NULL)
+        return p->key;
+
+    return (T)NULL;
+}
+ 
+template &lt; class T &gt;
+BSTNode&lt;T&gt;* BSTree&lt;T&gt;::maximum(BSTNode&lt;T&gt;* tree)
+{
+    if (tree == NULL)
+        return NULL;
+
+    while(tree->right != NULL)
+        tree = tree->right;
+    return tree;
+}
+template &lt; class T &gt;
+T BSTree&lt;T&gt;::maximum()
+{
+    BSTNode&lt;T&gt; *p = maximum(mRoot);
+    if (p != NULL)
+        return p->key;
+    return (T)NULL;
+}</code></pre>
+						<h1>7. Traversal of binary search tree</h1>
 						<h2>(1) first order traversal</h2>						
 						<p>For the first order traversal, the root node root is always visited first, and then the left and right subtrees are visited. Therefore, the traversal order of the first order traversal is root node -&gt; left subtree -&gt; right subtree.            
 						From this, you can write the code of traversal in sequence:</p>						
-<pre><code>void preorder(node* root){
-	if(root==NULL){
-		return;	//empty tree reached, recursion boundary
-	}
-	//Access the root node root, for example, output its data domain
-	printf("%d\n",root->data);
-	//Access left subtree
-	preorder(root->lchild);
-	//Access right subtree
-	preorder(root->rchild);
+<pre><code>template &lt; class T &gt;
+void BSTree&lt;T&gt;::preOrder(BSTNode&lt;T&gt;* tree) const
+{
+    if(tree != NULL)
+    {
+        cout<< tree->key << " " ;
+        preOrder(tree->left);
+        preOrder(tree->right);
+    }
+}
+template &lt; class T &gt;
+void BSTree&lt;T&gt;::preOrder() 
+{
+    preOrder(mRoot);
 }</code></pre>						
 						<h2>(2) middle order traversal</h2>						
 						<p>For the middle order traversal, it always accesses the left subtree first, then the root node, and finally the right subtree. Therefore, the traversal order of the middle order traversal is left subtree -&gt; root node -&gt; right subtree.<strong>For the binary search tree, the result is ordered.</strong>
 						From this, you can write the code of middle order traversal:</p>
-<pre><code>void inorder(node* root){
-	if(root==NULL){
-		return;	//empty tree reached, recursion boundary.
-	}
-	//Access left subtree.
-	preorder(root->lchild);
-	//Access the root node root, for example, output its data domain.
-	printf("%d\n",root->data);
-	//Access right subtree.
-	preorder(root->rchild);
+<pre><code>template &lt; class T &gt;
+void BSTree&lt;T&gt;::inOrder(BSTNode&lt;T&gt;* tree) const
+{
+    if(tree != NULL)
+    {
+        inOrder(tree->left);
+        cout<< tree->key << " " ;
+        inOrder(tree->right);
+    }
+}
+template &lt; class T &gt;
+void BSTree&lt;T&gt;::inOrder() 
+{
+    inOrder(mRoot);
 }</code></pre>						
 						<h2>(3) post order traversal</h2>						
 						<p>For post order traversal, the left subtree is always visited first, then the right subtree, and finally the root node. Therefore, the order of post order traversal is left subtree -&gt; right subtree -&gt; root node.
 						<p>From this, you can write the code of the subsequent traversal:</p>
-<pre><code>void postorder(node* root){
-	if(root==NULL){
-		return;	//empty tree reached, recursion boundary
-	}
-	//Access left subtree
-	preorder(root->lchild);
-	//Access right subtree
-	preorder(root->rchild);
-	//Access the root node root, for example, output its data domain
-	printf("%d\n",root->data);
-}</code></pre>						
-						<h2>(4) sequence traversal</h2>						
-						<p>Sequence traversal refers to traversing from the root node to the bottom layer by layer in the order of hierarchy, and the nodes of the same layer are traversed from left to right. This process is very similar to BFS, so sequence traversal is equivalent to the breadth first search of binary tree from the root node. The basic idea is as follows:</p>						
-						<ol><li>Add root node to queue Q.</li><li>Take out the team head node and access it.</li><li>If there are left children in this node, the left children will be included in the team.</li><li>If there is a right child in this node, the right child will join the team.     </li><li>Return to step 2 until the queue is empty.</li></ol>						
-<pre><code>void Layerorder(int root){
-	queue<node*> q;	//note that the storage address is in the queue
-	q.push(root);	//queue the root address
-	while(!q.empty()){
-		node* now=q.front();	//get the team head element.
-		q.pop();
-		printf("%d",now->data);	//access the team head element
-		if(now->lchild!=NULL)
-			q.push(now->lchild);	//left subtree is not empty 
-		if(now->rchild!=NULL)
-			q.push(now->rchild);	//the right subtree is not empty
-	}
-}</code></pre>
+<pre><code>template &lt; class T &gt;
+void BSTree&lt;T&gt;::postOrder(BSTNode&lt;T&gt;* tree) const
+{
+    if(tree != NULL)
+    {
+        postOrder(tree->left);
+        postOrder(tree->right);
+        cout<< tree->key << " " ;
+    }
+}
+template &lt; class T &gt;
+void BSTree&lt;T&gt;::postOrder() 
+{
+    postOrder(mRoot);
+}
+#endif</code></pre>						
 					</div>
 				</div>
 			</div>
