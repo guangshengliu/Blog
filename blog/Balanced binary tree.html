@@ -51,86 +51,224 @@
 						<p>The emergence of balanced binary tree is to solve the situation similar to chain tree in binary search tree. The time complexity of searching nodes of chain tree is <strong>O(n)</strong>, which can not play the purpose of optimizing data query by binary search tree. After adjusting the chain tree structure, the balanced binary tree can recover to the level of <strong>O(logn)</strong> search time complexity.  </p>	
 						<p>The balanced binary tree was proposed by G.M.Adelse-velskil and E.M.Landis, two mathematicians of the former Soviet Union, so it is also called AVL tree. In essence, balanced binary tree is a binary search tree, only on the basis of which &quot;balanced&quot; requirements are added. The so-called balance means that for any node of AVL tree, the absolute value of the height difference between the left subtree and the right subtree does not exceed 1, and the height difference between the left subtree and the right subtree is called the balance factor of the node.</p>						
 						<h1>2.The establishment of balanced binary tree</h1>					
-						<p>As long as the absolute value of the balance factor of each node is no more than 1, the height of AVL can always maintain the O (logn) level. Due to the need to get the balance factor for each node, a variable height needs to be added to the tree structure to record the height of the subtree with the current node as the root node.            </p>						
-						<p>Define the structure:</p>					
-<pre><code>struct node{
-	//Data is the node weight and height is the current subtree height 
-	int data,height;
-	node *lchild,*rchild;	//Left and right child node address 
+						<p>As long as the absolute value of the balance factor of each node is no more than 1, the height of AVL can always maintain the O (logn) level. Due to the need to get the balance factor for each node, a variable height needs to be added to the tree structure to record the height of the subtree with the current node as the root node.            </br>						
+						Define the structure:</p>					
+<pre><code>#ifndef _AVL_TREE_HPP_
+#define _AVL_TREE_HPP_
+
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+using namespace std;
+template &lt;class T&gt;
+class AVLTreeNode{
+    public:
+        T key;                // Key (key value)
+        int height;         // height
+        AVLTreeNode *left;    // Left child
+        AVLTreeNode *right;    // Right child
+        AVLTreeNode *parent;
+        //Initialization node height is 1
+        AVLTreeNode(T value, AVLTreeNode *l, AVLTreeNode *r):
+            key(value), height(1),left(l),right(r) {}
 };</pre></code>
-						<p>New node:</p>
-<pre><code>node* newNode(int v){
-	node* Node=new node;	//Apply for the address space of a node variable
-	Node->data=v;		//Node weight is v
-	Node->height=1;		//Node height is initially 1
-	//No left or right children in the initial state
-	Node->lchild=Node->rchild=NULL;		
-	return Node; 	//Return the address of the new node
+						<p>AVLTree is the class corresponding to AVL tree. It contains root node mroot of AVL tree and basic operation interface of AVL tree. It should be noted that many functions are overloaded in AVLTree. The purpose of overloading is to distinguish the internal interface from the external interface. For example, for the insert() function, insert (tree, key) is the internal interface, while insert (key) is the external interface.</p>
+<pre><code>template &lt;class T&gt;
+class AVLTree {
+    private:
+        AVLTreeNode&lt;T&gt; *mRoot;    // Root node
+    public:
+        AVLTree();
+        ~AVLTree();
+        // Preorder traversal binary tree.
+        void preOrder();
+        		
+        // Inorder traversal binary tree.
+        void inOrder();
+        		
+        // Postorder ergodic binary tree.
+        void postOrder();
+		
+        // Get the height of the tree.
+        int getHeight();
+		
+        // Find the minimum node: returns the key value of the minimum node.
+        T minimum();
+		
+        // Find Max node: returns the key value of the max node.
+        T maximum();
+		
+		// Find the precursor node of node (x). That is to find the largest node whose data value is less than the node in the binary tree.
+		AVLTreeNode&lt;T&gt;* predecessor(AVLTreeNode&lt;T&gt; *x);
+		
+		// Find the precursor node of node (x). That is to find the largest node whose data value is greater than the node in the binary tree.
+		AVLTreeNode&lt;T&gt;* successor(AVLTreeNode&lt;T&gt; *x);
+		
+        // (recursive implementation) find the node whose key value is key in AVL tree.
+        bool search(T key);
+		
+        // (non recursive implementation) find the node whose key value is key in AVL tree.
+        AVLTreeNode&lt;T&gt;* iterativeSearch(T key);
+
+        // Insert node (key is node key value) into AVL tree
+        void insert(T key);
+
+        // Delete node (key is node key value)
+        void remove(T key);
+
+        // Destroy AVL tree
+        void destroy();
+
+        // Print AVL tree
+        void print();
+    private:
+	    // Preorder traversal binary tree.
+        void preOrder(AVLTreeNode&lt;T&gt;* root) const;
+		
+        // Inorder traversal binary tree.
+        void inOrder(AVLTreeNode&lt;T&gt;* root) const;
+		
+        // Postorder traversal binary tree.
+        void postOrder(AVLTreeNode&lt;T&gt;* root) const;
+		
+        // Get the height of the tree.
+        int getHeight(AVLTreeNode&lt;T&gt;* root) ;
+
+        // (recursive implementation) find the node whose key value is key in binary tree.
+        bool search(AVLTreeNode&lt;T&gt;* root, T key) const;
+        		
+        // (non recursive implementation) find the node whose key value is key in binary tree.
+        AVLTreeNode&lt;T&gt;* iterativeSearch(AVLTreeNode&lt;T&gt;* root, T key) const;
+
+        // Find the minimum node: returns the minimum node of AVL tree whose tree is the root node.
+        AVLTreeNode&lt;T&gt;* minimum(AVLTreeNode&lt;T&gt;* root);
+		
+        // Find Max node: returns the max node of AVL tree with tree as root node.
+        AVLTreeNode&lt;T&gt;* maximum(AVLTreeNode&lt;T&gt;* root);
+		
+		// Delete the node (z) in the balanced binary tree and return the deleted node.
+		AVLTreeNode&lt;T&gt;* remove(AVLTreeNode&lt;T&gt;* &root, T key);
+		
+        // Calculation of equilibrium factor.
+        int getBalanceFactor(AVLTreeNode&lt;T&gt;* root);
+		
+        //Update height of node root.
+        void updateHeight(AVLTreeNode&lt;T&gt;* root);
+		
+        //left rotation
+        void L(AVLTreeNode&lt;T&gt;* &root);
+		
+        //right rotation
+        void R(AVLTreeNode&lt;T&gt;* &root);
+
+        // Insert node into AVL tree.
+        void insert(AVLTreeNode&lt;T&gt;* &root,T key);
+
+        // Destroy AVL tree. 
+        void destroy(AVLTreeNode&lt;T&gt;* &tree);
+
+        // Print AVL tree.
+        void print(AVLTreeNode&lt;T&gt;* tree, T key, int direction);
+};
+
+//Constructor function
+template &lt;class T&gt;
+AVLTree&lt;T&gt;::AVLTree():mRoot(NULL)
+{
+}
+//Destructor function
+template &lt;class T&gt;
+AVLTree&lt;T&gt;::~AVLTree() 
+{
+    destroy(mRoot);
 }</pre></code>
 						<p>Obtain the current node height through the following function:</p>
-<pre><code>//Get the current height of the subtree with root as the root node
-int getHeight(node* root){
-	if(root==NULL)
-		return 0;
-	return root->height;
+<pre><code>template &lt;class T&gt;
+//Get the current height of the subtree with root as the root node.
+int AVLTree&lt;T&gt;::getHeight(AVLTreeNode&lt;T&gt;* root)
+{
+    if(root==NULL)
+        return 0;
+    return root->height;
+}
+template &lt;class T&gt;
+int AVLTree&lt;T&gt;::getHeight() 
+{
+    return getHeight(mRoot);
 }</code></pre>
 						<p>Calculate the equilibrium factor by the following function:</p>						
-<pre><code>//Calculation of equilibrium factor
-int getBalanceFactor(node* root){
-	//Left subtree height minus right subtree height
-	return getHeight(root->lchild)-getHeight(root->rchild); 
+<pre><code>template &lt;class T&gt;
+//Calculation of equilibrium factor.
+int AVLTree&lt;T&gt;::getBalanceFactor(AVLTreeNode&lt;T&gt;* root)
+{   //Left subtree height minus right subtree height
+    return getHeight(root->left)-getHeight(root->right); 
 }</code></pre>
 						<p>Obviously, the height of the subtree where the node root is located is equal to the greater value of the height of its left subtree and the height of its right subtree plus 1, so the height can be updated by the following function: </p>						
-<pre><code>//Update height of node root
-void updateHeight(node* root){
-	//Max (left child's height, right child's height) + 1
-	root->height=max(getHeight(root->lchild),getHeight(root->rchild))+1; 
+<pre><code>template &lt;class T&gt;
+//Update height of node root.
+void AVLTree&lt;T&gt;::updateHeight(AVLTreeNode&lt;T&gt;* root)
+{   //Max (left child's height, right child's height) + 1.
+    root->height=max(getHeight(root->left),getHeight(root->right))+1; 
+}</code></pre>								
+						<h1>3.Basic operation of binary balance tree</h1>
+						<h2>1).The search of balanced binary tree</h2>						
+						<p>AVL tree is a binary search tree, so its search operation is similar to binary search tree.</br>
+						The recursive search code is as follows:</p>						
+<pre><code>template &lt;class T&gt;
+bool AVLTree&lt;T&gt;::search(AVLTreeNode&lt;T&gt;* root, T key) const
+{
+    //Fail to find and return false.
+    if(root==NULL)
+        return false;
+    //Return to find value if found.
+    if (root->key==key)
+        return true;
+    if (key < root->key)
+        search(root->left, key);
+    else
+        search(root->right, key);
+}
+template &lt;class T&gt;
+bool AVLTree&lt;T&gt;::search(T key) 
+{
+    search(mRoot, key);
+}
+</code></pre>
+						<p>The non recursive search code is as follows:</p>
+<pre><code>template &lt;class T&gt;
+AVLTreeNode&lt;T&gt;* AVLTree&lt;T&gt;::iterativeSearch(AVLTreeNode&lt;T&gt;* root, T key) const
+{
+    while ((root!=NULL) && (root->key!=key))
+    {
+        if (key < root->key)
+            root = root->left;
+        else
+            root = root->right;
+    }
+
+    return root;
+}
+template &lt;class T&gt;
+AVLTreeNode&lt;T&gt;* AVLTree&lt;T&gt;::iterativeSearch(T key)
+{
+    iterativeSearch(mRoot, key);
 }</code></pre>						
-						<p>The balanced binary tree is created by the following functions:</p>					
-<pre><code>//Create balanced binary tree 
-node* Create(int data[],int n){
-	node* root=NULL;	//New root
-	for(int i=0;i&ltn;i++){
-		//Insert data [0] - data [n-1] into the binary search tree
-		insert(root,data[i]);		
-	}
-	return root;	//return root 
-}</code></pre>						
-						<h1>3.The search of balanced binary tree</h1>						
-						<p>AVL tree is a binary search tree, so its search operation is similar to binary search tree:</p>						
-<pre><code>//Search function to find the node whose data field is x in AVL tree 
-void search(node* root,int x){
-	if(root==NULL){			//Empty tree, failed to find 
-		printf("search failed\n");
-		return ;
-	}
-	if(x==root->data){			//Found successfully, visit 
-		printf("%d\n",root->data);
-	}
-	//If x is smaller than the data field of the root node, X is in the left subtree.
-	else if(x<root->data){		
-		search(root->lchild,x);		//Search left subtree for X
-	}
-	else{			
-	//If x is larger than the data field of the root node, it means that x is in the right subtree. 
-		search(root->rchild,x);		//Search right subtree for X 
-	}
-}</code></pre>						
-						<h1>4. Balanced binary tree insertion</h1>						
+						<h2>2). Balanced binary tree insertion</h2>						
 						<p>The insertion process is similar to finding a binary tree, but the balance factor should be adjusted according to the left and right rotation. So first we need to discuss how to carry out left and right turns.</p>						
 						<div><img src="images/Balanced binary tree picture/left.jpg" width="100%" height="100%"/></div>
 						<p>The left-hand adjustment procedure is as follows:          <br/>
 						1. Let the left subtree of B become the right subtree of a          <br/>
 						2. Let a be the left subtree of B          <br/>
 						3. Set the root node as node B</p>
-<pre><code>//left rotation
-void L(node* &root){
-	node* temp=root->rchild;	//Root points to node a, temp points to node B
-	root->rchild=temp->lchild;		//Step 1
-	temp->lchild=root;		//Step 2 
-	updateHeight(root);		//Update height of node a
-	updateHeight(temp);		//Update height of node b
-	root=temp;		//Step 3 
+<pre><code>template &lt;class T&gt;
+//left rotation
+void AVLTree&lt;T&gt;::L(AVLTreeNode&lt;T&gt;* &root)
+{   //Root points to node a, temp points to node B.
+    AVLTreeNode&lt;T&gt;* temp=root->right;	
+    root->right=temp->left;    //Step 1
+    temp->left=root;        //Step 2 
+    updateHeight(root);    //Update height of node a
+    updateHeight(temp);    //Update height of node b
+    root=temp;    //Step 3 
 }</code></pre>
 						<p>Since there is a left turn, there must be a right turn. In fact, right-hand and left-hand rotation are symmetrical processes, so left-hand reverse operation can be carried out.        </p>						
 						<div><img src="images/Balanced binary tree picture/right.jpg" width="100%" height="100%"/></div>
@@ -138,14 +276,16 @@ void L(node* &root){
 						1. Let the right subtree of a become the left subtree of B          <br/>
 						2. Let B be the left subtree of a          <br/>
 						3. Set the root node as node a</p>						
-<pre><code>//right rotation
-void R(node* &root){
-	node* temp=root->lchild;	//Root points to node B, temp points to node a
-	root->lchild=temp->rchild;		//Step 1 
-	temp->rchild=root;		//Step 2 
-	updateHeight(root);		//Update height of node a
-	updateHeight(temp);		//Update height of node b
-	root=temp;		//Step 3 
+<pre><code>template &lt;class T&gt;
+//right rotation
+void AVLTree&lt;T&gt;::R(AVLTreeNode&lt;T&gt;* &root)
+{   //Root points to node B, temp points to node a.
+    AVLTreeNode&lt;T&gt;* temp=root->left;
+    root->left=temp->right;    //Step 1 
+    temp->right=root;        //Step 2 
+    updateHeight(root);    //Update height of node a
+    updateHeight(temp);    //Update height of node b
+    root=temp;		//Step 3 
 }</code></pre>
 						<p>For a balanced binary tree, when a node is inserted into it, the absolute value of the balance factor of some nodes may be greater than 1. In this way, the node needs to be adjusted. It can be proved that as long as the imbalance node closest to the inserted node is adjusted to normal, all nodes on the path will be balanced. (see <em>Algorithm</em> for details) </p>						
 						<p>In the process of inserting, it is necessary to judge whether the nodes are unbalanced from the bottom to the top, so it is necessary to update the height of the current subtree after each insert function, and then adjust the balance according to four tree types. </p>						
@@ -163,53 +303,285 @@ void R(node* &root){
 								<th>Tree type</th><th>Decision condition</th><th>Adjustment method</th>
 							</tr>
 							<tr>
-								<td>LL</td><td>BF(root)=2,BF(root-&gt;lchild)=1</td><td>Right turn root</td>
+								<td>LL</td><td>BF(root)=2,BF(root-&gt;left)=1</td><td>Right turn root</td>
 							</tr>
 							<tr>
-								<td>LR</td><td>BF(root)=2,BF(root-&gt;lchild)=-1</td><td>First left rotate root-&gt; lchild left, then rotate root right</td>
+								<td>LR</td><td>BF(root)=2,BF(root-&gt;left)=-1</td><td>First left rotate root-&gt; left left, then rotate root right</td>
 							</tr>
 							<tr>
-								<td>RR</td><td>BF(root)=-2,BF(root-&gt;lchild)=-1</td><td>Rotate root left</td>
+								<td>RR</td><td>BF(root)=-2,BF(root-&gt;left)=-1</td><td>Rotate root left</td>
 							</tr>
 							<tr>
-								<td>RR</td><td>BF(root)=-2,BF(root-&gt;lchild)=1</td><td>First right rotate root-&gt; lchild, then left turn root</td>
+								<td>RR</td><td>BF(root)=-2,BF(root-&gt;left)=1</td><td>First right rotate root-&gt; left, then left turn root</td>
 							</tr>
 						</table></br>	
-<pre><code>//insert root 
-void insert(node* &root,int v){
-	if(root==NULL){			//Arrive at empty node
-		root=newNode(v);
-		return ;
-	}
-	if(v<root->data){		//V is smaller than the weight of node
-		insert(root->lchild,v);		//Insert to left subtree 
-		updateHeight(root);		//Update tree height
-		if(getBalanceFactor(root)==2){
-			if(getBalanceFactor(root->lchild)==1){	//Type LL 
-				R(root);
-			}
-			else if(getBalanceFactor(root->lchild)==-1){	//Type LR
-				L(root->lchild);
-				R(root);
-			} 
-		}
-	}
-	else{		//V is larger than the weight of root node
-		insert(root->rchild,v);		//Insert right subtree 
-		updateHeight(root);		//Update tree height
-		if(getBalanceFactor(root)==-2){
-			if(getBalanceFactor(root->rchild)==-1){	//Type RR
-				L(root);
-			}
-			else if(getBalanceFactor(root->rchild)==1){	//Type RL
-				R(root->rchild);
-				L(root);
-			} 
-		} 
-	}
+<pre><code>template &lt;class T&gt;
+//insert root 
+void AVLTree&lt;T&gt;::insert(AVLTreeNode&lt;T&gt;* &root,T key){
+    if(root==NULL)
+	{        //Arrive at empty node
+        root=new AVLTreeNode&lt;T&gt;(key, NULL, NULL);
+        return ;
+    }
+    if(key < root->key)
+	{        //V is smaller than the weight of node
+        insert(root->left,key);        //Insert to left subtree 
+        updateHeight(root);        //Update tree height
+        if(getBalanceFactor(root)==2)
+        {
+            if(getBalanceFactor(root->left)==1)
+            {    //Type LL 
+                R(root);
+            }
+            else if(getBalanceFactor(root->left)==-1)
+            {   //Type LR
+                L(root->left);
+                R(root);
+            } 
+        }
+    }
+    else{        //V is larger than the weight of root node
+        insert(root->right,key);        //Insert right subtree 
+        updateHeight(root);        //Update tree height
+        if(getBalanceFactor(root)==-2)
+        {
+            if(getBalanceFactor(root->right)==-1)
+            {   //Type RR
+                L(root);
+            }
+            else if(getBalanceFactor(root->right)==1)
+            {   //Type RL
+                R(root->right);
+                L(root);
+            } 
+        } 
+    }
+}
+template &lt;class T&gt;
+void AVLTree&lt;T&gt;::insert(T key){
+	insert(mRoot, key);
+}</code></pre>			
+						<h2>3).Deletion of balanced binary tree</h2>
+						<p>The most right node in the left subtree or the most left node in the right subtree of the node is used to replace the deleted node.
+						Therefore, the basic idea of deletion is as follows: </p>						
+						<ol><li>If the root of the current node is empty, there is no node with the given weight of X, which is returned directly.</li><li><p>If the weight of the current node root is exactly the given weight x, it indicates that the node to be deleted has been found. At this time, the deletion process is started.
+						A) if the current node root does not have left and right children, it means that it is a leaf node and is deleted directly.
+						B) if the current node root has a left child, look for the node precursor pre in the left subtree, then let the pre data cover the root, and then delete the node pre in the left subtree. (the precursor of the node is the rightmost node in the left subtree of the node, that is, the node that starts from the root node of the left subtree and continues to follow the rchild until the rchild is null.)
+						C). If the current node root has a right child, look for the next node in the right subtree, then let the next data cover the root, and then delete the next node in the right subtree. (the successor of the node is the leftmost node in the right subtree of the node, that is, the node that starts from the root node of the right subtree and continues to follow lchild until lchild is null.)</p></li><li><p>If the weight of current node root is greater than the given weight x, then the node with weight x will be deleted recursively in the left subtree.</p></li><li>If the weight of current node root is less than the given weight x, then the node with weight x will be deleted recursively in the right subtree.</li><li>It is better to release the space of nodes while deleting them.</li></ol>						
+						<p>Find the code of the precursor node:</p>
+<pre><code>template &lt;class T&gt;
+AVLTreeNode&lt;T&gt;* AVLTree&lt;T&gt;::predecessor(AVLTreeNode&lt;T&gt; *x)
+{
+    // If x has a left child, the leading node of X is the largest node of the subtree whose root is the left child.
+    if (x->left != NULL)
+        return maximum(x->left);
+    // If x doesn't have a left child. Then x has the following two possibilities:
+    //  x is a right child node, then the precursor node of X is its parent node.
+    //  If x is a left child node, find the lowest parent node of X, and the parent node must have a right child. The lowest parent node found is the precursor node of X.
+    AVLTreeNode&lt;T&gt;* y = x->parent;
+    while ((y!=NULL) && (x==y->left))
+    {
+        x = y;
+        y = y->parent;
+    }
+    return y;
+}</code></pre>
+						<p>Find the code of the successor node:</p>
+<pre><code>template &lt;class T&gt;
+AVLTreeNode&lt;T&gt;* AVLTree&lt;T&gt;::successor(AVLTreeNode&lt;T&gt; *x)
+{
+    // If x has a right child, the successor node of X is the smallest node of the subtree whose root is the right child.
+    if (x->right != NULL)
+        return minimum(x->right);
+    //  If x has no right child. Then x has the following two possibilities:            
+	//  X is a left child node, then the successor node of X is its parent node.            
+	//  If x is a right child node, then find the lowest parent node of X, and the parent node must have a left child. The lowest parent node found is the successor node of X.
+    AVLTreeNode&lt;T&gt;* y = x->parent;
+    while ((y!=NULL) && (x==y->right))
+    {
+        x = y;
+        y = y->parent;
+    }
+    return y;
+}</code></pre>
+						<p>Delete node code:</p>
+<pre><code>template &lt; class T &gt;
+AVLTreeNode&lt;T&gt;* AVLTree&lt;T&gt;::remove(AVLTreeNode&lt;T&gt;* &root, T key)
+{
+    if(root->key==key)	//Find the node to delete.
+    {
+    	if(root->left==NULL && root->right==NULL)
+        {
+    	    root=NULL;
+        }
+        else if(root->left!=NULL)
+        {
+            AVLTreeNode&lt;T&gt;* pre=predecessor(root);	//Find the root precursor.
+            root->key=pre->key;
+            AVLTree&lt;T&gt;::remove(root->left,pre->key);
+        }
+        else{
+            AVLTreeNode&lt;T&gt;* next=successor(root);	//Find root successor.
+            root->key=next->key;
+            AVLTree&lt;T&gt;::remove(root->right,next->key);
+        } 
+    }
+    else if(root->key > key )	//Delete X in left subtree
+    {
+        AVLTree&lt;T&gt;::remove(root->left,key);
+    }
+    else{		//Delete X in right subtree
+        AVLTree&lt;T&gt;::remove(root->right,key);
+    }
+}
+template &lt; class T &gt;
+void AVLTree&lt;T&gt;::remove(T key)
+{
+	//If the value is found in the binary search tree.
+    if (search(mRoot, key)){
+        remove(mRoot, key);
+    }
+    else{
+        cout<<"The node cannot be deleted because it does not exist in the binary search tree."<&lt;endl; 
+    } 
+}</code></pre>
+						<h1>4. Print data of binary search tree</h1>
+						<p>Output a binary search tree on the screen.The code is as follows</p>
+<pre><code>template &lt;class T&gt;
+void AVLTree&lt;T&gt;::print(AVLTreeNode&lt;T&gt;* tree, T key, int direction)
+{
+    if(tree != NULL)
+    {
+        if(direction==0)    // Tree is the root node
+            cout << setw(2) << tree->key << " is root" << endl;
+        else                // Tree is a branch node
+            cout << setw(2) << tree->key << " is " << setw(2) << key << "'s "  << setw(12) << (direction==1?"right child" : "left child") << endl;
+
+        print(tree->left, tree->key, -1);
+        print(tree->right,tree->key,  1);
+    }
+}
+template &lt;class T&gt;
+void AVLTree&lt;T&gt;::print()
+{
+    if (mRoot != NULL)
+        print(mRoot, mRoot->key, 0);
+}</code></pre>
+						<h1>5. Destroy binary search tree</h1>
+						<p>Code to destroy binary search tree:</p>
+<pre><code>template &lt;class T&gt;
+void AVLTree&lt;T&gt;::destroy(AVLTreeNode&lt;T&gt;* &tree)
+{
+    if (tree == nullptr) 
+        return;
+    if (tree->left)
+        destroy(tree->left);
+    if (tree->right)
+        destroy(tree->right);
+    delete tree;
+    tree = nullptr;
+}
+template &lt;class T&gt;
+void AVLTree&lt;T&gt;::destroy()
+{
+    destroy(mRoot);
+}</code></pre>
+						<h1>6. The maximum and minimum values .</h1>
+						<p>The minimum value code is as follows:</p>
+<pre><code>template &lt;class T&gt;
+AVLTreeNode&lt;T&gt;* AVLTree&lt;T&gt;::minimum(AVLTreeNode&lt;T&gt;* root)
+{
+    if (root == NULL)
+        return NULL;
+
+    while(root->left != NULL)
+        root = root->left;
+    return root;
+}
+template &lt;class T&gt;
+T AVLTree&lt;T&gt;::minimum()
+{
+    AVLTreeNode&lt;T&gt; *p = minimum(mRoot);
+    if (p != NULL)
+        return p->key;
+
+    return (T)NULL;
+}</code></pre>
+						<p>The maximum value code is as follows:</p>
+<pre><code>template &lt;class T&gt;
+AVLTreeNode&lt;T&gt;* AVLTree&lt;T&gt;::maximum(AVLTreeNode&lt;T&gt;* root)
+{
+    if (root == NULL)
+        return NULL;
+
+    while(root->right != NULL)
+        root = root->right;
+    return root;
+}
+template &lt;class T&gt;
+T AVLTree&lt;T&gt;::maximum()
+{
+    AVLTreeNode&lt;T&gt; *p = maximum(mRoot);
+    if (p != NULL)
+        return p->key;
+    return (T)NULL;
+}</code></pre>
+						<h1>5. Traversal of binary search tree</h1>
+						<h2>(1) first order traversal</h2>						
+						<p>For the first order traversal, the root node root is always visited first, and then the left and right subtrees are visited. Therefore, the traversal order of the first order traversal is root node -&gt; left subtree -&gt; right subtree.            
+						From this, you can write the code of traversal in sequence:</p>						
+<pre><code>template &lt;class T&gt;
+void AVLTree&lt;T&gt;::preOrder(AVLTreeNode&lt;T&gt;* root) const
+{
+    if(root != NULL)
+    {
+        cout<< root->key << " " ;
+        preOrder(root->left);
+        preOrder(root->right);
+    }
+}
+template &lt;class T&gt;
+void AVLTree&lt;T&gt;::preOrder() 
+{
+    preOrder(mRoot);
 }</code></pre>						
-						<h1>5. Deletion of balanced binary tree:</h1>					
-						<p>Limited to the author&#39;s ability, this part is not described.</p>
+						<h2>(2) middle order traversal</h2>						
+						<p>For the middle order traversal, it always accesses the left subtree first, then the root node, and finally the right subtree. Therefore, the traversal order of the middle order traversal is left subtree -&gt; root node -&gt; right subtree.<strong>For the binary search tree, the result is ordered.</strong>
+						From this, you can write the code of middle order traversal:</p>
+<pre><code>template &lt;class T&gt;
+void AVLTree&lt;T&gt;::inOrder(AVLTreeNode&lt;T&gt;* root) const
+{
+    if(root != NULL)
+    {
+        inOrder(root->left);
+        cout<< root->key << " " ;
+        inOrder(root->right);
+    }
+}
+template &lt;class T&gt;
+void AVLTree&lt;T&gt;::inOrder() 
+{
+    inOrder(mRoot);
+}</code></pre>						
+						<h2>(3) post order traversal</h2>						
+						<p>For post order traversal, the left subtree is always visited first, then the right subtree, and finally the root node. Therefore, the order of post order traversal is left subtree -&gt; right subtree -&gt; root node.</br>
+						From this, you can write the code of the subsequent traversal:</p>
+<pre><code>template &lt;class T&gt;
+void AVLTree&lt;T&gt;::postOrder(AVLTreeNode&lt;T&gt;* root) const
+{
+    if(root != NULL)
+    {
+        postOrder(root->left);
+        postOrder(root->right);
+        cout<< root->key << " " ;
+    }
+}
+template &lt; class T &gt;
+void AVLTree&lt;T&gt;::postOrder() 
+{
+    postOrder(mRoot);
+}
+#endif</code></pre>			
 					</div>
 				</div>
 			</div>

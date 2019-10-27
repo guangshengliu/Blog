@@ -101,7 +101,7 @@ class BSTree {
         // Find the successor node of node (x). That is to find the smallest node whose data value is greater than the node in the binary tree.
         BSTNode&lt;T&gt;* successor(BSTNode&lt;T&gt; *x);
 		
-        // Find the precursor node of node (x). That is to find the largest node whose data value is less than the node in the binary tree.。
+        // Find the precursor node of node (x). That is to find the largest node whose data value is less than the node in the binary tree.
         BSTNode&lt;T&gt;* predecessor(BSTNode&lt;T&gt; *x);
 		
         // Insert the node (key is the node key value) into the binary tree.
@@ -252,7 +252,6 @@ BSTNode&lt;T&gt;* BSTree&lt;T&gt;::predecessor(BSTNode&lt;T&gt; *x)
     // If x has a left child, the leading node of X is the largest node of the subtree whose root is the left child.
     if (x->left != NULL)
         return maximum(x->left);
-
     // If x doesn't have a left child. Then x has the following two possibilities:
     //  x is a right child node, then the precursor node of X is its parent node.
     //  If x is a left child node, find the lowest parent node of X, and the parent node must have a right child. The lowest parent node found is the precursor node of X.
@@ -271,7 +270,6 @@ BSTNode&lt;T&gt;* BSTree&lt;T&gt;::successor(BSTNode&lt;T&gt; *x)
     // If x has a right child, the successor node of X is the smallest node of the subtree whose root is the right child.
     if (x->right != NULL)
         return minimum(x->right);
-
     //  If x has no right child. Then x has the following two possibilities:            
 	//  X is a left child node, then the successor node of X is its parent node.            
 	//  If x is a right child node, then find the lowest parent node of X, and the parent node must have a left child. The lowest parent node found is the successor node of X.
@@ -291,7 +289,8 @@ BSTNode&lt;T&gt;* BSTree&lt;T&gt;::remove(BSTNode&lt;T&gt;* &root, T key)
     {
     	if(root->left==NULL && root->right==NULL)
         {
-    	    root=NULL;
+            delete root;
+            root=nullptr;
         }
         else if(root->left!=NULL)
         {
@@ -318,7 +317,7 @@ void BSTree&lt;T&gt;::remove(T key)
 {
 	//If the value is found in the binary search tree.
     if (search(mRoot, key)){
-    	remove(mRoot, key);
+        remove(mRoot, key);
     }
     else{
         cout<<"The node cannot be deleted because it does not exist in the binary search tree."<&lt;endl; 
@@ -351,16 +350,14 @@ void BSTree&lt;T&gt;::print()
 <pre><code>template &lt; class T &gt;
 void BSTree&lt;T&gt;::destroy(BSTNode&lt;T&gt;* &tree)
 {
-    if (tree==NULL)
-        return ;
-
-    if (tree->left != NULL)
-        return destroy(tree->left);
-    if (tree->right != NULL)
-        return destroy(tree->right);
-
+    if (tree == nullptr) 
+        return;
+    if (tree->left)
+        destroy(tree->left);
+    if (tree->right)
+        destroy(tree->right);
     delete tree;
-    tree=NULL;
+    tree = nullptr;
 }
 template &lt; class T &gt;
 void BSTree&lt;T&gt;::destroy()
@@ -385,7 +382,6 @@ T BSTree&lt;T&gt;::minimum()
     BSTNode&lt;T&gt; *p = minimum(mRoot);
     if (p != NULL)
         return p->key;
-
     return (T)NULL;
 }
  
@@ -394,7 +390,6 @@ BSTNode&lt;T&gt;* BSTree&lt;T&gt;::maximum(BSTNode&lt;T&gt;* tree)
 {
     if (tree == NULL)
         return NULL;
-
     while(tree->right != NULL)
         tree = tree->right;
     return tree;
@@ -445,8 +440,8 @@ void BSTree&lt;T&gt;::inOrder()
     inOrder(mRoot);
 }</code></pre>						
 						<h2>(3) post order traversal</h2>						
-						<p>For post order traversal, the left subtree is always visited first, then the right subtree, and finally the root node. Therefore, the order of post order traversal is left subtree -&gt; right subtree -&gt; root node.
-						<p>From this, you can write the code of the subsequent traversal:</p>
+						<p>For post order traversal, the left subtree is always visited first, then the right subtree, and finally the root node. Therefore, the order of post order traversal is left subtree -&gt; right subtree -&gt; root node.</br>
+						From this, you can write the code of the subsequent traversal:</p>
 <pre><code>template &lt; class T &gt;
 void BSTree&lt;T&gt;::postOrder(BSTNode&lt;T&gt;* tree) const
 {
