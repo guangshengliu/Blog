@@ -5,7 +5,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title>Red-Black Trees</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="keywords" content="highly balanced binary search tree" />
+		<meta name="keywords" content="highly balanced Red-Black Tree" />
 		<meta name="author" content="Guangsheng Liu" />
 
 		<!-- Animate.css -->
@@ -31,7 +31,7 @@
 		<div class="fh5co-loader"></div>
 
 		<div id="page">
-			<div id="fh5co-aside" style="background-image: url(images/image_2.jpg)" data-stellar-background-ratio="0.5">
+			<div id="fh5co-aside" style="background-image: url(images/image_2.jpg)" data-stellar-background-ratio=".5">
 				<div class="overlay"></div>
 				<nav role="navigation">
 					<ul>
@@ -40,274 +40,1154 @@
 				</nav>
 				<div class="page-title">
 					<img src="images/person_1.jpg" alt="Free HTML5 by FreeHTMl5.co">
-					<span>October 30, 2019</span>
+					<span>October 3, 219</span>
 					<h2>Red-Black Trees</h2>
 				</div>
 			</div>
 			<div id="fh5co-main-content">
 				<div class="fh5co-post">
 					<div class="fh5co-entry padding">
-						<h1>1. Introduction to the red black tree</h1>
-						
-						<p>Definition of red black tree:</br>
-						R-B tree is a special binary search tree. Each node of the red black tree has a storage bit representing the color of the node, which can be red or black. It was invented by Rudolf Bayer in 1972, when it was called symmetric binary B-trees. Later, in 1978, it was modified by Leo J. guibas and Robert Sedgewick to the present-day red black tree. Similar to AVL tree, red black tree keeps the balance of binary search tree through specific operations during insertion and deletion, so as to obtain high search performance. It can search, insert and delete in O (log n) time, where n is the number of elements in the tree. </br> 
-						Black tree is widely used, for example, TreeSet and treemap in Java collection, set and map in C + + STL, and management of Linux virtual memory are all realized through red black tree.</p>						
-						<p>Characteristics of the red black tree:</p>						
-						<ol><li>Each node is either black or red.</li><li>The root node is black.</li><li>Each leaf node (NIL) is black. [Note: here the leaf node refers to the empty (nil or null) leaf node! ]</li><li>If a node is red, its children must be black.</li><li>All paths from a node to its children contain the same number of black nodes.</li></ol>						
-						<h1>2. Establishment of Mangrove</h1>						
-						<p>RBTnode is the node class of the red black tree, and rbtree is the operation implementation class of the red black tree. RBTree contains the root node mroot and the related API of red black tree. During the implementation of the red black tree API, I overloaded many functions. The reason for overloading is that some APIs are internal interfaces and some are external interfaces, and the other is to make the structure clearer.</br>						
-						RBTnode node classes are as follows:</p>	
-										
-						<p><code>
-						</code></p>				
-								
-						<p>Rbtree operation implementation class is as follows:</p>	
-											
-						<p><code>
-						</code></p>					
-							
-						<h1>3.Search for Red-Black tree</h1>						
-						<p>Because Red-Black tree is a special binary search tree, the search method of Red-Black tree is basically the same as that of binary search tree.</p>						
-						
-						<p><code>
-						</code></p>						
-						
-						<h1>4.Left and right rotations of Red-Black tree</h1>						
-						<p>The basic operations of red black tree are adding and deleting. The rotation method is used after adding or deleting the red black tree. Why? The reason is very simple. After adding or deleting the nodes in the red black tree, the red black tree changes. It may not meet the five properties of the red black tree, and it is no longer a red black tree, but a common tree. By rotating, the tree can become a red black tree again. In a nutshell, the purpose of rotation is to keep the tree as red black. There are two types of rotation: left and right. They are described below.</br>						
-						The left-hand adjustment procedure is as follows:</p>						
-						<ol><li>Let the left subtree of B become the right subtree of A.</li><li>Let A be the left subtree of B.</li><li>Set root node as node B.</li></ol>
-						
-						<p><code>
-						</code></p>
-						
-						<p>既然有左旋，一定有右旋。事实上，右旋和左旋是对称的过程，于是可以进行左旋的反操作。</p>
-						
-						<p>右旋调整步骤如下：</p>
-						
-						<ol><li>让A的右子树成为B的左子树</li><li>让B成为A的左子树</li><li>将根结点设定为结点A</li></ol>
-						
-						<p><code>
-						</code></p>
-						
+						<h1>1. Introduction to the Red-Black Tree</h1>
+						<p>Definition of Red-Black Tree:</br>
+							R-B tree is a special Red-Black Tree. Each node of the Red-Black Tree has a storage bit representing the
+							color of the node, which can be red or black. It was invented by Rudolf Bayer in 1972, when it was called
+							symmetric binary B-trees. Later, in 1978, it was modified by Leo J. guibas and Robert Sedgewick to the
+							present-day Red-Black Tree. Similar to AVL tree, Red-Black Tree keeps the balance of Red-Black Tree through
+							specific operations during insertion and deletion, so as to obtain high search performance. It can search,
+							insert and delete in O (log n) time, where n is the number of elements in the tree. </br>
+							Black tree is widely used, for example, TreeSet and treemap in Java collection, set and map in C + + STL, and
+							management of Linux virtual memory are all realized through Red-Black Tree.</p>
+						<p>Characteristics of the Red-Black Tree:</p>
+						<ol>
+							<li>Each node is either black or red.</li>
+							<li>The root node is black.</li>
+							<li>Each leaf node (NIL) is black. [Note: here the leaf node refers to the empty (nil or null) leaf node! ]</li>
+							<li>If a node is red, its children must be black.</li>
+							<li>All paths from a node to its children contain the same number of black nodes.</li>
+						</ol>
+						<h1>2. Establishment of Mangrove</h1>
+						<p>RBTnode is the node class of the Red-Black Tree, and rbtree is the operation implementation class of the red
+							black tree. RBTree contains the root node mroot and the related API of Red-Black Tree. During the implementation
+							of the Red-Black Tree API, I overloaded many functions. The reason for overloading is that some APIs are
+							internal interfaces and some are external interfaces, and the other is to make the structure clearer.</br>
+							RBTnode node classes are as follows:</p>
+
+						<pre><code>#ifndef _RED_BLACK_TREE_HPP_
+#define _RED_BLACK_TREE_HPP_
+ 
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+enum RBTColor{RED, BLACK};
+template &lt;class T&gt;
+class RBTNode{
+    public:
+        RBTColor color;    // colour
+        T key;            // Key (key value)
+        RBTNode *left;    // Left child
+        RBTNode *right;    // Right child
+        RBTNode *parent; 	// Parent node
+
+        RBTNode(T value, RBTColor c, RBTNode *p, RBTNode *l, RBTNode *r):
+            key(value),color(c),parent(),left(l),right(r) {}
+};</code></pre>
+
+						<p>Rbtree operation implementation class is as follows:</p>
+
+						<pre><code>template &lt;class T&gt;
+class RBTree {
+    private:
+        RBTNode&lt;T&gt; *mRoot;    // Root node
+
+    public:
+        RBTree();
+        ~RBTree();
+
+        // Preorder traversal of Red-Black Tree.
+        void preOrder();
+        
+        // Inorder traversal of Red-Black Tree.
+        void inOrder();
+        
+        // Postorder traversal of Red-Black Tree.
+        void postOrder();
+
+        // (recursive implementation) find the node whose key value is key in the Red-Black Tree.
+        RBTNode&lt;T&gt;* search(T key);
+        
+        // (non recursive implementation) find the node whose key value is key in the Red-Black Tree.
+        RBTNode&lt;T&gt;* iterativeSearch(T key);
+
+        // Find the minimum node: returns the key value of the minimum node.
+        T minimum();
+        
+        // Find Max node: returns the key value of the max node.
+        T maximum();
+
+        // Find the successor node of node (x). That is, the data value in the Red-Black Tree is greater than the minimum node of the node.
+        RBTNode&lt;T&gt;* successor(RBTNode&lt;T&gt; *x);
+        
+        // Find the precursor node of node (x). That is, the data value in the Red-Black Tree is less than the maximum node of the node.
+        RBTNode&lt;T&gt;* predecessor(RBTNode&lt;T&gt; *x);
+
+        // Insert the node (key is the node key value) into the Red-Black Tree.
+        void insert(T key);
+
+        // Delete node (key is node key value).
+        void remove(T key);
+
+        // Destroy the Red-Black Tree.
+        void destroy();
+
+        // Print Red-Black Tree.
+        void print();
+        
+    private:
+        // Preorder traversal of Red-Black Tree.
+        void preOrder(RBTNode&lt;T&gt;* tree) const;
+        
+        // Inorder traversal of Red-Black Tree.
+        void inOrder(RBTNode&lt;T&gt;* tree) const;
+        
+        // Postorder traversal of Red-Black Tree.
+        void postOrder(RBTNode&lt;T&gt;* tree) const;
+
+        // (recursive implementation) find the node whose key value is key in the Red-Black Tree.
+        RBTNode&lt;T&gt;* search(RBTNode&lt;T&gt;* x, T key) const;
+        
+        // (non recursive implementation) find the node with key value in Red-Black Tree x
+        RBTNode&lt;T&gt;* iterativeSearch(RBTNode&lt;T&gt;* x, T key) const;
+
+        // Find the minimum node: returns the minimum node of the Red-Black Tree whose tree is the root node.
+        RBTNode&lt;T&gt;* minimum(RBTNode&lt;T&gt;* tree);
+        
+        // Find the maximum node: returns the maximum node of the Red-Black Tree whose tree is the root node.
+        RBTNode&lt;T&gt;* maximum(RBTNode&lt;T&gt;* tree);
+
+        // Left rotation
+        void leftRotate(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt;* x);
+        
+        // Right rotation
+        void rightRotate(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt;* y);
+        
+        // Insertion function
+        void insert(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt;* node);
+        
+        // Insert correction function
+        void insertFixUp(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt;* node);
+        
+        // Delete function
+        void remove(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt; *node);
+        
+        // Delete correction function
+        void removeFixUp(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt; *node, RBTNode&lt;T&gt; *parent);
+
+        // Destroy the Red-Black Tree
+        void destroy(RBTNode&lt;T&gt;* &tree);
+
+        // Print Red-Black Tree
+        void print(RBTNode&lt;T&gt;* tree, T key, int direction);
+ 
+#define rb_parent(r)   ((r)->parent)
+#define rb_color(r) ((r)->color)
+#define rb_is_red(r)   ((r)->color==RED)
+#define rb_is_black(r)  ((r)->color==BLACK)
+#define rb_set_black(r)  do { (r)->color = BLACK; } while (0)
+#define rb_set_red(r)  do { (r)->color = RED; } while (0)
+#define rb_set_parent(r,p)  do { (r)->parent = (p); } while (0)
+#define rb_set_color(r,c)  do { (r)->color = (c); } while (0)
+};// Constructor
+template &lt;class T&gt;
+RBTree&lt;T&gt;::RBTree():mRoot(NULL)
+{
+    mRoot = NULL;
+}
+// Destructor 
+template &lt;class T&gt;
+RBTree&lt;T&gt;::~RBTree() 
+{
+    destroy();
+}</code></pre>
+
+						<h1>3.Search for Red-Black tree</h1>
+						<p>Because Red-Black tree is a special Red-Black Tree, the search method of Red-Black tree is basically the
+							same as that of Red-Black Tree.</br>
+							Recursive and non recursive search codes are as follows:</p>
+						<pre><code>// (recursive implementation) find the node whose key value is key in the Red-Black Tree.
+template &lt;class T&gt;
+RBTNode&lt;T&gt;* RBTree&lt;T&gt;::search(RBTNode&lt;T&gt;* x, T key) const
+{
+    if (x==NULL || x->key==key)
+        return x;
+
+    if (key < x->key)
+        return search(x->left, key);
+    else
+        return search(x->right, key);
+}
+template &lt;class T&gt;
+RBTNode&lt;T&gt;* RBTree&lt;T&gt;::search(T key) 
+{
+    search(mRoot, key);
+}
+
+//	(non recursive implementation) find the node whose key value is key in the Red-Black Tree.
+template &lt;class T&gt;
+RBTNode&lt;T&gt;* RBTree&lt;T&gt;::iterativeSearch(RBTNode&lt;T&gt;* x, T key) const
+{
+    while ((x!=NULL) && (x->key!=key))
+    {
+        if (key < x->key)
+            x = x->left;
+        else
+            x = x->right;
+    }
+
+    return x;
+}
+
+template &lt;class T&gt;
+RBTNode&lt;T&gt;* RBTree&lt;T&gt;::iterativeSearch(T key)
+{
+    iterativeSearch(mRoot, key);
+}</code></pre>
+
+						<h1>4.Left and right rotations of Red-Black tree</h1>
+						<p>The basic operations of Red-Black Tree are adding and deleting. The rotation method is used after adding or
+							deleting the Red-Black Tree. Why? The reason is very simple. After adding or deleting the nodes in the red black
+							tree, the Red-Black Tree changes. It may not meet the five properties of the Red-Black Tree, and it is no longer
+							a Red-Black Tree, but a common tree. By rotating, the tree can become a Red-Black Tree again. In a nutshell, the
+							purpose of rotation is to keep the tree as red black. There are two types of rotation: left and right. They are
+							described below.</br>
+							The left-hand adjustment procedure is as follows:</p>
+						<ol>
+							<li>Let the left subtree of B become the right subtree of A.</li>
+							<li>Let A be the left subtree of B.</li>
+							<li>Set root node as node B.</li>
+						</ol>
+						<div><img src="images/Red-Black tree picture/right.jpg" width="100%" height="100%"/></div>
+						<P>According to the above ideas, the code is as follows:</P>
+						<pre><code>//	Left rotation
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::leftRotate(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt;* x)
+{
+    // Set the right child of X to Y.
+    RBTNode&lt;T&gt; *y = x->right;
+    // Set Y's left child to X's right child.
+    // If y's left child is not empty, set X as the father of Y's left child.
+    x->right = y->left;
+    if (y->left != NULL)
+        y->left->parent = x;
+    // Set father of X as father of Y.
+    y->parent = x->parent;
+    if (x->parent == NULL)
+    {
+        root = y;            // If the father of X is an empty node, y is set as the root node.
+    }
+    else
+    {
+        if (x->parent->left == x)
+            x->parent->left = y;    // If X is the left child of its parent, set Y as the left child of its parent.
+        else
+            x->parent->right = y;    // If X is the left child of its parent, set Y as the left child of its parent. 
+    }    
+    // Left child with X set to Y
+    y->left = x;
+    //Set X's parent to y
+    x->parent = y;
+}</code></pre>
+						<p>Since there is a left turn, there must be a right turn. In fact, right-hand and left-hand rotation are
+							symmetrical processes, so left-hand reverse operation can be carried out.</br>
+							Right turn adjustment steps are as follows:</p>
+						<ol>
+							<li>Let the right subtree of A become the left subtree of B.</li>
+							<li>Let B be the left subtree of A.</li>
+							<li>Set root node as node A.</li>
+						</ol>
+						<div><img src="images/Red-Black tree picture/left.jpg" width="100%" height="100%"/></div>
+						<p>According to the above ideas, the code is as follows:</p>
+						<pre><code>//	Right rotation
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::rightRotate(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt;* y)
+{
+    // Set X to be the left child of the current node.
+    RBTNode&lt;T&gt; *x = y->left;
+    // Set the right child of X as the left child of Y.
+    // If the right child of X is not empty, set Y as the father of the right child of X.
+    y->left = x->right;
+    if (x->right != NULL)
+        x->right->parent = y;
+    // Make Y's father X's father
+    x->parent = y->parent;
+
+    if (y->parent == NULL) 
+    {
+        root = x;            // If the father of Y is an empty node, X is set as the root node
+    }
+    else
+    {
+        if (y == y->parent->right)
+            y->parent->right = x;    // If y is the right child of its parent, set X as the right child of Y's parent
+        else
+            y->parent->left = x;    // (y is the left child of its parent node) the left child of the parent node that sets x as X
+    }
+    // Right child with Y as X
+    x->right = y;
+    // Set Y's parent to X
+    y->parent = x;
+}</code></pre>
+
 						<h1>5.Insertion of Red-Black tree</h1>
-						
-						<p>将一个节点插入到红黑树中，需要执行哪些步骤呢？首先，将红黑树当作一颗二叉查找树，将节点插入；然后，将节点着色为红色；最后，通过旋转和重新着色等方法来修正该树，使之重新成为一颗红黑树。详细描述如下：</p>
-						
-						<p><strong>第一步: 将红黑树当作一颗二叉查找树，将节点插入。</strong></p>
-						
-						<p>红黑树本身就是一颗二叉查找树，将节点插入后，该树仍然是一颗二叉查找树。也就意味着，树的键值仍然是有序的。此外，无论是左旋还是右旋，若旋转之前这棵树是二叉查找树，旋转之后它一定还是二叉查找树。这也就意味着，任何的旋转和重新着色操作，都不会改变它仍然是一颗二叉查找树的事实。好吧？那接下来，我们就来想方设法的旋转以及重新着色，使这颗树重新成为红黑树！</p>
-						
-						<p><strong>第二步：将插入的节点着色为&quot;红色&quot;。</strong></p>
-						
-						<p>为什么着色成红色，而不是黑色呢？为什么呢？在回答之前，我们需要重新温习一下红黑树的特性：</p>
-						
-						<ol><li>每个节点或者是黑色，或者是红色。</li><li>根节点是黑色。</li><li>每个叶子节点是黑色。 [注意：这里叶子节点，是指为空的叶子节点！]</li><li>如果一个节点是红色的，则它的子节点必须是黑色的。</li><li>从一个节点到该节点的子孙节点的所有路径上包含相同数目的黑节点。</li></ol>
-						
-						<p>将插入的节点着色为红色，不会违背&quot;特性(5)&quot;，少违背一条特性，就意味着我们需要处理的情况越少。接下来，就要努力的让这棵树满足其它性质即可，满足了的话，它就又是一颗红黑树了。</p>
-						
-						<p><strong>第三步: 通过一系列的旋转或着色等操作，使之重新成为一颗红黑树。</strong></p>
-						
-						<p>第二步中，将插入节点着色为&quot;红色&quot;之后，不会违背&quot;特性(5)&quot;。那它到底会违背哪些特性呢？
-						对于&quot;特性(1)&quot;，显然不会违背了。因为我们已经将它涂成红色了。</p>
-						
-						<p>对于&quot;特性(2)&quot;，显然也不会违背。在第一步中，我们是将红黑树当作二叉查找树，然后执行的插入操作。而根据二叉查找数的特点，插入操作不会改变根节点。所以，根节点仍然是黑色。</p>
-						
-						<p>对于&quot;特性(3)&quot;，显然不会违背了。这里的叶子节点是指的空叶子节点，插入非空节点并不会对它们造成影响。</p>
-						
-						<p>对于&quot;特性(4)&quot;，是有可能违背的！那接下来，想办法使之&quot;满足特性(4)&quot;，就可以将树重新构造成红黑树了。</p>
-						
-						<p>根据被插入节点的父节点的情况，可以将&quot;当节点z被着色为红色节点，并插入二叉树&quot;划分为三种情况来处理。</p>
-						
-						<ol><li>情况说明：被插入的节点是根节点。
-						处理方法：直接把此节点涂为黑色。</li><li>情况说明：被插入的节点的父节点是黑色。
-						处理方法：什么也不需要做。节点被插入后，仍然是红黑树。</li><li>情况说明：被插入的节点的父节点是红色。
-						处理方法：那么，该情况与红黑树的“特性(5)”相冲突。这种情况下，被插入节点是一定存在非空祖父节点的；进一步的讲，被插入节点也一定存在叔叔节点(即使叔叔节点为空，我们也视之为存在，空节点本身就是黑色节点)。理解这点之后，我们依据&quot;叔叔节点的情况&quot;，将这种情况进一步划分为3种情况(Case)。</li></ol>
-						
-						<p><strong>(Case 1)叔叔是红色</strong></p>
-						
-						<p>1.1 现象说明</p>
-						
-						<p>当前节点(即，被插入节点)的父节点是红色，且当前节点的祖父节点的另一个子节点（叔叔节点）也是红色。</p>
-						
-						<p>1.2 处理策略</p>
-						
-						<p>(01) 将“父节点”设为黑色。
-						(02) 将“叔叔节点”设为黑色。
-						(03) 将“祖父节点”设为“红色”。
-						(04) 将“祖父节点”设为“当前节点”(红色节点)；即，之后继续对“当前节点”进行操作。</p>
-						
-						<p>下面谈谈为什么要这样处理。(建议理解的时候，通过下面的图进行对比)</p>
-						
-						<p>“当前节点”和“父节点”都是红色，违背“特性(4)”。所以，将“父节点”设置“黑色”以解决这个问题。
-						但是，将“父节点”由“红色”变成“黑色”之后，违背了“特性(5)”：因为，包含“父节点”的分支的黑色节点的总数增加了1。 解决这个问题的办法是：将“祖父节点”由“黑色”变成红色，同时，将“叔叔节点”由“红色”变成“黑色”。关于这里，说明几点：</p>
-						
-						<p>第一，为什么“祖父节点”之前是黑色？这个应该很容易想明白，因为在变换操作之前，该树是红黑树，“父节点”是红色，那么“祖父节点”一定是黑色。</p>
-						
-						<p>第二，为什么将“祖父节点”由“黑色”变成红色，同时，将“叔叔节点”由“红色”变成“黑色”；能解决“包含‘父节点’的分支的黑色节点的总数增加了1”的问题。这个道理也很简单。“包含‘父节点’的分支的黑色节点的总数增加了1” 同时也意味着 “包含‘祖父节点’的分支的黑色节点的总数增加了1”，既然这样，我们通过将“祖父节点”由“黑色”变成“红色”以解决“包含‘祖父节点’的分支的黑色节点的总数增加了1”的问题； 但是，这样处理之后又会引起另一个问题“包含‘叔叔’节点的分支的黑色节点的总数减少了1”，现在我们已知“叔叔节点”是“红色”，将“叔叔节点”设为“黑色”就能解决这个问题。 所以，将“祖父节点”由“黑色”变成红色，同时，将“叔叔节点”由“红色”变成“黑色”；就解决了该问题。</p>
-						
-						<p>按照上面的步骤处理之后：当前节点、父节点、叔叔节点之间都不会违背红黑树特性，但祖父节点却不一定。若此时，祖父节点是根节点，直接将祖父节点设为“黑色”，那就完全解决这个问题了；若祖父节点不是根节点，那我们需要将“祖父节点”设为“新的当前节点”，接着对“新的当前节点”进行分析。</p>
-						
-						<p>1.3 示意图</p>
-						
-						<p><strong>(Case 2)叔叔是黑色，且当前节点是右孩子</strong></p>
-						
-						<p>2.1 现象说明</p>
-						
-						<p>当前节点(即，被插入节点)的父节点是红色，叔叔节点是黑色，且当前节点是其父节点的右孩子。</p>
-						
-						<p>2.2 处理策略</p>
-						
-						<p>(01) 将“父节点”作为“新的当前节点”。
-						(02) 以“新的当前节点”为支点进行左旋。</p>
-						
-						<p>下面谈谈为什么要这样处理。(建议理解的时候，通过下面的图进行对比)</p>
-						
-						<p>首先，将“父节点”作为“新的当前节点”；接着，以“新的当前节点”为支点进行左旋。 为了便于理解，我们先说明第(02)步，再说明第(01)步；为了便于说明，我们设置“父节点”的代号为F(Father)，“当前节点”的代号为S(Son)。</p>
-						
-						<p>为什么要“以F为支点进行左旋”呢？根据已知条件可知：S是F的右孩子。而之前我们说过，我们处理红黑树的核心思想：将红色的节点移到根节点；然后，将根节点设为黑色。既然是“将红色的节点移到根节点”，那就是说要不断的将破坏红黑树特性的红色节点上移(即向根方向移动)。 而S又是一个右孩子，因此，我们可以通过“左旋”来将S上移！ </p>
-						
-						<p>按照上面的步骤(以F为支点进行左旋)处理之后：若S变成了根节点，那么直接将其设为“黑色”，就完全解决问题了；若S不是根节点，那我们需要执行步骤(01)，即“将F设为‘新的当前节点’”。那为什么不继续以S为新的当前节点继续处理，而需要以F为新的当前节点来进行处理呢？这是因为“左旋”之后，F变成了S的“子节点”，即S变成了F的父节点；而我们处理问题的时候，需要从下至上(由叶到根)方向进行处理；也就是说，必须先解决“孩子”的问题，再解决“父亲”的问题；所以，我们执行步骤(01)：将“父节点”作为“新的当前节点”。</p>
-						
-						<p>2.3 示意图</p>
-						
-						<p><strong>(Case 3)叔叔是黑色，且当前节点是左孩子</strong></p>
-						
-						<p>3.1 现象说明</p>
-						
-						<p>当前节点(即，被插入节点)的父节点是红色，叔叔节点是黑色，且当前节点是其父节点的左孩子。</p>
-						
-						<p>3.2 处理策略</p>
-						
-						<p>(01) 将“父节点”设为“黑色”。
-						(02) 将“祖父节点”设为“红色”。
-						(03) 以“祖父节点”为支点进行右旋。</p>
-						
-						<p>下面谈谈为什么要这样处理。(建议理解的时候，通过下面的图进行对比)</p>
-						
-						<p>为了便于说明，我们设置“当前节点”为S(Original Son)，“兄弟节点”为B(Brother)，“叔叔节点”为U(Uncle)，“父节点”为F(Father)，祖父节点为G(Grand-Father)。S和F都是红色，违背了红黑树的“特性(4)”，我们可以将F由“红色”变为“黑色”，就解决了“违背‘特性(4)’”的问题；但却引起了其它问题：违背特性(5)，因为将F由红色改为黑色之后，所有经过F的分支的黑色节点的个数增加了1。那我们如何解决“所有经过F的分支的黑色节点的个数增加了1”的问题呢？ 我们可以通过“将G由黑色变成红色”，同时“以G为支点进行右旋”来解决。</p>
-						
-						<p>3.3 示意图</p>
-						
-						<h2>6.Delete the Red-Black tree</h2>
-						
-						<p>将红黑树内的某一个节点删除。需要执行的操作依次是：首先，将红黑树当作一颗二叉查找树，将该节点从二叉查找树中删除；然后，通过&quot;旋转和重新着色&quot;等一系列来修正该树，使之重新成为一棵红黑树。详细描述如下：</p>
-						
-						<p>第一步：将红黑树当作一颗二叉查找树，将节点删除。
-						这和删除常规二叉查找树中删除节点的方法是一样的。共有3种情况：</p>
-						
-						<ol><li>被删除节点没有儿子，即为叶节点。那么，直接将该节点删除就OK了。</li><li>被删除节点只有一个儿子。那么，直接删除该节点，并用该节点的唯一子节点顶替它的位置。</li><li>被删除节点有两个儿子。那么，先找出它的后继节点；然后把“它的后继节点的内容”复制给“该节点的内容”；之后，删除“它的后继节点”。在这里，后继节点相当于替身，在将后继节点的内容复制给&quot;被删除节点&quot;之后，再将后继节点删除。这样就巧妙的将问题转换为&quot;删除后继节点&quot;的情况了，下面就考虑后继节点。 在&quot;被删除节点&quot;有两个非空子节点的情况下，它的后继节点不可能是双子非空。既然&quot;的后继节点&quot;不可能双子都非空，就意味着&quot;该节点的后继节点&quot;要么没有儿子，要么只有一个儿子。若没有儿子，则按&quot;情况1 &quot;进行处理；若只有一个儿子，则按&quot;情况2 &quot;进行处理。</li></ol>
-						
-						<p>第二步：通过&quot;旋转和重新着色&quot;等一系列来修正该树，使之重新成为一棵红黑树。
-						因为&quot;第一步&quot;中删除节点之后，可能会违背红黑树的特性。所以需要通过&quot;旋转和重新着色&quot;来修正该树，使之重新成为一棵红黑树。</p>
-						
-						<p>前面我们将&quot;删除红黑树中的节点&quot;大致分为两步，在第一步中&quot;将红黑树当作一颗二叉查找树，将节点删除&quot;后，可能违反&quot;特性(2)、(4)、(5)&quot;三个特性。第二步需要解决上面的三个问题，进而保持红黑树的全部特性。</p>
-						
-						<p>为了便于分析，我们假设&quot;x包含一个额外的黑色&quot;(x原本的颜色还存在)，这样就不会违反&quot;特性(5)&quot;。为什么呢？</p>
-						
-						<p>通过RB-DELETE算法，我们知道：删除节点y之后，x占据了原来节点y的位置。 既然删除y(y是黑色)，意味着减少一个黑色节点；那么，再在该位置上增加一个黑色即可。这样，当我们假设&quot;x包含一个额外的黑色&quot;，就正好弥补了&quot;删除y所丢失的黑色节点&quot;，也就不会违反&quot;特性(5)&quot;。 因此，假设&quot;x包含一个额外的黑色&quot;(x原本的颜色还存在)，这样就不会违反&quot;特性(5)&quot;。
-						现在，x不仅包含它原本的颜色属性，x还包含一个额外的黑色。即x的颜色属性是&quot;红+黑&quot;或&quot;黑+黑&quot;，它违反了&quot;特性(1)&quot;。</p>
-						
-						<p>现在，我们面临的问题，由解决&quot;违反了特性(2)、(4)、(5)三个特性&quot;转换成了&quot;解决违反特性(1)、(2)、(4)三个特性&quot;。RB-DELETE-FIXUP需要做的就是通过算法恢复红黑树的特性(1)、(2)、(4)。RB-DELETE-FIXUP的思想是：将x所包含的额外的黑色不断沿树上移(向根方向移动)，直到出现下面的姿态：</p>
-						
-						<p>a) x指向一个&quot;红+黑&quot;节点。此时，将x设为一个&quot;黑&quot;节点即可。
-						b) x指向根。此时，将x设为一个&quot;黑&quot;节点即可。
-						c) 非前面两种姿态。</p>
-						
-						<p>将上面的姿态，可以概括为3种情况。</p>
-						
-						<ol><li>情况说明：x是“红+黑”节点。
-						处理方法：直接把x设为黑色，结束。此时红黑树性质全部恢复。</li><li>情况说明：x是“黑+黑”节点，且x是根。
-						处理方法：什么都不做，结束。此时红黑树性质全部恢复。</li><li>情况说明：x是“黑+黑”节点，且x不是根。
-						处理方法：这种情况又可以划分为4种子情况。这4种子情况如下表所示：</li></ol>
-						
-						<p><strong>(Case 1)x是&quot;黑+黑&quot;节点，x的兄弟节点是红色</strong></p>
-						
-						<p>1.1 现象说明</p>
-						
-						<p>x是&quot;黑+黑&quot;节点，x的兄弟节点是红色。(此时x的父节点和x的兄弟节点的子节点都是黑节点)。</p>
-						
-						<p>1.2 处理策略</p>
-						
-						<p>(01) 将x的兄弟节点设为“黑色”。
-						(02) 将x的父节点设为“红色”。
-						(03) 对x的父节点进行左旋。
-						(04) 左旋后，重新设置x的兄弟节点。</p>
-						
-						<p>下面谈谈为什么要这样处理。(建议理解的时候，通过下面的图进行对比)</p>
-						
-						<p>这样做的目的是将“Case 1”转换为“Case 2”、“Case 3”或“Case 4”，从而进行进一步的处理。对x的父节点进行左旋；左旋后，为了保持红黑树特性，就需要在左旋前“将x的兄弟节点设为黑色”，同时“将x的父节点设为红色”；左旋后，由于x的兄弟节点发生了变化，需要更新x的兄弟节点，从而进行后续处理。</p>
-						
-						<p>1.3 示意图</p>
-						
-						<p><strong>(Case 2) x是&quot;黑+黑&quot;节点，x的兄弟节点是黑色，x的兄弟节点的两个孩子都是黑色</strong>
-						2.1 现象说明
-						x是“黑+黑”节点，x的兄弟节点是黑色，x的兄弟节点的两个孩子都是黑色。
-						2.2 处理策略
-						(01) 将x的兄弟节点设为“红色”。
-						(02) 设置“x的父节点”为“新的x节点”。
-						下面谈谈为什么要这样处理。(建议理解的时候，通过下面的图进行对比)</p>
-						
-						<p>这个情况的处理思想：是将“x中多余的一个黑色属性上移(往根方向移动)”。 x是“黑+黑”节点，我们将x由“黑+黑”节点 变成 “黑”节点，多余的一个“黑”属性移到x的父节点中，即x的父节点多出了一个黑属性(若x的父节点原先是“黑”，则此时变成了“黑+黑”；若x的父节点原先时“红”，则此时变成了“红+黑”)。 此时，需要注意的是：所有经过x的分支中黑节点个数没变化；但是，所有经过x的兄弟节点的分支中黑色节点的个数增加了1(因为x的父节点多了一个黑色属性)！为了解决这个问题，我们需要将“所有经过x的兄弟节点的分支中黑色节点的个数减1”即可，那么就可以通过“将x的兄弟节点由黑色变成红色”来实现。</p>
-						
-						<p>经过上面的步骤(将x的兄弟节点设为红色)，多余的一个颜色属性(黑色)已经跑到x的父节点中。我们需要将x的父节点设为“新的x节点”进行处理。若“新的x节点”是“黑+红”，直接将“新的x节点”设为黑色，即可完全解决该问题；若“新的x节点”是“黑+黑”，则需要对“新的x节点”进行进一步处理。</p>
-						
-						<p>2.3 示意图</p>
-						
-						<p><strong>(Case 3)x是“黑+黑”节点，x的兄弟节点是黑色；x的兄弟节点的左孩子是红色，右孩子是黑色的</strong></p>
-						
-						<p>3.1 现象说明
-						x是“黑+黑”节点，x的兄弟节点是黑色；x的兄弟节点的左孩子是红色，右孩子是黑色的。</p>
-						
-						<p>3.2 处理策略</p>
-						
-						<p>(01) 将x兄弟节点的左孩子设为“黑色”。
-						(02) 将x兄弟节点设为“红色”。
-						(03) 对x的兄弟节点进行右旋。
-						(04) 右旋后，重新设置x的兄弟节点。</p>
-						
-						<p>下面谈谈为什么要这样处理。(建议理解的时候，通过下面的图进行对比)</p>
-						
-						<p>我们处理“Case 3”的目的是为了将“Case 3”进行转换，转换成“Case 4”,从而进行进一步的处理。转换的方式是对x的兄弟节点进行右旋；为了保证右旋后，它仍然是红黑树，就需要在右旋前“将x的兄弟节点的左孩子设为黑色”，同时“将x的兄弟节点设为红色”；右旋后，由于x的兄弟节点发生了变化，需要更新x的兄弟节点，从而进行后续处理。</p>
-						
-						<p>3.3 示意图</p>
-						
-						<p><strong>(Case 4)x是“黑+黑”节点，x的兄弟节点是黑色；x的兄弟节点的右孩子是红色的，x的兄弟节点的左孩子任意颜色</strong></p>
-						
-						<p>4.1 现象说明</p>
-						
-						<p>x是“黑+黑”节点，x的兄弟节点是黑色；x的兄弟节点的右孩子是红色的，x的兄弟节点的左孩子任意颜色。</p>
-						
-						<p>4.2 处理策略</p>
-						
-						<p>(01) 将x父节点颜色 赋值给 x的兄弟节点。
-						(02) 将x父节点设为“黑色”。
-						(03) 将x兄弟节点的右子节设为“黑色”。
-						(04) 对x的父节点进行左旋。
-						(05) 设置“x”为“根节点”。</p>
-						
-						<p>下面谈谈为什么要这样处理。(建议理解的时候，通过下面的图进行对比)</p>
-						
-						<p>我们处理“Case 4”的目的是：去掉x中额外的黑色，将x变成单独的黑色。处理的方式是“：进行颜色修改，然后对x的父节点进行左旋。下面，我们来分析是如何实现的。</p>
-						
-						<p>为了便于说明，我们设置“当前节点”为S(Original Son)，“兄弟节点”为B(Brother)，“兄弟节点的左孩子”为BLS(Brother&#39;s Left Son)，“兄弟节点的右孩子”为BRS(Brother&#39;s Right Son)，“父节点”为F(Father)。</p>
-						
-						<p>我们要对F进行左旋。但在左旋前，我们需要调换F和B的颜色，并设置BRS为黑色。为什么需要这里处理呢？因为左旋后，F和BLS是父子关系，而我们已知BL是红色，如果F是红色，则违背了“特性(4)”；为了解决这一问题，我们将“F设置为黑色”。 但是，F设置为黑色之后，为了保证满足“特性(5)”，即为了保证左旋之后：</p>
-						
-						<p>第一，“同时经过根节点和S的分支的黑色节点个数不变”。</p>
-						
-						<p>若满足“第一”，只需要S丢弃它多余的颜色即可。因为S的颜色是“黑+黑”，而左旋后“同时经过根节点和S的分支的黑色节点个数”增加了1；现在，只需将S由“黑+黑”变成单独的“黑”节点，即可满足“第一”。</p>
-						
-						<p>第二，“同时经过根节点和BLS的分支的黑色节点数不变”。</p>
-						
-						<p>若满足“第二”，只需要将“F的原始颜色”赋值给B即可。之前，我们已经将“F设置为黑色”(即，将B的颜色&quot;黑色&quot;，赋值给了F)。至此，我们算是调换了F和B的颜色。</p>
-						
-						<p>第三，“同时经过根节点和BRS的分支的黑色节点数不变”。</p>
-						
-						<p>在“第二”已经满足的情况下，若要满足“第三”，只需要将BRS设置为“黑色”即可。
-						经过，上面的处理之后。红黑树的特性全部得到的满足！接着，我们将x设为根节点，就可以跳出while循环(参考伪代码)；即完成了全部处理。</p>
-						
-						<p>至此，我们就完成了Case 4的处理。理解Case 4的核心，是了解如何“去掉当前节点额外的黑色”。
-						4.3 示意图</p>
+						<p>What steps do you need to take to insert a node into the Red-Black Tree? First, the Red-Black Tree is regarded
+							as a Red-Black Tree, and the nodes are inserted; then, the nodes are colored red; finally, the tree is
+							modified by rotation and recolor to make it a Red-Black Tree again. The details are as follows:</p>
+						<p><strong>Step 1: take the Red-Black Tree as a Red-Black Tree, and insert the nodes.</strong></p>
+						<p>The Red-Black Tree itself is a Red-Black Tree. After the nodes are inserted, the tree is still a binary
+							search tree. This means that the key values of the tree are still in order. In addition, whether it is
+							left-handed or right-handed, if the tree is a Red-Black Tree before rotation, it must be a binary search
+							tree after rotation. This means that any rotation and recolor operation will not change the fact that it is
+							still a Red-Black Tree. OK Then, we will try our best to rotate and recolor the tree to make it a red black
+							tree again!</p>
+						<p><strong>Step 2: color the inserted nodes red.</strong></p>
+						<p>Why is it colored red instead of black? Why? Before answering, we need to review the characteristics of red
+							black trees:</p>
+						<ol>
+							<li>Each node is either black or red.</li>
+							<li>The root node is black.</li>
+							<li>Each leaf node is black. [Note: here the leaf node refers to the empty leaf node! ]</li>
+							<li>If a node is red, its children must be black.</li>
+							<li>All paths from a node to its children contain the same number of black nodes.</li>
+						</ol>
+						<p>Coloring the inserted node red will not violate the feature (5) and one less violation means that we need to
+							deal with fewer situations. Next, we should try our best to make this tree satisfy other properties. If it is
+							satisfied, it will be a Red-Black Tree again.</p>
+						<p><strong>Step 3: through a series of rotation or coloring operations, make it a Red-Black Tree again.</strong></p>
+						<p>In the second step, after the insertion node is colored red, the property (5) is not violated. What
+							characteristics does it violate?</br>
+							feature (1), it is obvious that it will not be violated. Because we have painted it red.</br>
+							For feature (2), it is clear that it will not be violated. In the first step, we treat the Red-Black Tree as a
+							Red-Black Tree, and then insert it. According to the characteristics of binary lookups, the insertion does
+							not change the root node. So the root node is still black.</br>
+							For feature (3), it is clear that it will not be violated. The leaf node here refers to the empty leaf node.
+							Inserting non empty nodes will not affect them.</br>
+							For feature (4), it is possible to violate! Then, find a way to satisfy the feature (4), and you can
+							reconstruct the tree into a Red-Black Tree.</br>
+							According to the case of the parent node of the inserted node, when the node Z is colored as a red node, and
+							the inserted binary tree is divided into three cases.</p>
+						<ol>
+							<li>Description: the inserted node is the root node.Treatment method: paint this node black directly.</li>
+							<li>Description: the parent node of the inserted node is black. Treatment: nothing needs to be done. After the
+								node is inserted, it is still a Red-Black Tree.</li>
+							<li>Description: the parent node of the inserted node is red. Processing method: then, this situation conflicts
+								with the feature (5) of the Red-Black Tree. In this case, there must be a non empty grandfather node in the
+								inserted node; furthermore, there must be an uncle node in the inserted node (even if the uncle node is empty,
+								we also think it exists, and the empty node itself is a black node). After understanding this, we further
+								divide this situation into three cases according to the situation of Uncle node.</li>
+						</ol>
+						<table frame="border" rules="all">
+							<tr align="center">
+								<th></th>
+								<th>Phenomenon description</th>
+								<th>Processing strategy</th>
+							</tr>
+							<tr>
+								<td>Case 1</td>
+								<td>The parent node of the current node is red, and another child node (Uncle node) of the grandfather node of
+									the current node is also red. </td>
+								<td>(1) set the parent node to black.</br>(2) set uncle node to black.</br>(3) set grandfather node to red.</br>(4)
+									set grandfather to current (red); that is, continue working on current.</td>
+							</tr>
+							<tr>
+								<td>Case 2</td>
+								<td>The parent node of the current node is red, the uncle node is black, and the current node is the right
+									child of its parent node.</td>
+								<td>(1) use parent as the new current node.</br>(2) turn left with new current node as the fulcrum.</td>
+							</tr>
+							<tr>
+								<td>Case 3</td>
+								<td>The parent node of the current node is red, the uncle node is black, and the current node is the left child
+									of its parent node.</td>
+								<td>(1) set the parent node to black.</br>(2) set grandfather node to red.</br>(3) turn right with grandfather
+									node as the fulcrum. </td>
+							</tr>
+						</table>
+						<p>The core idea of the above three cases is to move the red node to the root node, and then set the root node to
+							black. They are described in detail below.</p>
+						<h2>(case 1) Uncle node is red</h2>
+						<p><strong>1. phenomenon description</strong></p>
+						<p>The parent node of the current node (that is, the inserted node) is red, and the other child node (Uncle node)
+							of the grandfather node of the current node is also red.</p>
+						<p><strong>1.2 handling strategy</strong></p>
+						<p>(1) set the parent node to black.</br>
+							(2) set the uncle node to black. </br>
+							(3) set the grandfather node to red. </br>
+							(4) set the grandfather node as the current node (red node); that is, continue to operate on the current node
+							later.</p>
+						<p>Let's talk about why we should do this. (It is recommended to compare the following figures when
+							understanding)</p>
+						<p>Both the current node and the parent node are red, violating the attribute (4). Therefore, set the parent node
+							to black to solve this problem.
+							However, changing the parent from red to black violates the property (5): because the total number of black
+							nodes that contain branches of the parent increases by 1.
+							The solution to this problem is to change the grandfather node from black to red, and the uncle node from red to
+							black. Here are some points:</p>
+						<p>First, why is "grandfather node" black before? This should be easy to understand, because before the
+							transformation operation, the tree is a Red-Black Tree, and the "parent node" is red, so the "grandfather node"
+							must be black.</p>
+						<p>Second, why change the grandfather node from black to red, and at the same time, change the uncle node from
+							red to black? It can solve the problem that the total number of black nodes including the branches of the parent
+							node increases by 1. It's a very simple truth. The total number of black nodes with branches of the parent node
+							increased by 1.</br>
+							At the same time, it also means that the total number of black nodes in the branch containing the grandfather
+							node increases by 1. In this case, we can solve the problem that the total number of black nodes in the branch
+							containing the grandfather node increases by 1 by changing the grandfather node from black to red.</br>
+							However, after this processing, another problem will be caused. The total number of black nodes including the
+							branches of Uncle nodes has been reduced by 1. Now we know that uncle nodes are red. Setting uncle nodes to
+							black can solve this problem. </br>
+							Therefore, the problem is solved by changing the grandfather node from black to red and the uncle node from red
+							to black.</p>
+						<p>After following the above steps: the current node, the parent node and the uncle node will not violate the red
+							black tree feature, but the grandfather node is not necessarily. At this time, if the grandfather node is the
+							root node and the grandfather node is set to black directly, this problem will be completely solved; if the
+							grandfather node is not the root node, then we need to set the grandfather node as the new current node, and
+							then analyze the new current node.</p>
+						<p><strong>1.3 schematic diagram</strong></p>
+						<div><img src="images/Red-Black tree picture/insert1.jpg" width="100%" height="100%"/></div>
+						<h2>(case 2) uncle is black, and the current node is the right child</h2>
+						<p><strong>2.1 phenomenon description</p></strong>
+						<p>The parent node of the current node (that is, the inserted node) is red, the uncle node is black, and the
+							current node is the right child of its parent node.</p>
+						<p><strong>2.2 handling strategy</strong></p>
+						<p>(1) make the parent node the new current node. </br>
+							(2) turn left with the new current node as the fulcrum.</p>
+						<p>Let's talk about why we should do this. (It is recommended to compare the following figures when
+							understanding)</p>
+						<p>First, the parent node is used as the new current node; then, the new current node is used as the fulcrum to
+							rotate left.For ease of understanding, we first describe step (2) and then step (1); for ease of description,
+							we set the code of the parent node as f (father) and the code of the current node as s (son).</p>
+						<p>Why do we need to rotate left with F as the fulcrum? According to the known conditions, s is the right child
+							of F. As we said before, we deal with the core idea of the Red-Black Tree: move the red node to the root node;
+							then, set the root node to black. Since the red node is moved to the root node, that is to say, the red node
+							that destroys the properties of the Red-Black Tree should be continuously moved up (that is, to the root). And S
+							is a right child, so we can move S up by turning left!</p>
+						<p>After processing according to the above steps (left turning with F as the fulcrum): if s becomes the root
+							node, set it to black directly to completely solve the problem; if s is not the root node, then we need to
+							perform step (1), that is, set F as "new current node". Why not continue processing with s as the new current
+							node and F as the new current node? This is because after left-handed rotation, f becomes the child node of S,
+							that is, s becomes the parent node of F. when we deal with the problem, we need to deal with it from the bottom
+							to the top (from leaf to root). That is to say, we must solve the problem of the child first, and then the
+							problem of the father. Therefore, we perform step (1): take the parent node as the new current node.</p>
+						<p><strong>2.3 schematic diagram</strong></p>
+						<div><img src="images/Red-Black tree picture/insert2.jpg" width="100%" height="100%"/></div>
+						<h2>(case 3) uncle is black, and the current node is the left child</h2>
+						<p><strong>3.1 phenomenon description</strong></p>
+						<p>The parent node of the current node (that is, the inserted node) is red, the uncle node is black, and the
+							current node is the left child of its parent node.</p>
+						<p><strong>3.2 handling strategy</strong></p>
+						<p>(1) set the parent node to black.
+							(2) set the grandfather node to red.
+							(3) rotate right with grandfather node as fulcrum.</p>
+						<p>Let's talk about why we should do this. (it is recommended to compare the following figures when
+							understanding)</p>
+						<p>For illustration purposes, we set the current node as s (original son), brother node as B (brother), uncle
+							node as u (uncle), parent node as f (father), and grandfather node as G (Grand parent). Both s and F are red,
+							which violates the property of the Red-Black Tree (4). We can change f from red to black, which solves the
+							problem of violating the property (4); however, it causes other problems: violating the property (5), because
+							after changing f from red to black, the number of black nodes in all branches of F increases by 1. So how can we
+							solve the problem that the number of black nodes passing through all branches of F increases by 1? We can solve
+							this problem by turning G from black to red, and turning g right at the same time.</p>
+						<p><strong>3.3 schematic diagram</strong></p>
+						<div><img src="images/Red-Black tree picture/insert3.jpg" width="100%" height="100%"/></div>
+						<p>According to the above ideas, the code is as follows:</p>
+<pre><code>//	Red-Black Tree insertion correction function
+//	Call this function after inserting a node (out of balance) into the Red-Black Tree; the purpose is to reshape it into a Red-Black Tree.
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::insertFixUp(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt;* node)
+{
+    RBTNode&lt;T&gt; *parent, *gparent;
+
+    // If the parent node exists, and the color of the parent node is red
+    while ((parent = rb_parent(node)) && rb_is_red(parent))
+    {
+        gparent = rb_parent(parent);
+
+        //If the parent node is the left child of the grandfather node
+        if (parent == gparent->left)
+        {
+            // Case 1 condition: Uncle node is red
+            {
+                RBTNode&lt;T&gt; *uncle = gparent->right;
+                if (uncle && rb_is_red(uncle))
+                {
+                    rb_set_black(uncle);
+                    rb_set_black(parent);
+                    rb_set_red(gparent);
+                    node = gparent;
+                    continue;
+                }
+            }
+
+            // Case 2 condition: uncle is black, and the current node is the right child.
+            if (parent->right == node)
+            {
+                RBTNode&lt;T&gt; *tmp;
+                leftRotate(root, parent);
+                tmp = parent;
+                parent = node;
+                node = tmp;
+            }
+
+            // Case 3 condition: the uncle is black, and the current node is the left child.
+            rb_set_black(parent);
+            rb_set_red(gparent);
+            rightRotate(root, gparent);
+        } 
+        else//If Z's parent is Z's grandfather's right child.
+        {
+            // Case 1 condition: Uncle node is red.
+            {
+                RBTNode&lt;T&gt; *uncle = gparent->left;
+                if (uncle && rb_is_red(uncle))
+                {
+                    rb_set_black(uncle);
+                    rb_set_black(parent);
+                    rb_set_red(gparent);
+                    node = gparent;
+                    continue;
+                }
+            }
+
+            // Case 2 condition: uncle is black, and the current node is the left child.
+            if (parent->left == node)
+            {
+                RBTNode&lt;T&gt; *tmp;
+                rightRotate(root, parent);
+                tmp = parent;
+                parent = node;
+                node = tmp;
+            }
+
+            // Case 3 condition: the uncle is black, and the current node is the right child.
+            rb_set_black(parent);
+            rb_set_red(gparent);
+            leftRotate(root, gparent);
+        }
+    }
+
+    // Set the root node to black.
+    rb_set_black(root);
+}
+//	Find the successor node of node (x). That is, the data value in the Red-Black Tree is greater than the minimum node of the node.
+template &lt;class T&gt;
+RBTNode&lt;T&gt;* RBTree&lt;T&gt;::successor(RBTNode&lt;T&gt; *x)
+{
+    //  If x has a right child, the successor node of X is the smallest node of the subtree whose root is the right child.
+    if (x->right != NULL)
+        return minimum(x->right);
+
+    // If x has no right child. Then x has the following two possibilities:
+	//(01) x is a left child, then the successor node of X is its parent node.
+	//(02) if x is a right child, find the lowest parent node of X, and the parent node must have a left child. The lowest parent node found is the successor node of X.
+    RBTNode&lt;T&gt;* y = x->parent;
+    while ((y!=NULL) && (x==y->right))
+    {
+        x = y;
+        y = y->parent;
+    }
+
+    return y;
+} 
+// Find the precursor node of node (x). That is, the data value in the Red-Black Tree is less than the maximum node of the node.
+template &lt;class T&gt;
+RBTNode&lt;T&gt;* RBTree&lt;T&gt;::predecessor(RBTNode&lt;T&gt; *x)
+{
+    // If x has a left child, the leading node of X is the largest node of the subtree whose root is the left child.
+    if (x->left != NULL)
+        return maximum(x->left);
+    // If x doesn't have a left child. Then x has the following two possibilities:            
+	//(01) x is a right child, then the precursor node of X "is its parent node.            
+	//(01) if x is a left child, find the lowest parent node of X, and the parent node must have a right child. The "lowest parent node" found is the precursor node of X.
+    RBTNode&lt;T&gt;* y = x->parent;
+    while ((y!=NULL) && (x==y->left))
+    {
+        x = y;
+        y = y->parent;
+    }
+
+    return y;
+}
+//	Insert node into Red-Black Tree.
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::insert(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt;* node)
+{
+    RBTNode&lt;T&gt; *y = NULL;
+    RBTNode&lt;T&gt; *x = root;
+
+    // 1. Take the Red-Black Tree as a Red-Black Tree, and add the nodes to the Red-Black Tree.
+    while (x != NULL)
+    {
+        y = x;
+        if (node->key < x->key)
+            x = x->left;
+        else
+            x = x->right;
+    }
+
+    node->parent = y;
+    if (y!=NULL)
+    {
+        if (node->key < y->key)
+            y->left = node;
+        else
+            y->right = node;
+    }
+    else
+        root = node;
+
+    // 2. Set the node color to red.
+    node->color = RED;
+
+    // 3. Revise it to a Red-Black Tree.
+    insertFixUp(root, node);
+}
+// Insert the node (key is the node key value) into the Red-Black Tree.
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::insert(T key)
+{
+    RBTNode&lt;T&gt; *z=NULL;
+
+    // If the new node fails, return.
+    if ((z=new RBTNode&lt;T&gt;(key,BLACK,NULL,NULL,NULL)) == NULL)
+        return ;
+
+    insert(mRoot, z);
+}
+</code></pre>
+						<h1>6.Delete the Red-Black tree</h1>
+						<p>Delete a node in the Red-Black Tree. The operations to be performed are as follows: first, the Red-Black Tree
+							is treated as a Red-Black Tree, and the node is deleted from the Red-Black Tree; then, the tree is
+							modified to become a Red-Black Tree again by rotating and recolor. The details are as follows:</p>
+						<p>Step 1: take the Red-Black Tree as a Red-Black Tree and delete the nodes. </br>
+							This is the same as deleting nodes in a regular Red-Black Tree. There are three situations:</p>
+						<ol>
+							<li>If the deleted node has no son, it is a leaf node. Then, it is OK to delete the node directly.</li>
+							<li>The deleted node has only one son. Then, delete the node directly and replace its location with its unique
+								child node.</li>
+							<li>The deleted node has two sons. Then, first find out its successor node; then copy the content of its
+								successor node to the content of the node; then, delete its successor node. In this case, the successor node is
+								equivalent to the avatar. After the content of the successor node is copied to the deleted node, the successor
+								node is deleted. In this way, the problem is cleverly transformed into the case of deleting subsequent nodes.
+								Next, consider the subsequent nodes. When the deleted node has two non empty child nodes, its subsequent nodes
+								can not be Gemini non empty. Since the subsequent nodes of the node cannot be both non empty, it means that the
+								subsequent nodes of the node either have no sons or have only one son. If there is no son, it shall be handled
+								according to case 1; if there is only one son, it shall be handled according to case 2.</li>
+						</ol>
+						<p>Step 2: modify the tree to make it a Red-Black Tree by rotating and recolor.</br>
+							Because after deleting the node in the first step, it may violate the characteristics of the Red-Black Tree. So
+							you need to rotate and recolor the tree to make it a Red-Black Tree again.</p>
+						<p>In the first step, the Red-Black Tree is treated as a Red-Black Tree. After the node is deleted, three
+							characteristics (2), (4) and (5) may be violated. The second step needs to solve the above three problems, so as
+							to maintain all the characteristics of the Red-Black Tree.</br>
+							For analysis purposes, let's assume that x contains an extra black color (x's original color still exists), so
+							that the feature (5) is not violated. Why? </p>
+						<p>Through rb-delete algorithm, we know that after deleting node y, X occupies the position of the original node
+							y. Since removing y (y is black) means reducing a black node, then adding a black node to the position is
+							enough. In this way, when we assume that x contains an extra black, we can make up for the loss of the black
+							node by deleting y, and we will not violate the feature (5). Therefore, suppose that x contains an extra black
+							color (x's original color still exists), so that the feature (5) is not violated. Now, X contains not only its
+							original color attribute, but also an extra black. That is, the color attribute of X is red + black or black +
+							black, which violates the property (1).</p>
+						<p>Now, the problem we are facing has been transformed from solving the three characteristics of violation (2),
+							(4) and (5) to solving the three characteristics of violation (1), (2) and (4). What rb-delete-fixup needs to do
+							is to restore the properties (1), (2) and (4) of the Red-Black Tree through the algorithm. Rb-delete-fixup's
+							idea is: move the extra black contained in x up the tree (towards the root) until the following posture appears:</p>
+						<p>A) x points to a red + Black node. In this case, set X as a black node.</br>
+							B) x points to the root. In this case, set X as a black node.</br>
+							C) not the first two.</p>
+						<p>The above posture can be summarized into three situations.</p>
+						<ol>
+							<li>Description: X is red + Black node. </br>
+								How to deal with it: set X to black directly and finish. At this time, all the properties of mangrove were
+								recovered.</li>
+							<li>Description: X is black + Black node, and X is root.</br>
+								How to deal with it: do nothing, it's over. At this time, all the properties of mangrove were recovered.</li>
+							<li>Description: X is black + Black node, and X is not root. </br>
+								Treatment method: this kind of situation can be divided into 4 seed situations. The four seeds are shown in the
+								table below:</li>
+						</ol>
+						<table frame="border" rules="all">
+							<tr align="center">
+								<th></th>
+								<th>Phenomenon description</th>
+								<th>Processing strategy</th>
+							</tr>
+							<tr>
+								<td>Case 1</td>
+								<td>X is black + black node, and X's brother node is red. (in this case, the parent node of X and the child
+									node of the sibling node of X are both black nodes.)</td>
+								<td>(1) set the brother node of X to black.</br>(2) set the parent of X to red.</br>(3) rotate the parent node
+									of X to the left.</br>(4)
+									after turning left, reset X's sibling node.</td>
+							</tr>
+							<tr>
+								<td>Case 2</td>
+								<td>X is black + Black node, X's brother node is black, X's brother node's two children are black.</td>
+								<td>(1) Set brother node of X to red.</br>(2) Set the parent of X as the new x node.</td>
+							</tr>
+							<tr>
+								<td>Case 3</td>
+								<td>X is black + Black node, X's brother node is black; X's brother node's left child is red, and the right
+									child is black.</td>
+								<td>(1) set the left child of the X brother node to black.</br>(2) set the X sibling node to red.</br>(3) right
+									turn the sibling node of X.</br> (4) after turning right, reset X's sibling node.</td>
+							</tr>
+							<tr>
+								<td>Case 4</td>
+								<td>X is black + Black node, X's brother node is black; X's brother node's right child is red, and X's brother
+									node's left child is any color.</td>
+								<td>(1) assign x parent node color to X's siblings.</br>(2) set the X parent node to black.</br>(3) set the
+									right sub section of the X sibling node to black.</br>(4) rotate the parent node of X to the left.</br>(5) set
+									X as the root node.</td>
+							</tr>
+						</table></br>
+						<h2>(case 1) X is black + black node, and X's brother node is red. </h2>
+						<p><strong>1.1 phenomenon description</strong></p>
+						<p>X is black + Black node, and X's brother node is red. (in this case, the parent node of X and the child node
+							of the sibling node of X are both black nodes.)</p>
+						<p><strong>1.2 handling strategy</strong></p>
+						<p>(1) set the brother node of X to black.</br>
+							(2) set the parent of X to red.</br>
+							(3) rotate the parent node of X to the left.</br>
+							(4) after turning left, reset X's sibling node.</p>
+						<p>Let's talk about why we should do this. (It is recommended to compare the following figures when
+							understanding)</p>
+						<p>The purpose of this is to convert case 1 to case 2, case 3, or case 4 for further processing. The parent node
+							of X is rotated to the left; after the left, in order to maintain the Red-Black Tree characteristics, the
+							sibling node of X needs to be set to black before the left rotation, and the parent node of X needs to be set to
+							red at the same time; after the left rotation, because the sibling node of X has changed, the sibling node of X
+							needs to be updated for subsequent processing.</p>
+						<p><strong>1.3 schematic diagram</strong></p>
+						<div><img src="images/Red-Black tree picture/delete1.jpg" width="100%" height="100%"/></div>
+						<h2>(case 2) X is black + black node, X's brother node is black, X's brother node's two children are black</h2>
+						<p><strong>2.1 phenomenon description</strong></p>
+						<p>X is black + Black node, X's brother node is black, X's brother node's two children are black.</p>
+						<p><strong>2.2 handling strategy</strong></p>
+						<p>(1) set the brother node of X to red.</br>
+							(2) set the parent node of X as the new x node.</br>
+							Let's talk about why we should do this. (it is recommended to compare the following figures when understanding)</p>
+						<p>The idea of this case is to move up (toward the root) one of the redundant black attributes in X. X is a black
+							+ Black node. We change x from a black + Black node to a black node. The extra black attribute is moved to X's
+							parent node, that is, X's parent node has an extra black attribute (if x's parent node was originally black,
+							then it becomes black + black; if X's parent node was originally red, then it becomes red + Black). At this
+							time, it should be noted that the number of black nodes in all branches passing X has not changed; however, the
+							number of black nodes in all branches passing X's sibling nodes has increased by 1 (because X's parent node has
+							an additional black attribute)! In order to solve this problem, we need to reduce the number of black nodes in
+							all branches of X's sibling nodes by 1. Then we can change X's sibling nodes from black to red.</p>
+						<p>After the above steps (set X's sibling node to red), an extra color attribute (black) has run to X's parent
+							node. We need to set the parent of X as a new x node for processing. If the new x node is black + red, the
+							problem can be solved by setting the new x node to black directly; if the new x node is black + black, the new x
+							node needs to be further processed.</p>
+						<p><strong>2.3 schematic diagram</strong></p>
+						<div><img src="images/Red-Black tree picture/delete2.jpg" width="100%" height="100%"/></div>
+						<h2>(case 3) X is black + black node, X's brother node is black; X's brother node's left child is red, and the
+							right child is black.</h2>
+						<p><strong>3.1 phenomenon description</strong>
+							<p>
+								<p>X is black + Black node, X's brother node is black; X's brother node's left child is red, and the right
+									child is black.</p>
+								<p><strong>3.2 handling strategy</strong></p>
+								<p>(1) set the left child of the X brother node to black.</br>
+									(2) set the X sibling node to red.</br>
+									(3) right turn the sibling node of X.</br>
+									(4) after turning right, reset X's sibling node.</p>
+								<p>Let's talk about why we should do this. (it is recommended to compare the following figures when
+									understanding)</p>
+								<p>The purpose of case 3 is to transform case 3 into case 4 for further processing. The way of conversion is to
+									rotate the brother node of X to the right; to ensure that it is still a Red-Black Tree after the right
+									rotation, the left child of the brother node of X needs to be set to black before the right rotation, and the
+									brother node of X needs to be set to red at the same time; after the right rotation, because the brother node
+									of X has changed, the brother node of X needs to be updated for subsequent processing.</p>
+								<p><strong>3.3 schematic diagram</strong></p>
+								<div><img src="images/Red-Black tree picture/delete3.jpg" width="100%" height="100%"/></div>
+								<h2>(case 4) x is black + black node, X's brother node is black; X's brother node's right child is red, X's
+									brother node's left child is any color</h2>
+								<p><strong>4.1 phenomenon description</strong></p>
+								<p>X is black + Black node, X's brother node is black; X's brother node's right child is red, and X's brother
+									node's left child is any color.</p>
+								<p><strong>4.2 handling strategy</strong></p>
+								<p>(1) assign x parent node color to X's siblings.
+									(2) set the X parent node to black.
+									(3) set the right sub section of the X sibling node to black.
+									(4) rotate the parent node of X to the left.
+									(5) set X as the root node.</p>
+								<p>Let's talk about why we should do this. (It is recommended to compare the following figures when
+									understanding)</p>
+								<p>The purpose of case 4 is to remove the extra black in X and change x to a separate black. The way to deal
+									with this is to make a color change, and then rotate the X's parent node to the left. Next, let's analyze how
+									it is implemented.</p>
+								<p>For ease of explanation, we set the current node as s (original son), brother node as B (brother), left
+									child of brother node as BLS (brother & ා s leftson), right child of brother node as BRS (brother & ා s right
+									son), and parent node as f (father).</p>
+								<p>We're going to turn f left. But before turning left, we need to change the colors of F and B and set BRS to
+									black. Why do you need to deal with it here? Since F and BLS are parent-child relationships after left
+									rotation, we know that BL is red. If f is red, it violates the feature (4); to solve this problem, we set F to
+									black. However, after f is set to black, in order to ensure that the feature (5) is met, i.e. to ensure that
+									after left turning:</p>
+								<p>First, the number of black nodes passing through both the root node and the branch of s does not change.</p>
+								<p>If it meets the first requirement, it only needs s to discard its redundant colors. Because the color of S
+									is black + black, and the number of black nodes passing through both the root node and the branch of s after
+									left-handed rotation has increased by 1; now, only changing s from black + black to a separate black node can
+									meet the first requirement.</p>
+								<p>Second, the number of black nodes passing through both the root node and the BLS branch remains the same.</p>
+								<p>If the second is satisfied, only the original color of F needs to be assigned to B. Previously, we have set
+									F to black (that is, the color black of B is assigned to f). So far, we've changed the colors of F and B.</p>
+								<p>Third, the number of black nodes passing through both the root node and the BRS branch does not change.</p>
+								<p>In case the second has been met, to meet the third, just set BRS to black. After, after the above
+									processing. All the characteristics of the Red-Black Tree are satisfied! Next, we set X as the root node, and
+									we can jump out of the while loop (refer to the pseudo code); that is, we have completed all the processing.</p>
+								<p>At this point, we have finished processing case 4. The core of understanding case 4 is to understand how to
+									remove the extra black of the current node.</p>
+								<p><strong>4.3 schematic diagram</strong></p>
+								<div><img src="images/Red-Black tree picture/delete4.jpg" width="100%" height="100%"/></div>
+								<p>According to the above ideas, the code is as follows:</p>
+<pre><code>//This function is called after the insertion node is removed from the Red-Black Tree (the Red-Black Tree is out of balance); 
+//the purpose is to reshape it into a Red-Black Tree.
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::removeFixUp(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt; *node, RBTNode&lt;T&gt; *parent)
+{
+    RBTNode&lt;T&gt; *other;
+
+    while ((!node || rb_is_black(node)) && node != root)
+    {
+        if (parent->left == node)
+        {
+            other = parent->right;
+            if (rb_is_red(other))
+            {
+                // Case 1: brother w of X is red
+                rb_set_black(other);
+                rb_set_red(parent);
+                leftRotate(root, parent);
+                other = parent->right;
+            }
+            if ((!other->left || rb_is_black(other->left)) &&
+                (!other->right || rb_is_black(other->right)))
+            {
+                // Case 2: brother w of X is black, and both children of W are black 
+                rb_set_red(other);
+                node = parent;
+                parent = rb_parent(node);
+            }
+            else
+            {
+                if (!other->right || rb_is_black(other->right))
+                {
+                    // Case 3: brother w of X is black, and the left child of W is red, and the right child is black.
+                    rb_set_black(other->left);
+                    rb_set_red(other);
+                    rightRotate(root, other);
+                    other = parent->right;
+                }
+                // Case 4: brother w of X is black, and the right child of W is red, and the left child is any color.
+                rb_set_color(other, rb_color(parent));
+                rb_set_black(parent);
+                rb_set_black(other->right);
+                leftRotate(root, parent);
+                node = root;
+                break;
+            }
+        }
+        else
+        {
+            other = parent->left;
+            if (rb_is_red(other))
+            {
+                // Case 1: brother w of X is red  
+                rb_set_black(other);
+                rb_set_red(parent);
+                rightRotate(root, parent);
+                other = parent->left;
+            }
+            if ((!other->left || rb_is_black(other->left)) &&
+                (!other->right || rb_is_black(other->right)))
+            {
+                // Case 2: brother w of X is black, and both children of W are black
+                rb_set_red(other);
+                node = parent;
+                parent = rb_parent(node);
+            }
+            else
+            {
+                if (!other->left || rb_is_black(other->left))
+                {
+                    // Case 3: brother w of X is black, and the left child of W is red, and the right child is black.  
+                    rb_set_black(other->right);
+                    rb_set_red(other);
+                    leftRotate(root, other);
+                    other = parent->left;
+                }
+                // Case 4: brother w of X is black, and the right child of W is red, and the left child is any color.
+                rb_set_color(other, rb_color(parent));
+                rb_set_black(parent);
+                rb_set_black(other->left);
+                rightRotate(root, parent);
+                node = root;
+                break;
+            }
+        }
+    }
+    if (node)
+        rb_set_black(node);
+}
+
+// Delete node and return the deleted node.
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::remove(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt; *node)
+{
+    RBTNode&lt;T&gt; *child, *parent;
+    RBTColor color;
+
+    // The left and right children of the deleted node are not empty.
+    if ( (node->left!=NULL) && (node->right!=NULL) ) 
+    {
+        // The successor node of the deleted node. (called replacement node)
+        // Use it to replace the "deleted node" position, and then remove the deleted node.
+        RBTNode&lt;T&gt; *replace = node;
+
+        // Get successor node
+        replace = replace->right;
+        while (replace->left != NULL)
+            replace = replace->left;
+
+        // Node node is not a root node (only the root node does not have a parent node)
+        if (rb_parent(node))
+        {
+            if (rb_parent(node)->left == node)
+                rb_parent(node)->left = replace;
+            else
+                rb_parent(node)->right = replace;
+        } 
+        else 
+            // Node node is the root node, update the root node.
+            root = replace;
+
+        // Child is the right child to replace the node, and also the node to be adjusted.
+        // There must be no left child in the replacement node! Because it is a successor node.
+        child = replace->right;
+        parent = rb_parent(replace);
+        // Save the color of the replacement node.
+        color = rb_color(replace);
+
+        // The deleted node is the parent of its successor.
+        if (parent == node)
+        {
+            parent = replace;
+        } 
+        else
+        {
+            // Child is not empty.
+            if (child)
+                rb_set_parent(child, parent);
+            parent->left = child;
+
+            replace->right = node->right;
+            rb_set_parent(node->right, replace);
+        }
+
+        replace->parent = node->parent;
+        replace->color = node->color;
+        replace->left = node->left;
+        node->left->parent = replace;
+
+        if (color == BLACK)
+            removeFixUp(root, child, parent);
+
+        delete node;
+        return ;
+    }
+    if (node->left !=NULL)
+        child = node->left;
+    else 
+        child = node->right;
+    parent = node->parent;
+    // Save the color of the replacement node.
+    color = node->color;
+    if (child)
+        child->parent = parent;
+    // Node node is not the root node
+    if (parent)
+    {
+        if (parent->left == node)
+            parent->left = child;
+        else
+            parent->right = child;
+    }
+    else
+        root = child;
+
+    if (color == BLACK)
+        removeFixUp(root, child, parent);
+    delete node;
+}
+
+// Delete the node whose key value is key in the Red-Black Tree.
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::remove(T key)
+{
+    RBTNode&lt;T&gt; *node; 
+
+    // Find the node corresponding to the key, and delete the node if found.
+    if ((node = search(mRoot, key)) != NULL)
+        remove(mRoot, node);
+}
+</code></pre>
+<h1>7. Print data of Red-Black Tree</h1>
+						<p>Output a Red-Black Tree on the screen.The code is as follows</p>
+<pre><code>//Print Red-Black Tree.
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::print(RBTNode&lt;T&gt;* tree, T key, int direction)
+{
+    if(tree != NULL)
+    {
+        if(direction==0)    // Tree is the root node.
+            cout << setw(2) << tree->key << "(B) is root" << endl;
+        else                // Tree is a branch node.
+            cout << setw(2) << tree->key <<  (rb_is_red(tree)?"(R)":"(B)") << " is " << setw(2) << key << "'s "  << setw(12) << (direction==1?"right child" : "left child") << endl;
+
+        print(tree->left, tree->key, -1);
+        print(tree->right,tree->key,  1);
+    }
+}
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::print()
+{
+    if (mRoot != NULL)
+        print(mRoot, mRoot->key, 0);
+}</code></pre>
+						<h1>8. Destroy Red-Black Tree</h1>
+						<p>Code to destroy Red-Black Tree:</p>
+<pre><code>//Destroy the Red-Black Tree.
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::destroy(RBTNode&lt;T&gt;* &tree)
+{
+    if (tree==NULL)
+        return ;
+
+    if (tree->left != NULL)
+        return destroy(tree->left);
+    if (tree->right != NULL)
+        return destroy(tree->right);
+
+    delete tree;
+    tree=NULL;
+}
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::destroy()
+{
+    destroy(mRoot);
+}</code></pre>
+						<h1>9. Maximum and minimum.</h1>
+						<p>Output Red-Black Tree maximum and minimum values.The following code:</p>
+<pre><code>//	Find the minimum node: returns the minimum node of the Red-Black Tree whose tree is the root node.
+template &lt;class T&gt;
+RBTNode&lt;T&gt;* RBTree&lt;T&gt;::minimum(RBTNode&lt;T&gt;* tree)
+{
+    if (tree == NULL)
+        return NULL;
+
+    while(tree->left != NULL)
+        tree = tree->left;
+    return tree;
+}
+template &lt;class T&gt;
+T RBTree&lt;T&gt;::minimum()
+{
+    RBTNode&lt;T&gt; *p = minimum(mRoot);
+    if (p != NULL)
+        return p->key;
+
+    return (T)NULL;
+}
+//	Find the maximum node: returns the maximum node of the Red-Black Tree whose tree is the root node.
+template &lt;class T&gt;
+RBTNode&lt;T&gt;* RBTree&lt;T&gt;::maximum(RBTNode&lt;T&gt;* tree)
+{
+    if (tree == NULL)
+        return NULL;
+
+    while(tree->right != NULL)
+        tree = tree->right;
+    return tree;
+}
+template &lt;class T&gt;
+T RBTree&lt;T&gt;::maximum()
+{
+    RBTNode&lt;T&gt; *p = maximum(mRoot);
+    if (p != NULL)
+        return p->key;
+
+    return (T)NULL;
+}</code></pre>
+						<h1>10. Traversal of Red-Black Tree</h1>
+						<h2>(1) first order traversal</h2>						
+						<p>For the first order traversal, the root node root is always visited first, and then the left and right subtrees are visited. Therefore, the traversal order of the first order traversal is root node -&gt; left subtree -&gt; right subtree.            
+						From this, you can write the code of traversal in sequence:</p>						
+<pre><code>//	Preorder traversal of Red-Black Tree.
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::preOrder(RBTNode&lt;T&gt;* tree) const
+{
+    if(tree != NULL)
+    {
+        cout<< tree->key << " " ;
+        preOrder(tree->left);
+        preOrder(tree->right);
+    }
+}
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::preOrder() 
+{
+    preOrder(mRoot);
+}</code></pre>						
+						<h2>(2) middle order traversal</h2>						
+						<p>For the middle order traversal, it always accesses the left subtree first, then the root node, and finally the right subtree. Therefore, the traversal order of the middle order traversal is left subtree -&gt; root node -&gt; right subtree.<strong>For the Red-Black Tree, the result is ordered.</strong>
+						From this, you can write the code of middle order traversal:</p>
+<pre><code>//	Inorder traversal of Red-Black Tree.
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::inOrder(RBTNode&lt;T&gt;* tree) const
+{
+    if(tree != NULL)
+    {
+        inOrder(tree->left);
+        cout<< tree->key << " " ;
+        inOrder(tree->right);
+    }
+}
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::inOrder() 
+{
+    inOrder(mRoot);
+}</code></pre>						
+						<h2>(3) post order traversal</h2>						
+						<p>For post order traversal, the left subtree is always visited first, then the right subtree, and finally the root node. Therefore, the order of post order traversal is left subtree -&gt; right subtree -&gt; root node.</br>
+						From this, you can write the code of the subsequent traversal:</p>
+<pre><code>//Postorder traversal of Red-Black Tree.
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::postOrder(RBTNode&lt;T&gt;* tree) const
+{
+    if(tree != NULL)
+    {
+        postOrder(tree->left);
+        postOrder(tree->right);
+        cout<< tree->key << " " ;
+    }
+}
+template &lt;class T&gt;
+void RBTree&lt;T&gt;::postOrder() 
+{
+    postOrder(mRoot);
+}
+#endif</code></pre>	
 					</div>
 				</div>
 			</div>
