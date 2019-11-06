@@ -1,0 +1,726 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Heap</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="highly balanced binary search tree" />
+		<meta name="author" content="Guangsheng Liu" />
+
+		<!-- Animate.css -->
+		<link rel="stylesheet" href="css/animate.css">
+		<!-- Icomoon Icon Fonts-->
+		<link rel="stylesheet" href="css/icomoon.css">
+		<!-- Bootstrap  -->
+		<link rel="stylesheet" href="css/bootstrap.css">
+
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Modernizr JS -->
+		<script src="js/modernizr-2.6.2.min.js"></script>
+		<!-- FOR IE9 below -->
+		<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+	</head>
+	<body class="single">
+
+		<div class="fh5co-loader"></div>
+
+		<div id="page">
+			<div id="fh5co-aside" style="background-image: url(images/image_2.jpg)" data-stellar-background-ratio="0.5">
+				<div class="overlay"></div>
+				<nav role="navigation">
+					<ul>
+						<li><a href="blogindex.html"><i class="icon-home"></i></a></li>
+					</ul>
+				</nav>
+				<div class="page-title">
+					<img src="images/person_1.jpg" alt="Free HTML5 by FreeHTMl5.co">
+					<span>November 3, 2019</span>
+					<h2>Heap</h2>
+				</div>
+			</div>
+			<div id="fh5co-main-content">
+				<div class="fh5co-post">
+					<div class="fh5co-entry padding">
+						<h1>1. Definition and category of heap</h1>
+						<p>Heap is a complete binary tree. The value of each node in the tree is not less than (or greater than) the
+							value of its left and right child nodes.</br>
+							If the value of the parent node is greater than or equal to the value of the child node, then such a heap is
+							called MaxHeap. At this time, the value of each node is the maximum value of the subtree with it as the
+							root node.</br>
+							If the value of the parent node is less than or equal to the value of the child node, then such a heap is
+							called MinHeap. At this time, the value of each node is the minimum value of the subtree with it as the
+							root node.</br>
+							The following is an example of MaxHeap.</p>
+						<h1>2. Establishment of reactor</h1>
+						<p>Binary heap is usually realized by array. There is a certain relationship between the position of the parent
+							node and the child node in the binary heap implemented by array. Sometimes, we put the first element of the
+							binary heap at array index 0, sometimes at 1. Of course, they are the same in nature (all binary heaps), only
+							slightly different in implementation.</br>
+							If the index of &quot;first element&quot; in the array is 0, the positional relationship between the parent
+							node and the child node is as follows:</p>
+						<ol>
+							<li>The index of the left child whose index is I is (2 * I + 1);</li>
+							<li>The index of the left child whose index is I is (2 * I + 2);</li>
+							<li>The index of the parent node whose index is I is floor ((i-1) / 2);</li>
+						</ol>
+						<pre><code>#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+template &lt;class T&gt;
+class MaxHeap{
+    private:
+        T *mHeap;        // data 
+        int mCapacity;    // Total capacity
+        int mSize;        // Actual capacity
+
+    private:
+        // Downward adjustment algorithm of maximum heap
+        void filterdown(int start, int end);
+        
+        // Up adjustment algorithm of the maximum heap (from start up to 0, adjust the heap)
+        void filterup(int start);
+        
+    public:
+        MaxHeap();
+        MaxHeap(int capacity);
+        ~MaxHeap();
+
+        // Return the index of data in binary heap
+        int getIndex(T data);
+        
+        // Delete data in maximum heap
+        int remove(T data);
+        
+        // Insert data into binary heap
+        int insert(T data);
+        
+        // Print binary heap
+        void print();
+};
+
+// Constructor
+template &lt;class T&gt;
+MaxHeap&lt;T&gt;::MaxHeap()
+{
+    new (this)MaxHeap(30);
+}
+template &lt;class T&gt;
+MaxHeap&lt;T&gt;::MaxHeap(int capacity)
+{
+    mSize = 0;
+    mCapacity = capacity;
+    mHeap = new T[mCapacity];
+}
+
+//Destructor
+template &lt;class T&gt;
+MaxHeap&lt;T&gt;::~MaxHeap() 
+{
+    mSize = 0;
+    mCapacity = 0;
+    delete[] mHeap;
+}</code></pre>
+						<h1>3. Heap insertion</h1>
+						<p>What if you want to add an element to the heap? You can put the element you want to add at the end of the
+							array (that is, after the last node of the complete binary tree), and then adjust it up. Upward adjustment
+							always compares the node to be adjusted with the parent node. If the weight is larger than the parent node, then
+							exchange it with the parent node, and repeat the comparison until the weight reaches the top of the heap or the
+							parent node is larger. The upward adjustment code is as follows, and the time complexity is <strong>O (logn)</strong>：</p>
+						<pre><code>/* 
+ * Return the index of data in binary heap
+ * Return value:            
+ *Exist -- returns the index of data in the array            
+ *Does not exist -- 1
+ */
+template &lt;class T&gt;
+int MaxHeap&lt;T&gt;::getIndex(T data)
+{
+    for(int i=0; i&lt;mSize; i++)
+        if (data==mHeap[i])
+            return i;
+
+    return -1;
+}
+/*
+*Up adjustment algorithm of the maximum heap (from start up to 0, adjust the heap)
+*
+*Note: in the heap implemented by array, the index value of the left child of the nth node is (2n + 1), and the index value of the right child is (2n + 2).
+*
+*Parameter Description:
+*Start -- the starting position of the node being called (generally the index of the last element in the array)
+*/
+template &lt;class T&gt;
+void MaxHeap&lt;T&gt;::filterup(int start)
+{
+    int c = start;            // The location of the current node
+    int p = (c-1)/2;        // Location of parent node
+    T tmp = mHeap[c];        // The size of the current node
+
+    while(c > 0)
+    {
+        if(mHeap[p] >= tmp)
+            break;
+        else
+        {
+            mHeap[c] = mHeap[p];
+            c = p;
+            p = (p-1)/2;   
+        }       
+    }
+    mHeap[c] = tmp;
+}
+							</code></pre>
+						<p>Insert the code as follows:</p>
+						<pre><code>/*
+*Insert data into binary heap
+*
+*Return value:
+*0 for success
+*- 1, indicating failure
+*/
+template &lt;class T&gt;
+int MaxHeap&lt;T&gt;::insert(T data)
+{
+
+    if(mSize == mCapacity)
+        return -1;
+ 
+    mHeap[mSize] = data;        // Insert an array at the end of the table
+    filterup(mSize);    // Adjust heap up
+    mSize++;                    // Actual heap capacity + 1
+
+    return 0;
+}						</code></pre>
+						<h1>4. Deletion of heap</h1>
+						<p>There are upward adjustments and downward adjustments. The adjustment method is as follows: always compare the
+							current node V with its left and right children (if any). If the weight of the child node is larger than the
+							weight of node V, exchange the child node with the largest weight with node V; after the exchange, continue to
+							let node V compare with the child until the child&#39;s weight of node V is greater than the weight of node v
+							The weight of node V is small or there is no child node in node v.
+							So it&#39;s easy to write down adjusted code. Obviously, the time complexity is <strong>O (logn)</strong>:</p>
+						<pre><code>/*
+*Downward adjustment algorithm of maximum heap
+*
+*Note: in the heap implemented by array, the index value of the left child of the nth node is (2n + 1), and the index value of the right child is (2n + 2).
+*
+*Parameter Description:
+*Start -- the starting position of the node to be downgraded (generally 0, indicating starting from the first)
+*End -- end range (generally the index of the last element in the array)
+*/
+template &lt;class T&gt;
+void MaxHeap&lt;T&gt;::filterdown(int start, int end)
+{
+    int c = start;          // Current node location
+    int l = 2*c + 1;     // Left child's position
+    T tmp = mHeap[c];    // Current node size
+
+    while(l &lt;= end)
+    {
+        // L is the left child, L + 1 is the right child
+        if(l &lt; end && mHeap[l] &lt; mHeap[l+1])
+            l++;        // The older of the left and right children, mhep [L + 1]
+        if(tmp >= mHeap[l])
+            break;        //End of adjustment
+        else
+        {
+            mHeap[c] = mHeap[l];
+            c = l;
+            l = 2*l + 1;   
+        }       
+    }   
+    mHeap[c] = tmp;
+}							</code></pre>
+						<p>If you want to delete the largest element in the heap (that is, delete the heap top element) and keep it in
+							the heap structure, you only need the last element to cover the heap top element, and then adjust the root node.
+							The code is as follows, and the time complexity is <strong>O(logn)</strong>:</p>
+						<pre><code>/*
+*Delete data in maximum heap
+*
+*Return value:
+*0, success
+*- 1, failed
+*/
+template &lt;class T&gt;
+int MaxHeap&lt;T&gt;::remove(T data)
+{
+    int index;
+    // Returns - 1 if the heap is empty
+    if(mSize == 0)
+        return -1;
+
+    // Get the index of data in the array
+    index = getIndex(data); 
+    if (index==-1)
+        return -1;
+
+    mHeap[index] = mHeap[--mSize];    // Fill with last element
+    filterdown(index, mSize-1);        // Adjust from index position to maximum heap
+
+    return 0;
+}							</code></pre>
+						<h1>4. Implementation of the heap</h1>
+						<p>MaxHeap.h</p>
+						<pre><code>#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+template &lt;class T&gt;
+class MaxHeap{
+    private:
+        T *mHeap;        // data 
+        int mCapacity;    // Total capacity
+        int mSize;        // Actual capacity
+
+    private:
+        // Downward adjustment algorithm of maximum heap
+        void filterdown(int start, int end);
+        
+        // Up adjustment algorithm of the maximum heap (from start up to 0, adjust the heap)
+        void filterup(int start);
+        
+    public:
+        MaxHeap();
+        MaxHeap(int capacity);
+        ~MaxHeap();
+
+        // Return the index of data in binary heap
+        int getIndex(T data);
+        
+        // Delete data in maximum heap
+        int remove(T data);
+        
+        // Insert data into binary heap
+        int insert(T data);
+        
+        // Print binary heap
+        void print();
+};
+
+// Constructor
+template &lt;class T&gt;
+MaxHeap&lt;T&gt;::MaxHeap()
+{
+    new (this)MaxHeap(30);
+}
+template &lt;class T&gt;
+MaxHeap&lt;T&gt;::MaxHeap(int capacity)
+{
+    mSize = 0;
+    mCapacity = capacity;
+    mHeap = new T[mCapacity];
+}
+
+//Destructor
+template &lt;class T&gt;
+MaxHeap&lt;T&gt;::~MaxHeap() 
+{
+    mSize = 0;
+    mCapacity = 0;
+    delete[] mHeap;
+}
+
+/* 
+ * Return the index of data in binary heap
+ * Return value:            
+ *Exist -- returns the index of data in the array            
+ *Does not exist -- 1
+ */
+template &lt;class T&gt;
+int MaxHeap&lt;T&gt;::getIndex(T data)
+{
+    for(int i=0; i&lt;mSize; i++)
+        if (data==mHeap[i])
+            return i;
+
+    return -1;
+}
+
+/*
+*Downward adjustment algorithm of maximum heap
+*
+*Note: in the heap implemented by array, the index value of the left child of the nth node is (2n + 1), and the index value of the right child is (2n + 2).
+*
+*Parameter Description:
+*Start -- the starting position of the node to be downgraded (generally 0, indicating starting from the first)
+*End -- end range (generally the index of the last element in the array)
+*/
+template &lt;class T&gt;
+void MaxHeap&lt;T&gt;::filterdown(int start, int end)
+{
+    int c = start;          // Current node location
+    int l = 2*c + 1;     // Left child's position
+    T tmp = mHeap[c];    // Current node size
+
+    while(l &lt;= end)
+    {
+        // L is the left child, L + 1 is the right child
+        if(l &lt; end && mHeap[l] &lt; mHeap[l+1])
+            l++;        // The older of the left and right children, mhep [L + 1]
+        if(tmp >= mHeap[l])
+            break;        //End of adjustment
+        else
+        {
+            mHeap[c] = mHeap[l];
+            c = l;
+            l = 2*l + 1;   
+        }       
+    }   
+    mHeap[c] = tmp;
+}
+
+/*
+*Delete data in maximum heap
+*
+*Return value:
+*0, success
+*- 1, failed
+*/
+template &lt;class T&gt;
+int MaxHeap&lt;T&gt;::remove(T data)
+{
+    int index;
+    // Returns - 1 if the heap is empty
+    if(mSize == 0)
+        return -1;
+
+    // Get the index of data in the array
+    index = getIndex(data); 
+    if (index==-1)
+        return -1;
+
+    mHeap[index] = mHeap[--mSize];    // Fill with last element
+    filterdown(index, mSize-1);        // Adjust from index position to maximum heap
+
+    return 0;
+}
+
+/*
+*Up adjustment algorithm of the maximum heap (from start up to 0, adjust the heap)
+*
+*Note: in the heap implemented by array, the index value of the left child of the nth node is (2n + 1), and the index value of the right child is (2n + 2).
+*
+*Parameter Description:
+*Start -- the starting position of the node being called (generally the index of the last element in the array)
+*/
+template &lt;class T&gt;
+void MaxHeap&lt;T&gt;::filterup(int start)
+{
+    int c = start;            // The location of the current node
+    int p = (c-1)/2;        // Location of parent node
+    T tmp = mHeap[c];        // The size of the current node
+
+    while(c > 0)
+    {
+        if(mHeap[p] >= tmp)
+            break;
+        else
+        {
+            mHeap[c] = mHeap[p];
+            c = p;
+            p = (p-1)/2;   
+        }       
+    }
+    mHeap[c] = tmp;
+}
+  
+/*
+*Insert data into binary heap
+*
+*Return value:
+*0 for success
+*- 1, indicating failure
+*/
+template &lt;class T&gt;
+int MaxHeap&lt;T&gt;::insert(T data)
+{
+
+    if(mSize == mCapacity)
+        return -1;
+ 
+    mHeap[mSize] = data;        // Insert an array at the end of the table
+    filterup(mSize);    // Adjust heap up
+    mSize++;                    // Actual heap capacity + 1
+
+    return 0;
+}
+  
+/*
+*Print binary heap
+*
+*Return value:
+*0 for success
+*- 1, indicating failure
+*/
+template &lt;class T&gt;
+void MaxHeap&lt;T&gt;::print()
+{
+    for (int i=0; i&lt;mSize; i++)
+        cout << mHeap[i] << " ";
+}							</code></pre>
+							<p>MinHeap.h</p>
+							<pre><code>#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+template &lt;class T&gt;
+class MinHeap{
+    private:
+        T *mHeap;        // data 
+        int mCapacity;    // Total capacity
+        int mSize;        // Actual capacity
+
+    private:
+        // Downward adjustment algorithm of maximum heap
+        void filterdown(int start, int end);
+        
+        // Up adjustment algorithm of the maximum heap (from start up to 0, adjust the heap)
+        void filterup(int start);
+        
+    public:
+        MinHeap();
+        MinHeap(int capacity);
+        ~MinHeap();
+
+        // Return the index of data in binary heap
+        int getIndex(T data);
+        
+        // Delete data in maximum heap
+        int remove(T data);
+        
+        // Insert data into binary heap
+        int insert(T data);
+        
+        // Print binary heap
+        void print();
+};
+
+// Constructor
+template &lt;class T&gt;
+MinHeap&lt;T&gt;::MinHeap()
+{
+    new (this)MinHeap(30);
+}
+template &lt;class T&gt;
+MinHeap&lt;T&gt;::MinHeap(int capacity)
+{
+    mSize = 0;
+    mCapacity = capacity;
+    mHeap = new T[mCapacity];
+}
+
+//Destructor
+template &lt;class T&gt;
+MinHeap&lt;T&gt;::~MinHeap() 
+{
+    mSize = 0;
+    mCapacity = 0;
+    delete[] mHeap;
+}
+
+/* 
+ * Return the index of data in binary heap
+ * Return value:            
+ *Exist -- returns the index of data in the array            
+ *Does not exist -- 1
+ */
+template &lt;class T&gt;
+int MinHeap&lt;T&gt;::getIndex(T data)
+{
+    for(int i=0; i&lt;mSize; i++)
+        if (data==mHeap[i])
+            return i;
+
+    return -1;
+}
+
+/*
+*Downward adjustment algorithm of minimum heap
+*
+*Note: in the heap implemented by array, the index value of the left child of the nth node is (2n + 1), and the index value of the right child is (2n + 2).
+*
+*Parameter Description:
+*Start -- the starting position of the node to be downgraded (generally 0, indicating starting from the first)
+*End -- end range (generally the index of the last element in the array)
+*/
+template &lt;class T&gt;
+void MinHeap&lt;T&gt;::filterdown(int start, int end)
+{
+    int c = start;          // Current node location
+    int l = 2*c + 1;     // Left child's position
+    T tmp = mHeap[c];    // Current node size
+
+    while(l &lt;= end)
+    {
+        // L is the left child, L + 1 is the right child
+        if(l &lt; end && mHeap[l] > mHeap[l+1])
+            l++;        // The older of the left and right children, mhep [L + 1]
+        if(tmp &lt;= mHeap[l])
+            break;        //End of adjustment
+        else
+        {
+            mHeap[c] = mHeap[l];
+            c = l;
+            l = 2*l + 1;   
+        }       
+    }   
+    mHeap[c] = tmp;
+}
+ 
+/*
+*Delete data in maximum heap
+*
+*Return value:
+*0, success
+*- 1, failed
+*/
+template &lt;class T&gt;
+int MinHeap&lt;T&gt;::remove(T data)
+{
+    int index;
+    // Returns - 1 if the heap is empty
+    if(mSize == 0)
+        return -1;
+
+    //  Get the index of data in the array
+    index = getIndex(data); 
+    if (index==-1)
+        return -1;
+
+    mHeap[index] = mHeap[--mSize];        // Fill with last element
+    filterdown(index, mSize-1);    // Adjust from index to minimum heap
+
+    return 0;
+}
+
+/*
+*The upward adjustment algorithm of the minimum heap (from start to 0, adjust the heap)
+*
+*Note: in the heap implemented by array, the index value of the left child of the nth node is (2n + 1), and the index value of the right child is (2n + 2).
+*
+*Parameter Description:
+*Start -- the starting position of the node being called (generally the index of the last element in the array)
+*/
+template &lt;class T&gt;
+void MinHeap&lt;T&gt;::filterup(int start)
+{
+    int c = start;            // The location of the current node
+    int p = (c-1)/2;        // Location of parent node 
+    T tmp = mHeap[c];        // The size of the current node
+
+    while(c > 0)
+    {
+        if(mHeap[p] &lt;= tmp)
+            break;
+        else
+        {
+            mHeap[c] = mHeap[p];
+            c = p;
+            p = (p-1)/2;   
+        }       
+    }
+    mHeap[c] = tmp;
+}
+  
+/*
+*Insert data into binary heap
+*
+*Return value:
+*0 for success
+*- 1, indicating failure
+*/
+template &lt;class T&gt;
+int MinHeap&lt;T&gt;::insert(T data)
+{
+    // If the heap is full, return
+    if(mSize == mCapacity)
+        return -1;
+ 
+    mHeap[mSize] = data;        // Insert an array at the end of the table
+    filterup(mSize);            // Adjust heap up
+    mSize++;                    // Actual heap capacity + 1
+
+    return 0;
+}
+  
+/*
+*Print binary heap
+*
+*Return value:
+*0 for success
+*- 1, indicating failure
+*/
+template &lt;class T&gt;
+void MinHeap&lt;T&gt;::print()
+{
+    for (int i=0; i&lt;mSize; i++)
+        cout << mHeap[i] << " ";
+}</code></pre>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="fh5co-navigation">
+			<div class="fh5co-cover prev fh5co-cover-sm" style="background-image: url(images/project_2.jpg)">
+				<div class="overlay"></div>
+
+				<a class="copy" href="Red-Black tree.html">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Previous Post</span>
+								<h2>Red-Black tree</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+			<div class="fh5co-cover next fh5co-cover-sm" style="background-image: url(images/project_3.jpg)">
+				<div class="overlay"></div>
+				<a class="copy" href="Huffman tree.html">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Next Post</span>
+								<h2>Huffman tree</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+		</div>
+
+		<footer>
+			<div>
+				&copy; Copyright MyWebSite. Designed by Guangsheng Liu.
+			</div>
+		</footer>
+
+		<div class="gototop js-top">
+			<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+		</div>
+
+		<!-- jQuery -->
+		<script src="js/jquery.min.js"></script>
+		<!-- jQuery Easing -->
+		<script src="js/jquery.easing.1.3.js"></script>
+		<!-- Bootstrap -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- Waypoints -->
+		<script src="js/jquery.waypoints.min.js"></script>
+		<!-- Stellar Parallax -->
+		<script src="js/jquery.stellar.min.js"></script>
+		<!-- Main -->
+		<script src="js/main.js"></script>
+
+	</body>
+</html>
