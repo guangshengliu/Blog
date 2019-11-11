@@ -52,7 +52,7 @@
 							Like binary heap, it is a priority queue implementation. When the priority queue involves the problem of
 							merging two priority queue, the efficiency of binary heap can not be satisfied. The leftist heap introduced in
 							this paper can solve this kind of problem well.</p>
-						<div><img src="images/Leftist Heap picture/leftistheap1.jpg" width="100%" height="100%" /></div>
+						<div><img src="images/Leftist Heap picture/leftistheap1.jpg"/></div>
 						<p>The above figure is a leftist heap. Its nodes have two attributes besides the left and right subtree pointers
 							as the nodes of the binary tree: key value and zero distance.</p>
 						<ol>
@@ -173,28 +173,28 @@ LeftistHeap&lt;T&gt;::~LeftistHeap()
 								right children.</li>
 							<li>Set NPL of root node of new heap = NPL + 1 of right sub heap</li>
 						</ol>
-						<div><img src="images/Leftist Heap picture/leftistheap1.jpg" width="100%" height="100%" /></div>
+						<div><img src="images/Leftist Heap picture/leftistheap1.jpg" /></div>
 						<p>Step 1: merge the right child of the smaller heap (root 3) with the larger heap (root 6). The result of the
 							merging is equivalent to the right child of the larger heap with the smaller heap, as shown in the following
 							figure:</p>
-						<div><img src="images/Leftist Heap picture/leftistheap2.jpg" width="100%" height="100%" /></div>
+						<div><img src="images/Leftist Heap picture/leftistheap2.jpg" /></div>
 						<p> Step 2: merge the right subtree of root 6 and the tree with root 8 from the previous step, and the result is
 							as follows:</p>
-						<div><img src="images/Leftist Heap picture/leftistheap3.jpg" width="100%" height="100%" /></div>
+						<div><img src="images/Leftist Heap picture/leftistheap3.jpg" /></div>
 						<p>Step 3: merge the right subtree of root 8 and the tree with root 7 from the previous step, and the result is
 							as follows:</p>
-						<div><img src="images/Leftist Heap picture/leftistheap4.jpg" width="100%" height="100%" /></div>
+						<div><img src="images/Leftist Heap picture/leftistheap4.jpg" /></div>
 						<p>Step 4: merge the right subtree of root 6 and the tree with root 7 from the previous step, and the result is
 							as follows:</p>
-						<div><img src="images/Leftist Heap picture/leftistheap5.jpg" width="100%" height="100%" /></div>
+						<div><img src="images/Leftist Heap picture/leftistheap5.jpg"  /></div>
 						<p>Step 5: merge the right subtree of root 8 and the tree with root 18 from the previous step, and the result is
 							as follows:</p>
-						<div><img src="images/Leftist Heap picture/leftistheap6.jpg" width="100%" height="100%" /></div>
+						<div><img src="images/Leftist Heap picture/leftistheap6.jpg"  /></div>
 						<p>So far, two trees have been successfully merged into one tree. Next, adjust the newly generated tree. Adjust
 							the right child&#39;s NPL &gt; left child&#39;s NPL node of the tree. The adjustment scheme is to exchange left
 							and right children. The adjustment chart is as follows:</p>
-						<div><b>Before adjustment:</b><img src="images/Leftist Heap picture/leftistheap7.jpg" width="100%" height="100%" /></div>
-						<div><b>After adjustment:</b><img src="images/Leftist Heap picture/leftistheap8.jpg" width="100%" height="100%" /></div>
+						<div><b>Before adjustment:</b><img src="images/Leftist Heap picture/leftistheap7.jpg" /></div>
+						<div><b>After adjustment:</b><img src="images/Leftist Heap picture/leftistheap8.jpg"/></div>
 						<p>The implementation code is as follows:</p>
 						<pre><code>//Exchange the contents of two nodes.
 template &lt;class T&gt;
