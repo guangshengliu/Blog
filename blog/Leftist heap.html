@@ -1,0 +1,451 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Leftist heap</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="highly balanced binary search tree" />
+		<meta name="author" content="Guangsheng Liu" />
+
+		<!-- Animate.css -->
+		<link rel="stylesheet" href="css/animate.css">
+		<!-- Icomoon Icon Fonts-->
+		<link rel="stylesheet" href="css/icomoon.css">
+		<!-- Bootstrap  -->
+		<link rel="stylesheet" href="css/bootstrap.css">
+
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Modernizr JS -->
+		<script src="js/modernizr-2.6.2.min.js"></script>
+		<!-- FOR IE9 below -->
+		<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+	</head>
+	<body class="single">
+
+		<div class="fh5co-loader"></div>
+
+		<div id="page">
+			<div id="fh5co-aside" style="background-image: url(images/image_2.jpg)" data-stellar-background-ratio="0.5">
+				<div class="overlay"></div>
+				<nav role="navigation">
+					<ul>
+						<li><a href="blogindex.html"><i class="icon-home"></i></a></li>
+					</ul>
+				</nav>
+				<div class="page-title">
+					<img src="images/person_1.jpg" alt="Free HTML5 by FreeHTMl5.co">
+					<span>November 11, 2019</span>
+					<h2>Leftist heap</h2>
+				</div>
+			</div>
+			<div id="fh5co-main-content">
+				<div class="fh5co-post">
+					<div class="fh5co-entry padding">
+						<h1>1. Introduction of leftist heap</h1>
+						<p>leftist heap is also known as left leaning tree, leftmost heap, etc.</br>
+							Like binary heap, it is a priority queue implementation. When the priority queue involves the problem of
+							merging two priority queue, the efficiency of binary heap can not be satisfied. The leftist heap introduced in
+							this paper can solve this kind of problem well.</p>
+						<div><img src="images/Leftist Heap picture/leftistheap1.jpg" width="100%" height="100%" /></div>
+						<p>The above figure is a leftist heap. Its nodes have two attributes besides the left and right subtree pointers
+							as the nodes of the binary tree: key value and zero distance.</p>
+						<ol>
+							<li>The function of key value is to compare the size of nodes and sort them.</li>
+							<li>Zero distance (NPL in English, i.e. null path length) is the path length from a node to a &quot;nearest
+								dissatisfied node&quot;. Discontent node means that at least one of the left and right children of the node is
+								null. NPL of leaf node is 0, NPL of null node is - 1.</li>
+						</ol>
+						<p>The leftist heap has the following basic properties:</br>
+							[property 1] the key value of a node is less than or equal to the key value of its left and right child nodes.</br>
+							[property 2] NPL of left child of node &gt; = NPL of right child.</br>
+							[property 3] NPL of node = NPL + 1 of its right child.</p>
+
+						<h1>2. Basic operation of leftist heap</h1>
+						<p>1.Leftistnode is the node class corresponding to the leftist heap, which is defined as follows:</p>
+						<pre><code>#ifndef _LEFTIST_TREE_HPP_
+#define _LEFTIST_TREE_HPP_
+
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+template &lt;class T&gt;
+class LeftistNode{
+    public:
+        T key;                // Keyword 
+        int npl;            // Null Path Length
+        LeftistNode *left;    // left child 
+        LeftistNode *right;    // right child 
+
+        LeftistNode(T value, LeftistNode *l, LeftistNode *r):
+            key(value), npl(0), left(l),right(r) {}
+};								</code></pre>
+						<p>2.Leftistheap is a leftist heap class, which contains the root node of left leftist heap and the operation of
+							leftist heap:</p>
+						<pre><code>template &lt;class T&gt;
+class LeftistHeap {
+    private:
+        LeftistNode&lt;T&gt; *mRoot;    // Root node.
+
+    public:
+        LeftistHeap();
+        ~LeftistHeap();
+
+        // Preorder traversal leftist heap.
+        void preOrder();
+        
+        // Inorder traversal leftist heap.
+        void inOrder();
+        
+        // Postorder traversal leftist heap.
+        void postOrder();
+
+         //Merge the other's left leaning heap into this.
+        void merge(LeftistHeap&lt;T&gt;* other);
+        
+        // Insert the node (key is the node key value) into the left leaning heap.
+        void insert(T key);
+        
+        // Delete node (key is node key value).
+        void remove();
+
+        // destory leftist heap.
+        void destroy();
+
+        // print leftist heap.
+        void print();
+    private:
+
+        // Preorder traversal leftist heap.
+        void preOrder(LeftistNode&lt;T&gt;* heap) const;
+        
+        // Inorder traversal leftist heap.
+        void inOrder(LeftistNode&lt;T&gt;* heap) const;
+        
+        // Postorder traversal leftist heap.
+        void postOrder(LeftistNode&lt;T&gt;* heap) const;
+
+        // Switch node X and node y.
+        void swapNode(LeftistNode&lt;T&gt; *&x, LeftistNode&lt;T&gt; *&y);
+        
+        // Combining tilt left X and tilt left y.
+        LeftistNode&lt;T&gt;* merge(LeftistNode&lt;T&gt;* &x, LeftistNode&lt;T&gt;* &y);
+        
+        // Insert node (z) into left tilt heap.
+        LeftistNode&lt;T&gt;* insert(LeftistNode&lt;T&gt;* &heap, T key);
+        
+        // Delete the node (z) in the leftist heap and return the deleted node.
+        LeftistNode&lt;T&gt;* remove(LeftistNode&lt;T&gt;* &heap);
+
+        // destory leftist heap.
+        void destroy(LeftistNode&lt;T&gt;* &heap);
+
+        // print leftist heap.
+        void print(LeftistNode&lt;T&gt;* heap, T key, int direction);
+};
+
+//Constructor 
+template &lt;class T&gt;
+LeftistHeap&lt;T&gt;::LeftistHeap():mRoot(NULL)
+{
+}
+
+//Destructor
+template &lt;class T&gt;
+LeftistHeap&lt;T&gt;::~LeftistHeap() 
+{
+    destroy(mRoot);
+}								</code></pre>
+						<h1>3. Synthesis of leftist heap</h1>
+						<p>Merging operations are the focus of the leftist heap. The basic idea of merging two left leaning reactors is
+							as follows:</p>
+						<ol>
+							<li>If an empty leftist heap is combined with a non empty leftist heap, the non empty leftist heap is returned.</li>
+							<li>If both leftist heaps are not empty, then compare the two root nodes and take the root node of the smaller
+								heap as the new root node. Merge the right child of the root node of the smaller heap with the larger heap.</li>
+							<li>If the NPL of the right child in the new pile is higher than that of the left child, exchange the left and
+								right children.</li>
+							<li>Set NPL of root node of new heap = NPL + 1 of right sub heap</li>
+						</ol>
+						<div><img src="images/Leftist Heap picture/leftistheap1.jpg" width="100%" height="100%" /></div>
+						<p>Step 1: merge the right child of the smaller heap (root 3) with the larger heap (root 6). The result of the
+							merging is equivalent to the right child of the larger heap with the smaller heap, as shown in the following
+							figure:</p>
+						<div><img src="images/Leftist Heap picture/leftistheap2.jpg" width="100%" height="100%" /></div>
+						<p> Step 2: merge the right subtree of root 6 and the tree with root 8 from the previous step, and the result is
+							as follows:</p>
+						<div><img src="images/Leftist Heap picture/leftistheap3.jpg" width="100%" height="100%" /></div>
+						<p>Step 3: merge the right subtree of root 8 and the tree with root 7 from the previous step, and the result is
+							as follows:</p>
+						<div><img src="images/Leftist Heap picture/leftistheap4.jpg" width="100%" height="100%" /></div>
+						<p>Step 4: merge the right subtree of root 6 and the tree with root 7 from the previous step, and the result is
+							as follows:</p>
+						<div><img src="images/Leftist Heap picture/leftistheap5.jpg" width="100%" height="100%" /></div>
+						<p>Step 5: merge the right subtree of root 8 and the tree with root 18 from the previous step, and the result is
+							as follows:</p>
+						<div><img src="images/Leftist Heap picture/leftistheap6.jpg" width="100%" height="100%" /></div>
+						<p>So far, two trees have been successfully merged into one tree. Next, adjust the newly generated tree. Adjust
+							the right child&#39;s NPL &gt; left child&#39;s NPL node of the tree. The adjustment scheme is to exchange left
+							and right children. The adjustment chart is as follows:</p>
+						<div><b>Before adjustment:</b><img src="images/Leftist Heap picture/leftistheap7.jpg" width="100%" height="100%" /></div>
+						<div><b>After adjustment:</b><img src="images/Leftist Heap picture/leftistheap8.jpg" width="100%" height="100%" /></div>
+						<p>The implementation code is as follows:</p>
+						<pre><code>//Exchange the contents of two nodes.
+template &lt;class T&gt;
+void LeftistHeap&lt;T&gt;::swapNode(LeftistNode&lt;T&gt; *&x, LeftistNode&lt;T&gt; *&y)
+{
+    LeftistNode&lt;T&gt; *tmp = x;
+    x = y;
+    y = tmp;
+}
+
+//Combining tilt left X and tilt left y.
+template &lt;class T&gt;
+LeftistNode&lt;T&gt;* LeftistHeap&lt;T&gt;::merge(LeftistNode&lt;T&gt;* &x, LeftistNode&lt;T&gt;* &y)
+{
+    if(x == NULL)
+        return y;
+    if(y == NULL)
+        return x;
+
+    //When x and y are merged, X is taken as the root of the merged tree;            
+	//The operation here is to ensure: X's key < Y's key
+    if(x->key > y->key)
+        swapNode(x, y);
+
+    // Merge the right child of X and Y. the root of the merged tree is the right child of X.
+    x->right = merge(x->right, y);
+
+    // If left child of X is empty or NPL of left child of X is less than NPL of right child           
+	//Then, exchange X and Y
+    if(x->left == NULL || x->left->npl < x->right->npl)
+    {
+        LeftistNode&lt;T&gt; *tmp = x->left;
+        x->left = x->right;
+        x->right = tmp;
+    }
+    // Set NPL of the merged new tree (x)
+    if (x->right == NULL || x->left == NULL)
+        x->npl = 0;
+    else
+        x->npl = (x->left->npl > x->right->npl) ? (x->right->npl + 1) : (x->left->npl + 1);
+
+    return x;
+}
+
+//Merge the other's left leaning heap into this.
+template &lt;class T&gt;
+void LeftistHeap&lt;T&gt;::merge(LeftistHeap&lt;T&gt;* other)
+{
+    mRoot = merge(mRoot, other->mRoot);
+}							</code></pre>
+						<h1>4. Addition of leftist heap</h1>
+						<p>Insert function description: heap leftist heap root node, key inserted node key value, return value is root
+							node.</br>
+							Insert (heap, key) is an internal interface, which takes nodes as operation objects.</br>
+							Insert (key) is an external interface. Its function is to create a new node with key value and add it to the
+							current leftist heap.</p>
+						<pre><code>template &lt;class T&gt;
+LeftistNode&lt;T&gt;* LeftistHeap&lt;T&gt;::insert(LeftistNode&lt;T&gt;* &heap, T key)
+{
+    LeftistNode&lt;T&gt; *node;    // New node
+
+    node = new LeftistNode&lt;T&gt;(key, NULL, NULL);
+    if (node==NULL)
+    {
+        cout << "ERROR: create node failed!" << endl;
+        return heap;
+    }
+
+    return merge(mRoot, node);
+}
+template &lt;class T&gt;
+void LeftistHeap&lt;T&gt;::insert(T key)
+{
+    mRoot = insert(mRoot, key);
+}									</code></pre>
+						<h1>5. Deletion of leftist heap</h1>
+						<p>Remove function description: heap leftist heap root node, key inserted node key value, return value is root
+							node.</br>
+							Remove (heap) is an internal interface, which takes nodes as operation objects.</br>
+							Remove () is the external interface, which is used to delete the smallest node of the leftist heap.</p>
+						<pre><code>template &lt;class T&gt;
+LeftistNode&lt;T&gt;* LeftistHeap&lt;T&gt;::remove(LeftistNode&lt;T&gt;* &heap)
+{
+    if (heap == NULL)
+        return NULL;
+
+    LeftistNode&lt;T&gt; *l = heap->left;
+    LeftistNode&lt;T&gt; *r = heap->right;
+
+    delete heap;
+
+    return merge(l, r); // Return the new tree after merging left and right subtrees
+}
+template &lt;class T&gt;
+void LeftistHeap&lt;T&gt;::remove()
+{
+    mRoot = remove(mRoot);
+}								</code></pre>
+						<h1>6. Traversal and printing of leftist heap</h1>
+						<pre><code>//Preorder traversal leftist heap.
+template &lt;class T&gt;
+void LeftistHeap&lt;T&gt;::preOrder(LeftistNode&lt;T&gt;* heap) const
+{
+    if(heap != NULL)
+    {
+        cout<< heap->key << " " ;
+        preOrder(heap->left);
+        preOrder(heap->right);
+    }
+}
+template &lt;class T&gt;
+void LeftistHeap&lt;T&gt;::preOrder() 
+{
+    preOrder(mRoot);
+}
+
+//Inorder traversal leftist heap.
+template &lt;class T&gt;
+void LeftistHeap&lt;T&gt;::inOrder(LeftistNode&lt;T&gt;* heap) const
+{
+    if(heap != NULL)
+    {
+        inOrder(heap->left);
+        cout<< heap->key << " " ;
+        inOrder(heap->right);
+    }
+}
+template &lt;class T&gt;
+void LeftistHeap&lt;T&gt;::inOrder() 
+{
+    inOrder(mRoot);
+}
+
+//Postorder traversal leftist heap.
+template &lt;class T&gt;
+void LeftistHeap&lt;T&gt;::postOrder(LeftistNode&lt;T&gt;* heap) const
+{
+    if(heap != NULL)
+    {
+        postOrder(heap->left);
+        postOrder(heap->right);
+        cout<< heap->key << " " ;
+    }
+}
+template &lt;class T&gt;
+void LeftistHeap&lt;T&gt;::postOrder() 
+{
+    postOrder(mRoot);
+}
+
+//destory leftist heap
+template &lt;class T&gt;
+void LeftistHeap&lt;T&gt;::destroy(LeftistNode&lt;T&gt;* &heap)
+{
+    if (heap==NULL)
+        return ;
+
+    if (heap->left != NULL)
+        destroy(heap->left);
+    if (heap->right != NULL)
+        destroy(heap->right);
+
+    delete heap;
+}
+template &lt;class T&gt;
+void LeftistHeap&lt;T&gt;::destroy()
+{
+    destroy(mRoot);
+}
+
+
+template &lt;class T&gt;
+void LeftistHeap&lt;T&gt;::print(LeftistNode&lt;T&gt;* heap, T key, int direction)
+{
+    if(heap != NULL)
+    {
+        if(direction==0)    // heap is root node
+            cout << setw(2) << heap->key << "(" << heap->npl << ") is root" << endl;
+        else                // heap is other node
+            cout << setw(2) << heap->key << "(" << heap->npl << ") is " << setw(2) << key << "'s "  << setw(12) << (direction==1?"right child" : "left child") << endl;
+
+        print(heap->left, heap->key, -1);
+        print(heap->right,heap->key,  1);
+    }
+}
+template &lt;class T&gt;
+void LeftistHeap&lt;T&gt;::print()
+{
+    if (mRoot != NULL)
+        print(mRoot, mRoot->key, 0);
+}
+#endif								</code></pre>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="fh5co-navigation">
+			<div class="fh5co-cover prev fh5co-cover-sm" style="background-image: url(images/project_2.jpg)">
+				<div class="overlay"></div>
+
+				<a class="copy" href="Huffman tree.html">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Previous Post</span>
+								<h2>Huffman tree</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+			<div class="fh5co-cover next fh5co-cover-sm" style="background-image: url(images/project_3.jpg)">
+				<div class="overlay"></div>
+				<a class="copy" href="#">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Next Post</span>
+								<h2>none</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+		</div>
+
+		<footer>
+			<div>
+				&copy; Copyright MyWebSite. Designed by Guangsheng Liu.
+			</div>
+		</footer>
+
+		<div class="gototop js-top">
+			<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+		</div>
+
+		<!-- jQuery -->
+		<script src="js/jquery.min.js"></script>
+		<!-- jQuery Easing -->
+		<script src="js/jquery.easing.1.3.js"></script>
+		<!-- Bootstrap -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- Waypoints -->
+		<script src="js/jquery.waypoints.min.js"></script>
+		<!-- Stellar Parallax -->
+		<script src="js/jquery.stellar.min.js"></script>
+		<!-- Main -->
+		<script src="js/main.js"></script>
+
+	</body>
+</html>
