@@ -266,7 +266,7 @@ RBTNode&lt;T&gt;* RBTree&lt;T&gt;::iterativeSearch(T key)
 							<li>Let A be the left subtree of B.</li>
 							<li>Set root node as node B.</li>
 						</ol>
-						<div><img src="images/Red-Black tree picture/right.jpg" width="100%" height="100%"/></div>
+						<div><img src="images/Red-Black tree picture/right.jpg" width="50%" height="50%"/></div>
 						<P>According to the above ideas, the code is as follows:</P>
 						<pre><code>//	Left rotation
 template &lt;class T&gt;
@@ -305,7 +305,7 @@ void RBTree&lt;T&gt;::leftRotate(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt;* x)
 							<li>Let B be the left subtree of A.</li>
 							<li>Set root node as node A.</li>
 						</ol>
-						<div><img src="images/Red-Black tree picture/left.jpg" width="100%" height="100%"/></div>
+						<div><img src="images/Red-Black tree picture/left.jpg" width="50%" height="50%"/></div>
 						<p>According to the above ideas, the code is as follows:</p>
 						<pre><code>//	Right rotation
 template &lt;class T&gt;
@@ -453,7 +453,7 @@ void RBTree&lt;T&gt;::rightRotate(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt;* y)
 							grandfather node is not the root node, then we need to set the grandfather node as the new current node, and
 							then analyze the new current node.</p>
 						<p><strong>1.3 schematic diagram</strong></p>
-						<div><img src="images/Red-Black tree picture/insert1.jpg" width="100%" height="100%"/></div>
+						<div><img src="images/Red-Black tree picture/insert1.jpg" width="50%" height="50%"/></div>
 						<h2>(case 2) uncle is black, and the current node is the right child</h2>
 						<p><strong>2.1 phenomenon description</p></strong>
 						<p>The parent node of the current node (that is, the inserted node) is red, the uncle node is black, and the
@@ -479,7 +479,7 @@ void RBTree&lt;T&gt;::rightRotate(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt;* y)
 							to the top (from leaf to root). That is to say, we must solve the problem of the child first, and then the
 							problem of the father. Therefore, we perform step (1): take the parent node as the new current node.</p>
 						<p><strong>2.3 schematic diagram</strong></p>
-						<div><img src="images/Red-Black tree picture/insert2.jpg" width="100%" height="100%"/></div>
+						<div><img src="images/Red-Black tree picture/insert2.jpg" width="50%" height="50%"/></div>
 						<h2>(case 3) uncle is black, and the current node is the left child</h2>
 						<p><strong>3.1 phenomenon description</strong></p>
 						<p>The parent node of the current node (that is, the inserted node) is red, the uncle node is black, and the
@@ -498,7 +498,7 @@ void RBTree&lt;T&gt;::rightRotate(RBTNode&lt;T&gt;* &root, RBTNode&lt;T&gt;* y)
 							solve the problem that the number of black nodes passing through all branches of F increases by 1? We can solve
 							this problem by turning G from black to red, and turning g right at the same time.</p>
 						<p><strong>3.3 schematic diagram</strong></p>
-						<div><img src="images/Red-Black tree picture/insert3.jpg" width="100%" height="100%"/></div>
+						<div><img src="images/Red-Black tree picture/insert3.jpg" width="50%" height="50%"/></div>
 						<p>According to the above ideas, the code is as follows:</p>
 <pre><code>//	Red-Black Tree insertion correction function
 //	Call this function after inserting a node (out of balance) into the Red-Black Tree; the purpose is to reshape it into a Red-Black Tree.
@@ -768,7 +768,7 @@ void RBTree&lt;T&gt;::insert(T key)
 							red at the same time; after the left rotation, because the sibling node of X has changed, the sibling node of X
 							needs to be updated for subsequent processing.</p>
 						<p><strong>1.3 schematic diagram</strong></p>
-						<div><img src="images/Red-Black tree picture/delete1.jpg" width="100%" height="100%"/></div>
+						<div><img src="images/Red-Black tree picture/delete1.jpg" width="50%" height="50%"/></div>
 						<h2>(case 2) X is black + black node, X's brother node is black, X's brother node's two children are black</h2>
 						<p><strong>2.1 phenomenon description</strong></p>
 						<p>X is black + Black node, X's brother node is black, X's brother node's two children are black.</p>
@@ -789,7 +789,7 @@ void RBTree&lt;T&gt;::insert(T key)
 							problem can be solved by setting the new x node to black directly; if the new x node is black + black, the new x
 							node needs to be further processed.</p>
 						<p><strong>2.3 schematic diagram</strong></p>
-						<div><img src="images/Red-Black tree picture/delete2.jpg" width="100%" height="100%"/></div>
+						<div><img src="images/Red-Black tree picture/delete2.jpg" width="50%" height="50%"/></div>
 						<h2>(case 3) X is black + black node, X's brother node is black; X's brother node's left child is red, and the
 							right child is black.</h2>
 						<p><strong>3.1 phenomenon description</strong>
@@ -809,7 +809,7 @@ void RBTree&lt;T&gt;::insert(T key)
 									brother node of X needs to be set to red at the same time; after the right rotation, because the brother node
 									of X has changed, the brother node of X needs to be updated for subsequent processing.</p>
 								<p><strong>3.3 schematic diagram</strong></p>
-								<div><img src="images/Red-Black tree picture/delete3.jpg" width="100%" height="100%"/></div>
+								<div><img src="images/Red-Black tree picture/delete3.jpg" width="50%" height="50%"/></div>
 								<h2>(case 4) x is black + black node, X's brother node is black; X's brother node's right child is red, X's
 									brother node's left child is any color</h2>
 								<p><strong>4.1 phenomenon description</strong></p>
@@ -849,7 +849,7 @@ void RBTree&lt;T&gt;::insert(T key)
 								<p>At this point, we have finished processing case 4. The core of understanding case 4 is to understand how to
 									remove the extra black of the current node.</p>
 								<p><strong>4.3 schematic diagram</strong></p>
-								<div><img src="images/Red-Black tree picture/delete4.jpg" width="100%" height="100%"/></div>
+								<div><img src="images/Red-Black tree picture/delete4.jpg" width="50%" height="50%"/></div>
 								<p>According to the above ideas, the code is as follows:</p>
 <pre><code>//This function is called after the insertion node is removed from the Red-Black Tree (the Red-Black Tree is out of balance); 
 //the purpose is to reshape it into a Red-Black Tree.
