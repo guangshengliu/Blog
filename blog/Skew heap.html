@@ -1,0 +1,403 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Skew heap</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="highly balanced binary search tree" />
+		<meta name="author" content="Guangsheng Liu" />
+
+		<!-- Animate.css -->
+		<link rel="stylesheet" href="css/animate.css">
+		<!-- Icomoon Icon Fonts-->
+		<link rel="stylesheet" href="css/icomoon.css">
+		<!-- Bootstrap  -->
+		<link rel="stylesheet" href="css/bootstrap.css">
+
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Modernizr JS -->
+		<script src="js/modernizr-2.6.2.min.js"></script>
+		<!-- FOR IE9 below -->
+		<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+	</head>
+	<body class="single">
+
+		<div class="fh5co-loader"></div>
+
+		<div id="page">
+			<div id="fh5co-aside" style="background-image: url(images/image_2.jpg)" data-stellar-background-ratio="0.5">
+				<div class="overlay"></div>
+				<nav role="navigation">
+					<ul>
+						<li><a href="blogindex.html"><i class="icon-home"></i></a></li>
+					</ul>
+				</nav>
+				<div class="page-title">
+					<img src="images/person_1.jpg" alt="Free HTML5 by FreeHTMl5.co">
+					<span>November 19, 2019</span>
+					<h2>Skew heap</h2>
+				</div>
+			</div>
+			<div id="fh5co-main-content">
+				<div class="fh5co-post">
+					<div class="fh5co-entry padding">
+						<h1>1. Definition of Skew heap</h1>
+						<p>Skew heap, also known as self adjusting heap, is a variant of leftist heap. Like the leftist heap, it is
+							usually used to implement the priority queue; as an adaptive leftist heap, the time complexity of its merging
+							operation is also O(log n).</p>
+						<p>It differs from the leftist reactor in that:</p>
+						<ol>
+							<li>The nodes of the slanted heap do not have the attribute of zero distance, while the nodes of the leftist
+								heap do.</li>
+							<li>The merging algorithm of skew heap is different from that of leftist heap.</li>
+						</ol>
+						<h1>2. Basic definition of inclined reactor</h1>
+						<p>Skewnode is the node class corresponding to skew heap:</p>
+						<pre><code>#ifndef _SKEW_HEAP_HPP_
+#define _SKEW_HEAP_HPP_
+
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+template &lt;class T&gt;
+class SkewNode{
+    public:
+        T key;                // key value
+        SkewNode *left;        // left child
+        SkewNode *right;    // right child
+
+        SkewNode(T value, SkewNode *l, SkewNode *r):
+            key(value), left(l),right(r) {}
+};							</code></pre>
+						<p>Skewheap is a skewheap class, which contains the root node of skewheap and the operation of skewheap:</p>
+						<pre><code>template &lt;class T&gt;
+class SkewHeap {
+    private:
+        SkewNode&lt;T&gt; *mRoot;    // root node
+
+    public:
+        SkewHeap();
+        ~SkewHeap();
+
+        // Preorder ergodic skew heap
+        void preOrder();
+        
+        // Inorder ergodic skew heap
+        void inOrder();
+        
+        // Postorder ergodic skew heap
+        void postOrder();
+
+        // Merge the other's skew heap into this.
+        void merge(SkewHeap&lt;T&gt;* other);
+        
+        // Insert the node (key is the node key value) into the skew heap
+        void insert(T key);
+        
+        // Delete node (key is node key value)
+        void remove();
+
+        // Destruction of skew heap
+        void destroy();
+
+        // Print of skew heap
+        void print();
+    private:
+
+        // Preorder ergodic skew heap
+        void preOrder(SkewNode&lt;T&gt;* heap) const;
+        
+        // Inorder ergodic skew heap
+        void inOrder(SkewNode&lt;T&gt;* heap) const;
+        
+        // Postorder ergodic skew heap
+        void postOrder(SkewNode&lt;T&gt;* heap) const;
+
+        // Swap node X and node y
+        void swapNode(SkewNode&lt;T&gt; *&x, SkewNode&lt;T&gt; *&y);
+        
+        // Merge skew heap X and skew heap y 
+        SkewNode&lt;T&gt;* merge(SkewNode&lt;T&gt;* &x, SkewNode&lt;T&gt;* &y);
+
+        // Destruction of skew heap
+        void destroy(SkewNode&lt;T&gt;* &heap);
+
+        // Print of skew heap
+        void print(SkewNode&lt;T&gt;* heap, T key, int direction);
+};
+
+//Constructor
+template &lt;class T&gt;
+SkewHeap&lt;T&gt;::SkewHeap():mRoot(NULL)
+{
+}
+
+//Destructor
+template &lt;class T&gt;
+SkewHeap&lt;T&gt;::~SkewHeap() 
+{
+    destroy(mRoot);
+}							</code></pre>
+						<h1>3. Combination of Skew heaps</h1>
+						<p>Merge operation of skew heap</p>
+						<ol>
+							<li>If an empty skew heap is combined with a non empty skew heap, the non empty skew heap is returned.</li>
+							<li>If both skew heaps are not empty, then compare the two root nodes and take the root node of the smaller heap
+								as the new root node. Merge the right child of the root node of the smaller heap with the larger heap.</li>
+							<li>After merging, exchange the left and right children of the new heap root node.</li>
+						</ol>
+						<p>Step (3) is the key to the difference between the merging operation of skew heap and leftist heap. If it is a
+							leftist heap, the zero distance of the left and right children should be compared after merging. If the zero
+							distance of the right child is greater than that of the left child, the left and right children should be
+							exchanged. Finally, set the zero distance of the root.</p>
+						<pre><code>// Exchange the contents of two nodes
+template &lt;class T&gt;
+void SkewHeap&lt;T&gt;::swapNode(SkewNode&lt;T&gt; *&x, SkewNode&lt;T&gt; *&y)
+{
+    SkewNode&lt;T&gt; *tmp = x;
+    x = y;
+    y = tmp;
+}
+
+
+// Merge skew heap X and skew heap y 
+template &lt;class T&gt;
+SkewNode&lt;T&gt;* SkewHeap&lt;T&gt;::merge(SkewNode&lt;T&gt;* &x, SkewNode&lt;T&gt;* &y)
+{
+    if(x == NULL)
+        return y;
+    if(y == NULL)
+        return x;
+
+    //When x and y are merged, X is taken as the root of the merged tree;
+	//The operation here is to ensure: X's key < Y's key
+    if(x->key > y->key)
+        swapNode(x, y);
+	else
+		cout<<"Make sure that the key of the root node is smaller than the merged key"<<endl;
+    //Merge X's right child with y,
+	//After the merger, the left and right children of X will be exchanged directly without considering their NPL like left leaning heap.
+    SkewNode&lt;T&gt; *tmp = merge(x->right, y);
+    x->right = x->left;
+    x->left  = tmp;
+
+    return x;
+}
+// Merge the other's skew heap into this.
+template &lt;class T&gt;
+void SkewHeap&lt;T&gt;::merge(SkewHeap&lt;T&gt;* other)
+{
+    mRoot = merge(mRoot, other->mRoot);
+}							</code></pre>
+						<h1>4. Addition of Skew heap</h1>
+						<p>The function of insert (key) is to create a new node with key value and add it to the current skew heap.</p>
+						<pre><code>/*
+*Create a new node with key value and insert it into the skew heap
+*
+*Parameter Description:
+*Root node of heap skew heap
+*Key value of the inserted node
+*Return value:
+*Root node
+*/
+template &lt;class T&gt;
+void SkewHeap&lt;T&gt;::insert(T key)
+{
+    SkewNode&lt;T&gt; *node;    
+
+    // new node
+    node = new SkewNode&lt;T&gt;(key, NULL, NULL);
+    if (node==NULL)
+    {
+        cout << "ERROR: create node failed!" << endl;
+        return ;
+    }
+
+    mRoot = merge(mRoot, node);
+}							</code></pre>
+						<h1>5. Addition of Skew heap</h1>
+						<p>remove () is used to delete the smallest node of the skew heap.</p>
+						<pre><code>// remove node
+template &lt;class T&gt;
+void SkewHeap&lt;T&gt;::remove()
+{
+    if (mRoot == NULL)
+        return NULL;
+
+    SkewNode&lt;T&gt; *l = mRoot->left;
+    SkewNode&lt;T&gt; *r = mRoot->right;
+
+    delete mRoot;
+    // New tree after merging left and right subtrees
+    mRoot = merge(l, r); 
+}
+
+//Destruction skew heap
+template &lt;class T&gt;
+void SkewHeap&lt;T&gt;::destroy(SkewNode&lt;T&gt;* &heap)
+{
+    if (heap==NULL)
+        return ;
+
+    if (heap->left != NULL)
+        destroy(heap->left);
+    if (heap->right != NULL)
+        destroy(heap->right);
+
+    delete heap;
+}
+template &lt;class T&gt;
+void SkewHeap&lt;T&gt;::destroy()
+{
+    destroy(mRoot);
+}							</code></pre>
+						<h1>6. Printing and traversing of skew heap</h1>
+						<pre><code>//Preorder ergodic skew heap
+template &lt;class T&gt;
+void SkewHeap&lt;T&gt;::preOrder(SkewNode&lt;T&gt;* heap) const
+{
+    if(heap != NULL)
+    {
+        cout<< heap->key << " " ;
+        preOrder(heap->left);
+        preOrder(heap->right);
+    }
+}
+template &lt;class T&gt;
+void SkewHeap&lt;T&gt;::preOrder() 
+{
+    preOrder(mRoot);
+}
+
+//Inorder ergodic skew heap
+template &lt;class T&gt;
+void SkewHeap&lt;T&gt;::inOrder(SkewNode&lt;T&gt;* heap) const
+{
+    if(heap != NULL)
+    {
+        inOrder(heap->left);
+        cout<< heap->key << " " ;
+        inOrder(heap->right);
+    }
+}
+template &lt;class T&gt;
+void SkewHeap&lt;T&gt;::inOrder() 
+{
+    inOrder(mRoot);
+}
+
+//Postorder ergodic skew heap
+template &lt;class T&gt;
+void SkewHeap&lt;T&gt;::postOrder(SkewNode&lt;T&gt;* heap) const
+{
+    if(heap != NULL)
+    {
+        postOrder(heap->left);
+        postOrder(heap->right);
+        cout<< heap->key << " " ;
+    }
+}
+template &lt;class T&gt;
+void SkewHeap&lt;T&gt;::postOrder() 
+{
+    postOrder(mRoot);
+}
+
+/*
+*Print skew heap
+*
+*Key -- key value of the node
+*Direction -- 0, indicating that the node is the root node;
+*- 1, indicating that the node is the left child of its parent node;
+*1, indicating that the node is the right child of its parent node.
+*/
+template &lt;class T&gt;
+void SkewHeap&lt;T&gt;::print(SkewNode&lt;T&gt;* heap, T key, int direction)
+{
+    if(heap != NULL)
+    {
+        if(direction==0)    
+            cout << setw(2) << heap->key << " is root" << endl;
+        else                
+            cout << setw(2) << heap->key << " is " << setw(2) << key << "'s "  << setw(12) << (direction==1?"right child" : "left child") << endl;
+
+        print(heap->left, heap->key, -1);
+        print(heap->right,heap->key,  1);
+    }
+}
+template &lt;class T&gt;
+void SkewHeap&lt;T&gt;::print()
+{
+    if (mRoot != NULL)
+        print(mRoot, mRoot->key, 0);
+}
+#endif							</code></pre>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="fh5co-navigation">
+			<div class="fh5co-cover prev fh5co-cover-sm" style="background-image: url(images/project_2.jpg)">
+				<div class="overlay"></div>
+
+				<a class="copy" href="#">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Previous Post</span>
+								<h2>How to be an affective web developer</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+			<div class="fh5co-cover next fh5co-cover-sm" style="background-image: url(images/project_3.jpg)">
+				<div class="overlay"></div>
+				<a class="copy" href="Leftist heap.html">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Next Post</span>
+								<h2>Leftist heap</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+		</div>
+
+		<footer>
+			<div>
+				&copy; Copyright MyWebSite. Designed by Guangsheng Liu.
+			</div>
+		</footer>
+
+		<div class="gototop js-top">
+			<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+		</div>
+
+		<!-- jQuery -->
+		<script src="js/jquery.min.js"></script>
+		<!-- jQuery Easing -->
+		<script src="js/jquery.easing.1.3.js"></script>
+		<!-- Bootstrap -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- Waypoints -->
+		<script src="js/jquery.waypoints.min.js"></script>
+		<!-- Stellar Parallax -->
+		<script src="js/jquery.stellar.min.js"></script>
+		<!-- Main -->
+		<script src="js/main.js"></script>
+
+	</body>
+</html>
