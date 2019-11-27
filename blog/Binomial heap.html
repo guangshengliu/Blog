@@ -1,0 +1,779 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Binomial heap</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="highly balanced binary search tree" />
+		<meta name="author" content="Guangsheng Liu" />
+
+		<!-- Animate.css -->
+		<link rel="stylesheet" href="css/animate.css">
+		<!-- Icomoon Icon Fonts-->
+		<link rel="stylesheet" href="css/icomoon.css">
+		<!-- Bootstrap  -->
+		<link rel="stylesheet" href="css/bootstrap.css">
+
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Modernizr JS -->
+		<script src="js/modernizr-2.6.2.min.js"></script>
+		<!-- FOR IE9 below -->
+		<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+	</head>
+	<body class="single">
+
+		<div class="fh5co-loader"></div>
+
+		<div id="page">
+			<div id="fh5co-aside" style="background-image: url(images/image_2.jpg)" data-stellar-background-ratio="0.5">
+				<div class="overlay"></div>
+				<nav role="navigation">
+					<ul>
+						<li><a href="blogindex.html"><i class="icon-home"></i></a></li>
+					</ul>
+				</nav>
+				<div class="page-title">
+					<img src="images/person_1.jpg" alt="Free HTML5 by FreeHTMl5.co">
+					<span>November 27, 2019</span>
+					<h2>Binomial heap</h2>
+				</div>
+			</div>
+			<div id="fh5co-main-content">
+				<div class="fh5co-post">
+					<div class="fh5co-entry padding">
+						<h1>1. Introduction to binomial tree</h1>
+						<p>Definition of binomial tree:</br>
+						Binomial heap is a collection of binomial trees. Before we understand binomial heap, we introduce binomial
+							tree.
+							Binomial tree is an ordered tree defined recursively. <br>Its recursion is defined as follows:</p>
+						<ol>
+							<li>binomial tree B0 has only one node;</li>
+							<li>binomial tree BK consists of two binomial trees B (k-1), one of which is the leftmost child at the root of
+								the other.</li>
+						</ol>
+						<p>As shown in the figure below:</p>
+						<div><img src="images/Binomial heap picture/1.jpg" width="50%" height="50%" /></div>
+						<p>B0, B1, B2 and B3 are binomial trees. Compare the definition of binomial tree mentioned earlier: B0 has only
+							one node, B1 consists of two b0s, B2 consists of two B1, B3 consists of two B2, and so on; moreover, when two
+							identical binomial trees constitute another tree, one of them is the leftmost child of the other tree.</p>
+						<p>Properties of binomial trees</p>
+						<ol>
+							<li>BK has 2K nodes in total. As shown in the figure above, B0 has 20 = 1 nodes, B1 has 21 = 2 nodes, B2 has 22
+								= 4 nodes</li>
+							<li>The height of BK is K. As shown in the figure above, the height of B0 is 0, the height of B1 is 1, the
+								height of B2 is 2</li>
+							<li>BK has exactly C (k, I) nodes at depth I, where I = 0,1,2,..., K. Where C (k, I) is the factorial element.</li>
+							<li>The degree of the root is k, which is greater than the degree of any other node.</li>
+						</ol>
+						<p>The degree of a node is the number of subtrees owned by that node.</p>
+						<h1>2. Introduction to binomial reactor</h1>
+						<p>Binomial heaps are often used to implement priority queues. Binomial heap refers to the set of binomial trees
+							that meet the following properties:</p>
+						<ol>
+							<li>Every binomial tree satisfies the minimum heap property. That is, the keyword of the parent node is &lt; =
+								the keyword of its child.</li>
+							<li>Two or more binomial trees cannot have the same degree (including 0 degree). In other words, there are 0 or
+								1 binomial trees with degree K.</li>
+						</ol>
+						<div><img src="images/Binomial heap picture/2.jpg" width="50%" height="50%" /></div>
+						<p>Above is a binomial heap. It consists of binomial trees B0, B2 and B3. Compare the definition of binomial
+							heap:</p>
+						<ol>
+							<li>Binomial trees B0, B2 and B3 are the minimum heap.</li>
+							<li>Binomial heap does not contain binomial trees of the same degree.
+								The (1) character of binomial heap proves that the minimum node of binomial heap is the root node of a binomial
+								tree, and the (2) character indicates that the maximum number of nodes of binomial heap is log {n} + 1 binomial
+								tree.</li>
+						</ol>
+						<h1>3. Basic definition of binomial reactor</h1>
+						<p>The binomialnode is the node of the binomial heap:</p>
+						<pre><code>#ifndef _BINOMIAL_TREE_HPP_
+#define _BINOMIAL_TREE_HPP_
+
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+template &lt;class T&gt;
+class BinomialNode {
+    public:
+        T key;                      // key value
+        int degree;                 // degree number
+        BinomialNode&lt;T&gt; *child;     // left child node
+        BinomialNode&lt;T&gt; *parent;    // parent node
+        BinomialNode&lt;T&gt; *next;      // brother node
+
+        BinomialNode(T value):key(value), degree(0), 
+            child(NULL),parent(NULL),next(NULL) {}
+};</code></pre>
+						<p>Binomialhead is a class corresponding to binomial heap, which includes the root node mroot of binomial heap
+							and the definition of basic operations of binomial heap:</p>
+						<pre><code>template &lt;class T&gt;
+class BinomialHeap {
+    private:
+        BinomialNode&lt;T&gt; *mRoot;    // root node
+
+    public:
+        BinomialHeap();
+        ~BinomialHeap();
+
+        // Create a new node corresponding to the key and insert it into the binomial heap.
+        void insert(T key);
+        
+        // Update the key value oldkey in binomial heap to newkey.
+        void update(T oldkey, T newkey);
+        
+        // Delete the node whose key value is key.
+        void remove(T key);
+        
+        // Remove the smallest node in the binomial heap.
+        void extractMinimum();
+
+         // Merge the other's binomial heap into the current binomial heap.
+        void combine(BinomialHeap&lt;T&gt;* other);
+
+         // Get the key value of the smallest node in binomial heap.
+        T minimum();
+        
+        // Whether key value key is included in binomial heap.
+        bool contains(T key);
+        
+        // Print binomial heap.
+        void print();
+    private:
+
+        // Merge two binomial heaps: merge child into root.
+        void link(BinomialNode&lt;T&gt;* child, BinomialNode&lt;T&gt;* root);
+        
+        // Merge the root tables in H1 and H2 into a linked list with increasing degrees, and return the combined root node.
+        BinomialNode&lt;T&gt;* merge(BinomialNode&lt;T&gt;* h1, BinomialNode&lt;T&gt;* h2);
+        
+         // Merge binomial heap: merge H1, H2 into a heap and return the merged heap.
+        BinomialNode&lt;T&gt;* combine(BinomialNode&lt;T&gt;* h1, BinomialNode&lt;T&gt;* h2);
+        
+        // Invert the binomial heap root and return the inverted root node.
+        BinomialNode&lt;T&gt;* reverse(BinomialNode&lt;T&gt;* root);
+        
+        // Remove the smallest node in the root of the binomial heap and return to the binomial tree after deleting the node.
+        BinomialNode&lt;T&gt;* extractMinimum(BinomialNode&lt;T&gt;* root);
+        
+        // Delete node: delete the node whose key value is key, and return the binomial tree after deleting the node.
+        BinomialNode&lt;T&gt;* remove(BinomialNode&lt;T&gt; *root, T key);
+        
+        // Find the node whose key value is key in the root of binomial tree.
+        BinomialNode&lt;T&gt;* search(BinomialNode&lt;T&gt;* root, T key);
+
+        // Increase key value: increase the key value of node node in binomial heap to key.
+        void increaseKey(BinomialNode&lt;T&gt;* node, T key);
+        
+        // Reduce key value: reduce the key value of node node in binomial heap to key.
+        void decreaseKey(BinomialNode&lt;T&gt;* node, T key);
+        
+        // Update key value: update the key value of node node of binomial heap to key.
+        void updateKey(BinomialNode&lt;T&gt;* node, T key);
+
+        // Get the smallest root node in binomial heap.
+        void minimum(BinomialNode&lt;T&gt;* root, BinomialNode&lt;T&gt; *&prev_y, BinomialNode&lt;T&gt; *&y);
+        
+        // Print binomial heap.
+        void print(BinomialNode&lt;T&gt;* node, BinomialNode&lt;T&gt;* prev, int direction);
+};	
+
+// Constructor
+template &lt;class T&gt;
+BinomialHeap&lt;T&gt;::BinomialHeap():mRoot(NULL)
+{
+}
+
+// Destructor
+template &lt;class T&gt;
+BinomialHeap&lt;T&gt;::~BinomialHeap() 
+{
+}</code></pre>
+						<h1>4. Binomial heap merging</h1>
+						<p>Merge operation is the key point of binomial heap, and its adding operation is also based on merge operation.
+							To merge two binomial heaps, the steps are summarized as follows:</p>
+						<ol>
+							<li>Merge the root list of two binomial heaps into one list. The new linked list is arranged monotonically and
+								incrementally according to the degree of nodes.</li>
+							<li>Connect the binomial trees with the same degree of root nodes in the new linked list until all the degrees
+								of root nodes are different.
+								When the binomial trees with the same degree of root nodes in the new linked list are connected, the connected
+								cases can be summarized into four kinds.</li>
+						</ol>
+						<p>Case 1: when the degree of the current node is equal to that of the next node. At this time, you do not need
+							to do anything to continue to view the later nodes.</p>
+						<p>Case 2: when the degrees of the current node, the next node and the next node are equal. At this time, do not
+							perform any operation temporarily, or continue to view the later nodes. In fact, this is to wait for the next
+							node and the next node of the next node to be consolidated and connected later.</p>
+						<p>Case 3: the degree of the current node is equal to that of the next node, and the key value of the current
+							node is less than or equal to the key value of the next node. At this point, the next node is the left child of
+							the current node.</p>
+						<p>Case 4: the degree of the current node is equal to that of the next node, and the key value of the current
+							node is greater than that of the next node. At this point, the current node is taken as the left child of the
+							next node.</p>
+						<p>The following describes the merge operation through schematic diagram.</br>
+						Step1:</br>
+						<div><img src="images/Binomial heap picture/3.jpg" width="50%" height="50%" /></div>
+						Step2:</br>
+						<div><img src="images/Binomial heap picture/4.jpg" width="50%" height="50%" /></div>
+						Step3:</br>
+						<div><img src="images/Binomial heap picture/5.jpg" width="50%" height="50%" /></div>
+						Step4:</br>
+						<div><img src="images/Binomial heap picture/6.jpg" width="50%" height="50%" /></div>
+						Step5:</br>
+						<div><img src="images/Binomial heap picture/7.jpg" width="50%" height="50%" /></div>
+						<p>The implementation code is as follows:</p>
+						<pre><code>// Merge two binomial heaps: merge child into root.
+template &lt;class T&gt;
+void BinomialHeap&lt;T&gt;::link(BinomialNode&lt;T&gt;* child, BinomialNode&lt;T&gt;* root)
+{
+    child->parent = root;
+    child->next   = root->child;
+    root->child = child;
+    root->degree++;
+}
+
+// Merge the root tables in H1 and H2 into a linked list with increasing degrees, and return the combined root node.
+template &lt;class T&gt;
+BinomialNode&lt;T&gt;* BinomialHeap&lt;T&gt;::merge(BinomialNode&lt;T&gt;* h1, BinomialNode&lt;T&gt;* h2)
+{
+    BinomialNode&lt;T&gt;* root = NULL; //Heap is pointing to the new heap root
+    BinomialNode&lt;T&gt;** pos = &root;
+
+    while (h1 && h2)
+    {
+        if (h1->degree < h2->degree)
+        {
+            *pos = h1;
+            h1 = h1->next;
+        } 
+        else 
+        {
+            *pos = h2;
+            h2 = h2->next;
+        }
+        pos = &(*pos)->next;
+    }
+    if (h1)
+        *pos = h1;
+    else
+        *pos = h2;
+
+    return root;
+}
+
+// Merge binomial heap: merge H1, H2 into a heap and return the merged heap.
+template &lt;class T&gt;
+BinomialNode&lt;T&gt;* BinomialHeap&lt;T&gt;::combine(BinomialNode&lt;T&gt;* h1, BinomialNode&lt;T&gt;* h2)
+{
+    BinomialNode&lt;T&gt; *root;
+    BinomialNode&lt;T&gt; *prev_x, *x, *next_x;
+
+    // Merge the root tables in H1 and H2 into a chain table root with increasing degrees.
+    root = merge(h1, h2);
+    if (root == NULL)
+        return NULL;
+ 
+    prev_x = NULL;
+    x      = root;
+    next_x = x->next;
+ 
+    while (next_x != NULL)
+    {
+        if (   (x->degree != next_x->degree) 
+            || ((next_x->next != NULL) && (next_x->degree == next_x->next->degree))) 
+        {
+            // Case 1: x->degree != next_x->degree
+            // Case 2: x->degree == next_x->degree == next_x->next->degree
+            prev_x = x;
+            x = next_x;
+        } 
+        else if (x->key <= next_x->key) 
+        {
+            // Case 3: x->degree == next_x->degree != next_x->next->degree
+            //      && x->key    <= next_x->key
+            x->next = next_x->next;
+            link(next_x, x);
+        } 
+        else 
+        {
+            // Case 4: x->degree == next_x->degree != next_x->next->degree
+            //      && x->key    >  next_x->key
+            if (prev_x == NULL) 
+            {
+                root = next_x;
+            } 
+            else 
+            {
+                prev_x->next = next_x;
+            }
+            link(x, next_x);
+            x = next_x;
+        }
+        next_x = x->next;
+    }
+
+    return root;
+}
+
+// Merge the binomial heap other into the current heap.
+template &lt;class T&gt;
+void BinomialHeap&lt;T&gt;::combine(BinomialHeap&lt;T&gt; *other)
+{
+    if (other!=NULL && other->mRoot!=NULL)
+        mRoot = combine(mRoot, other->mRoot);
+}</code></pre>
+						<h1>5. Insertion of binomial heap</h1>
+						<p>After understanding the merge operation, the insert operation is quite simple. The insert operation can be
+							seen as merging the node to be inserted with the existing heap. When inserting, first find the node whose key
+							value is key through contains (key). If it exists, it will return directly; if it does not exist, it will create
+							a new binomialnode object node, and then merge the node and heap.</p>
+						<p>The implementation code is as follows:</p>
+						<pre><code>// Create a new node corresponding to the key and insert it into the binomial heap.
+template &lt;class T&gt;
+void BinomialHeap&lt;T&gt;::insert(T key)
+{
+    BinomialNode&lt;T&gt;* node;
+
+    // Prevent inserting the same key value.
+    if (contains(key))
+    {
+        cout << "Insert Error: the key (" << key << ") is existed already!" << endl;
+        return ;
+    }
+
+    node = new BinomialNode&lt;T&gt;(key);
+    if (node==NULL)
+        return ;
+
+    mRoot = combine(mRoot, node);
+}</code></pre>
+						<h1>6. Deletion of binomial heap</h1>
+						<p>To delete a node in binomial heap, the steps are summarized as follows:</p>
+						<ol>
+							<li>Switch the node to the root node of the binomial tree where it is located. The method is to traverse from
+								the node to the tree root and exchange the data of the parent node and the child node until the deleted key
+								reaches the tree root.</li>
+							<li>Remove the binomial tree of the node from the binomial heap and record the binomial heap as heap.</li>
+							<li>Reverse the binomial tree of the node. Inversion means that all the children of the root are separated, and
+								these children are integrated into a binomial heap, and the binomial heap is recorded as child.</li>
+							<li>Merge child and heap.</li>
+						</ol>
+						<p>The following describes the deletion operation through the schematic diagram (the deletion node is 20):</p>
+						<div><img src="images/Binomial heap picture/8.jpg" width="50%" height="50%" /></div>
+						<p>Adjustment operation:</p>
+						<div><img src="images/Binomial heap picture/9.jpg" width="50%" height="50%" /></div>
+						<p>The implementation code is as follows:</p>
+						<pre><code>// Invert the binomial heap root and return the inverted root node.
+template &lt;class T&gt;
+BinomialNode&lt;T&gt;* BinomialHeap&lt;T&gt;::reverse(BinomialNode&lt;T&gt;* root)
+{
+    BinomialNode&lt;T&gt;* next;
+    BinomialNode&lt;T&gt;* tail = NULL;
+
+    if (!root)
+        return root;
+
+    root->parent = NULL;
+    while (root->next) 
+    {
+        next          = root->next;
+        root->next = tail;
+        tail          = root;
+        root          = next;
+        root->parent  = NULL;
+    }
+    root->next = tail;
+
+    return root;
+}
+
+// Delete node: delete the node whose key value is key.
+template &lt;class T&gt;
+BinomialNode&lt;T&gt;* BinomialHeap&lt;T&gt;::remove(BinomialNode&lt;T&gt;* root, T key)
+{
+    BinomialNode&lt;T&gt; *node;
+    BinomialNode&lt;T&gt; *parent, *prev, *pos;
+
+    if (root==NULL)
+        return root;
+
+    // Find the node whose key value is key.
+    if ((node = search(root, key)) == NULL)
+        return root;
+
+    // Move the data of the deleted node up to the root node of its binomial tree.
+    parent = node->parent;
+    while (parent != NULL)
+    {
+        // swap data
+        swap(node->key, parent->key);
+        // Next parent
+        node   = parent;
+        parent = node->parent;
+    }
+
+    // Find the previous root node of the node (prev).
+    prev = NULL;
+    pos  = root;
+    while (pos != node) 
+    {
+        prev = pos;
+        pos  = pos->next;
+    }
+    // Remove node node.
+    if (prev)
+        prev->next = node->next;
+    else
+        root = node->next;
+
+    root = combine(root, reverse(node->child)); 
+
+    delete node;
+
+    return root;
+}
+template &lt;class T&gt;
+void BinomialHeap&lt;T&gt;::remove(T key)
+{
+    mRoot = remove(mRoot, key);
+}</code></pre>
+						<h1>7. Update of binomial heap</h1>
+						<p>Updating a node in binomial heap is to modify the value of a node. It consists of two parts: reducing the
+							value of a node and increasing the value of a node.</p>
+							<pre><code>// Update the key value of node node of binomial heap to key.
+template &lt;class T&gt;
+void BinomialHeap&lt;T&gt;::updateKey(BinomialNode&lt;T&gt;* node, T key)
+{
+    if (node == NULL)
+        return ;
+
+    if(key < node->key)
+        decreaseKey(node, key);
+    else if(key > node->key)
+        increaseKey(node, key);
+    else
+        cout <<"No need to update!!!" <&lt;endl;
+}
+// Update the key value oldkey in binomial heap to newkey.
+template &lt;class T&gt;
+void BinomialHeap&lt;T&gt;::update(T oldkey, T newkey)
+{
+    BinomialNode&lt;T&gt; *node;
+
+    node = search(mRoot, oldkey);
+        if (node != NULL)
+            updateKey(node, newkey);
+}</code></pre>
+						<h2>(1) Reduce the value of nodes</h2>
+						<p>The operation of reducing node value is very simple: the node must be located in a binomial tree. After
+							reducing the value of a node in the binomial tree, we need to ensure that the binomial tree is still a minimum
+							heap; therefore, we need to constantly raise the node.</p>
+						<p>Reduce the operation code as follows:</p>
+						<pre><code>// Reduce the key value: reduce the key value of node node in binomial heap to key.
+template &lt;class T&gt;
+void BinomialHeap&lt;T&gt;::decreaseKey(BinomialNode&lt;T&gt;* node, T key)
+{
+    if(key>=node->key || contains(key))
+    {
+        cout << "decrease failed: the new key(" << key <<") is existed already, " 
+             << "or is no smaller than current key(" << node->key <<")" << endl;
+        return ;
+    }
+    node->key = key;
+ 
+    BinomialNode&lt;T&gt; *child, *parent;
+    child = node;
+    parent = node->parent;
+    while(parent != NULL && child->key < parent->key)
+    {
+        swap(parent->key, child->key);
+        child = parent;
+        parent = child->parent;
+    }
+}</code></pre>
+						<h2>(2) Increase the value of nodes</h2>
+						<p>Increasing the value of a node is also simple. As mentioned above, reducing will increase the number of nodes
+							to ensure the minimum heap property of the binomial tree where the node to be reduced is located, while
+							increasing operation will decrease the number of nodes to ensure the minimum heap property of the binomial tree
+							where the node to be increased is located.</p>
+						<p>Add the operation code as follows:</p>
+						<pre><code>// Increase key value: increase the key value of node node in binomial heap to key.
+template &lt;class T&gt;
+void BinomialHeap&lt;T&gt;::increaseKey(BinomialNode&lt;T&gt;* node, T key)
+{
+    if(key<=node->key || contains(key))
+    {
+        cout << "decrease failed: the new key(" << key <<") is existed already, " 
+             << "or is no greater than current key(" << node->key <<")" << endl;
+        return ;
+    }
+
+    node->key = key;
+
+    BinomialNode&lt;T&gt; *cur, *child, *least;
+    cur = node;
+    child = cur->child;
+    while (child != NULL) 
+    {
+        if(cur->key > child->key)
+        {
+            // If the current node < its left child,
+			// Then in "its children (left child and left child's brother)", find the smallest node;
+			// Then swap the minimum node's value with the current node's value.
+            least = child;
+            while(child->next != NULL)
+            {
+                if (least->key > child->next->key)
+                {
+                    least = child->next;
+                }
+                child = child->next;
+            }
+            // Exchange the values of the minimum and current nodes.
+            swap(least->key, cur->key);
+
+            // After exchanging data, adjust the "original minimum node" to meet the property of minimum heap: parent node < = child node.
+            cur = least;
+            child = cur->child;
+        }
+        else
+        {
+            child = child->next;
+        }
+    }
+}</code></pre>
+					<h1>8. Printing, searching and other operations on binomial heap.</h1>
+					<pre><code>/*
+*Get the smallest root node in binomial heap
+*
+*Parameter Description:
+*Root -- binomial heap
+*Prev? Y -- the previous root node of the minimum root node y of [output parameter]
+*Y -- minimum root node of [output parameter]
+*/
+template &lt;class T&gt;
+void BinomialHeap&lt;T&gt;::minimum(BinomialNode&lt;T&gt;* root,
+        BinomialNode&lt;T&gt; *&prev_y, BinomialNode&lt;T&gt; *&y)
+{
+    BinomialNode&lt;T&gt; *x, *prev_x;    // X is the current node to traverse.
+
+    if (root==NULL)
+        return ;
+ 
+    prev_x  = root;
+    x       = root->next;
+    prev_y = NULL;
+    y      = root;
+    // Minimum nodes found.
+    while (x != NULL) {
+        if (x->key < y->key) {
+            y = x;
+            prev_y = prev_x;
+        }
+        prev_x = x;
+        x = x->next;
+    }
+}
+
+// Get the key value of the smallest node in binomial heap.
+template &lt;class T&gt;
+T BinomialHeap&lt;T&gt;::minimum()
+{
+    BinomialNode&lt;T&gt; *prev_y, *y;
+
+    minimum(mRoot, prev_y, y);
+ 
+   return y->key;
+}
+
+// Remove the smallest node in the root of the binomial heap and return to the binomial tree after deleting the node.
+template &lt;class T&gt;
+BinomialNode&lt;T&gt;* BinomialHeap&lt;T&gt;::extractMinimum(BinomialNode&lt;T&gt;* root)
+{
+    BinomialNode&lt;T&gt; *y, *prev_y;    // Y is the smallest node
+
+    if (root==NULL)
+        return root;
+ 
+    // Find the minimum node root y and its previous root prev Y.
+    minimum(root, prev_y, y);
+ 
+    if (prev_y == NULL)    // Root is the smallest root.
+        root = root->next;
+    else                //Root of root is not the smallest root .
+        prev_y->next = y->next;
+ 
+    // Reverse the left child of the smallest node to get the smallest heap child;
+	//In this way, the children of the binomial tree where the smallest node is located will be separated and become an independent binomial tree (excluding the smallest node).
+    BinomialNode&lt;T&gt;* child = reverse(y->child);
+    // Merge delete the binomial heap child of the smallest node and root.
+    root = combine(root, child);
+
+    // Delete minimum node.
+    delete y;
+
+    return root;
+}
+
+template &lt;class T&gt;
+void BinomialHeap&lt;T&gt;::extractMinimum()
+{
+    mRoot = extractMinimum(mRoot);
+}
+// Find: find the node with key value in binomial heap.
+template &lt;class T&gt;
+BinomialNode&lt;T&gt;* BinomialHeap&lt;T&gt;::search(BinomialNode&lt;T&gt;* root, T key)
+{
+    BinomialNode&lt;T&gt; *child;
+    BinomialNode&lt;T&gt; *parent = root;
+
+    parent = root;
+    while (parent != NULL)
+    {
+        if (parent->key == key)
+            return parent;
+        else
+        {
+            if((child = search(parent->child, key)) != NULL)
+                return child;
+            parent = parent->next;
+        }
+    }
+
+    return NULL;
+}
+// Whether key value key is included in binomial heap.
+template &lt;class T&gt;
+bool BinomialHeap&lt;T&gt;::contains(T key)
+{
+    return search(mRoot, key)!=NULL ? true : false;
+}
+/*
+*Print binomial heap
+*
+*Parameter Description:
+*Node -- current node
+*Prev -- the previous node of the current node (parent or sibling)
+*Direction -- 1, indicating that the current node is a left child;
+*2. Indicates that the current node is a sibling node.
+*/
+template &lt;class T&gt;
+void BinomialHeap&lt;T&gt;::print(BinomialNode&lt;T&gt;* node, BinomialNode&lt;T&gt;* prev, int direction)
+{
+    while(node != NULL)
+    {
+        if(direction==1)    // node is root
+            cout << "\t" << setw(2) << node->key << "(" << node->degree << ") is "<< setw(2) << prev->key << "'s child" << endl;
+        else                // node is a branch node
+            cout << "\t" << setw(2) << node->key << "(" << node->degree << ") is "<< setw(2) << prev->key << "'s next" << endl;
+
+        if (node->child != NULL)
+            print(node->child, node, 1);
+
+        // Brother node.
+        prev = node;
+        node = node->next;
+        direction = 2;
+    }
+}
+
+template &lt;class T&gt;
+void BinomialHeap&lt;T&gt;::print()
+{
+    BinomialNode&lt;T&gt; *p;
+    if (mRoot == NULL)
+        return ;
+
+    cout << "== Binomial Heaps( ";
+    p = mRoot;
+    while (p != NULL) 
+    {
+        cout << "B" << p->degree << " ";
+        p = p->next;
+    }
+    cout << ")Details of：" << endl;
+
+    int i=0;
+    p = mRoot;
+    while (p != NULL) 
+    {
+        i++;
+        cout << i << ". Binomial Tree B" << p->degree << ":" << endl;
+        cout << "\t" << setw(2) << p->key << "(" << p->degree << ") is root" << endl;
+
+        print(p->child, p, 1);
+        p = p->next;
+    }
+    cout << endl;
+}
+#endif</code></pre>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="fh5co-navigation">
+			<div class="fh5co-cover prev fh5co-cover-sm" style="background-image: url(images/project_2.jpg)">
+				<div class="overlay"></div>
+
+				<a class="copy" href="#">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Previous Post</span>
+								<h2>How to be an affective web developer</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+			<div class="fh5co-cover next fh5co-cover-sm" style="background-image: url(images/project_3.jpg)">
+				<div class="overlay"></div>
+				<a class="copy" href="Skew heap.html">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Next Post</span>
+								<h2>Skew heap</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+		</div>
+
+		<footer>
+			<div>
+				&copy; Copyright MyWebSite. Designed by Guangsheng Liu.
+			</div>
+		</footer>
+
+		<div class="gototop js-top">
+			<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+		</div>
+
+		<!-- jQuery -->
+		<script src="js/jquery.min.js"></script>
+		<!-- jQuery Easing -->
+		<script src="js/jquery.easing.1.3.js"></script>
+		<!-- Bootstrap -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- Waypoints -->
+		<script src="js/jquery.waypoints.min.js"></script>
+		<!-- Stellar Parallax -->
+		<script src="js/jquery.stellar.min.js"></script>
+		<!-- Main -->
+		<script src="js/main.js"></script>
+
+	</body>
+</html>
