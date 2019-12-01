@@ -51,7 +51,7 @@
 						<p>Fibonacci heap is a kind of merging heap, which can be used to implement merging priority queues. It has
 							better performance than binomial heap, and its time complexity of merging operation is O (1). Fibonacci heap was
 							proposed by Michael L. Fredman and Robert E. tarjan in 1984 and published in 1987.</p>
-							<div><img src="images/Fibonacci heap picture/1.jpg" width="70%" height="70%" /></div>
+						<div><img src="images/Fibonacci heap picture/1.jpg" width="50%" height="50%" /></div>
 						<p>Like binomial heap, it is also composed of a set of minimum ordered trees, and it is a kind of mergeable heap.
 							Different from binomial heap, the trees in Fibonacci heap are not necessarily binomial trees, and the trees in
 							binomial heap are arranged orderly, but the trees in Fibonacci heap are all rooted and disordered.</p>
@@ -211,11 +211,11 @@ FibHeap&lt;T&gt;::~FibHeap()
 						<p>It can be seen from this that Fibonacci heap is composed of a set of minimum heaps, and the root nodes of
 							these minimum heaps form a bidirectional list (hereinafter referred to as root list); the minimum node in
 							Fibonacci heap is the minimum node in the root list!</p>
-							<div><img src="images/Fibonacci heap picture/2.jpg" width="70%" height="70%" /></div>
+						<div><img src="images/Fibonacci heap picture/2.jpg" width="100%" height="100%" /></div>
 						<h1>3. Insertion operation of Fibonacci heap</h1>
 						<p>The insert operation is very simple: insert a node into the heap, directly insert the node before the Min node
 							of the root list; if the inserted min node is small, update the Min node to the inserted node.</p>
-							<div><img src="images/Fibonacci heap picture/3.jpg" width="70%" height="70%" /></div>
+						<div><img src="images/Fibonacci heap picture/3.jpg" width="70%" height="70%" /></div>
 						<p>Above is a schematic of the insert operation.</p>
 						<p>The root list of Fibonacci heap is double linked list. Here, the Min node is regarded as the header of the
 							double linked list (the same is true later). When inserting a node, it is before inserting the node into the Min
@@ -320,7 +320,8 @@ void FibHeap&lt;T&gt;::combine(FibHeap&lt;T&gt; *other)
 							<li>Merge all trees with equal degree until there are no trees with equal degree.</li>
 						</ol>
 						<p>The following is the schematic diagram of taking out the smallest node:</p>
-						<div><img src="images/Fibonacci heap picture/5.jpg" width="70%" height="70%" /></div><div><img src="images/Fibonacci heap picture/4.jpg" width="70%" height="70%" /></div>
+						<div><img src="images/Fibonacci heap picture/5.jpg" width="70%" height="70%" /></div>
+						<div><img src="images/Fibonacci heap picture/4.jpg" width="70%" height="70%" /></div>
 						<div><img src="images/Fibonacci heap picture/6.jpg" width="70%" height="70%" /></div>
 						<div><img src="images/Fibonacci heap picture/7.jpg" width="70%" height="70%" /></div>
 						<div><img src="images/Fibonacci heap picture/8.jpg" width="70%" height="70%" /></div>
@@ -484,8 +485,8 @@ void FibHeap&lt;T&gt;::removeMin()
 							is to achieve cascade cutting. The real purpose of cascade cutting is to prevent the minimum heap from evolving
 							from a binary tree to a linked list.</p>
 						<p>Below is a schematic of reducing the node value. </p>
-							<div><img src="images/Fibonacci heap picture/9.jpg" width="70%" height="70%" /></div>
-							<p>The code to decrease the node value is as follows:</p>
+						<div><img src="images/Fibonacci heap picture/9.jpg" width="70%" height="70%" /></div>
+						<p>The code to decrease the node value is as follows:</p>
 						<pre><code>// Modification degree.
 template &lt;class T&gt;
 void FibHeap&lt;T&gt;::renewDegree(FibNode&lt;T&gt; *parent, int degree)
