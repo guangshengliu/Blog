@@ -1,0 +1,889 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Fibonacci heap</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="Fibonacci heap" />
+		<meta name="author" content="Guangsheng Liu" />
+
+		<!-- Animate.css -->
+		<link rel="stylesheet" href="css/animate.css">
+		<!-- Icomoon Icon Fonts-->
+		<link rel="stylesheet" href="css/icomoon.css">
+		<!-- Bootstrap  -->
+		<link rel="stylesheet" href="css/bootstrap.css">
+
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Modernizr JS -->
+		<script src="js/modernizr-2.6.2.min.js"></script>
+		<!-- FOR IE9 below -->
+		<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+	</head>
+	<body class="single">
+
+		<div class="fh5co-loader"></div>
+
+		<div id="page">
+			<div id="fh5co-aside" style="background-image: url(images/image_2.jpg)" data-stellar-background-ratio="0.5">
+				<div class="overlay"></div>
+				<nav role="navigation">
+					<ul>
+						<li><a href="blogindex.html"><i class="icon-home"></i></a></li>
+					</ul>
+				</nav>
+				<div class="page-title">
+					<img src="images/person_1.jpg" alt="Free HTML5 by FreeHTMl5.co">
+					<span>December 1, 2019</span>
+					<h2>Fibonacci heap</h2>
+				</div>
+			</div>
+			<div id="fh5co-main-content">
+				<div class="fh5co-post">
+					<div class="fh5co-entry padding">
+						<h1>1. Introduction to Fibonacci heap</h1>
+						<p>Fibonacci heap is a kind of merging heap, which can be used to implement merging priority queues. It has
+							better performance than binomial heap, and its time complexity of merging operation is O (1). Fibonacci heap was
+							proposed by Michael L. Fredman and Robert E. tarjan in 1984 and published in 1987.</p>
+							<div><img src="images/Fibonacci heap picture/1.jpg" width="70%" height="70%" /></div>
+						<p>Like binomial heap, it is also composed of a set of minimum ordered trees, and it is a kind of mergeable heap.
+							Different from binomial heap, the trees in Fibonacci heap are not necessarily binomial trees, and the trees in
+							binomial heap are arranged orderly, but the trees in Fibonacci heap are all rooted and disordered.</p>
+						<h1>2. Basic definition of Fibonacci heap</h1>
+						<p>Fibnode is the node class of Fibonacci heap, which contains more information. Key is used to compare the size
+							of nodes. Degree is the degree of recording nodes. Left and right are the left and right brothers pointing to
+							nodes respectively. Child is the first child of the node, parent is the parent node of the node, and market is
+							used to record whether the node is deleted by the first child (market is useful when deleting nodes).</p>
+						<pre><code>#ifndef _FIBONACCI_TREE_HPP_
+#define _FIBONACCI_TREE_HPP_
+
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+#include &lt;cstdlib&gt;
+#include &lt;cmath&gt;
+using namespace std;
+
+template &lt;class T&gt;
+class FibNode {
+    public:
+        T key;                // key value
+        int degree;            // degree number
+        FibNode&lt;T&gt; *left;    // Left brother
+        FibNode&lt;T&gt; *right;    // Right brother
+        FibNode&lt;T&gt; *child;    // First child node
+        FibNode&lt;T&gt; *parent;    // Parent node
+        bool marked;        // Is the first child deleted
+
+        FibNode(T value):key(value), degree(0), marked(false), 
+            left(NULL),right(NULL),child(NULL),parent(NULL) {
+            key    = value;
+            degree = 0;
+            marked = false;
+            left   = this;
+            right  = this;
+            parent = NULL;
+            child  = NULL;
+        }
+};</code></pre>
+						<p>Fibheap is the corresponding class of Fibonacci heap. Min is the minimum node to save the current heap, keynum
+							is used to record the total number of nodes in the heap, maxdegree is used to record the maximum degree in the
+							heap, and cons is used to temporarily save the temporary space of heap data when deleting nodes. The following
+							is a comparative example of Fibonacci heap&#39;s attribute structure chart and memory structure chart.</p>
+						<pre><code>template &lt;class T&gt;
+class FibHeap {
+    private:
+        int keyNum;         // Total number of nodes in the heap
+        int maxDegree;      // Maximum degree
+        FibNode&lt;T&gt; *min;    // Minimum node (root node of a minimum heap)
+        FibNode&lt;T&gt; **cons;    // Maximum memory area
+
+    public:
+        FibHeap();
+        ~FibHeap();
+
+        // Create a new node corresponding to key and insert it into Fibonacci heap.
+        void insert(T key);
+        
+        // Remove the smallest node in Fibonacci heap.
+        void removeMin();
+        
+        // Merge other into the current heap
+        void combine(FibHeap&lt;T&gt; *other);
+        
+        // Gets the minimum key value in Fibonacci heap and saves it in pkey; returns true successfully, or false otherwise.
+        bool minimum(T *pkey);
+        
+        // Update the key value oldkey to newkey in Fibonacci heap.
+        void update(T oldkey, T newkey);
+        
+        // Delete the node whose key value is key.
+        void remove(T key);
+        
+        // Whether the Fibonacci heap contains key.
+        bool contains(T key);
+        
+        // Print Fibonacci heap.
+        void print();
+        
+        // Destory Fibonacci heap.
+        void destroy();
+
+    private:
+        // Remove node from double linked list.
+        void removeNode(FibNode&lt;T&gt; *node);
+        
+        // Before adding node heap node to root node (in circular list).
+        void addNode(FibNode&lt;T&gt; *node, FibNode&lt;T&gt; *root);
+        
+        // Link double linked list B to the back of double linked list a.
+        void catList(FibNode&lt;T&gt; *a, FibNode&lt;T&gt; *b);
+        
+        // Insert node node into Fibonacci heap.
+        void insert(FibNode&lt;T&gt; *node);
+        
+        // Remove the minimum heap node from the root list.
+        FibNode&lt;T&gt;* extractMin();
+        
+        // Link node to root.
+        void link(FibNode&lt;T&gt;* node, FibNode&lt;T&gt;* root);
+        
+        // Space required to create consolidate.
+        void makeCons();
+        
+        // Merge trees of the same degree in the root list of Fibonacci heap.
+        void consolidate();
+        
+        // Modification degree.
+        void renewDegree(FibNode&lt;T&gt; *parent, int degree);
+        
+        // Separate the node from the child link of the parent node, and make the node a member of the root list of the heap.
+        void cut(FibNode&lt;T&gt; *node, FibNode&lt;T&gt; *parent);
+        
+        // Cascade cut node.
+        void cascadingCut(FibNode&lt;T&gt; *node) ;
+        
+        // Reduce the value of node node in Fibonacci heap to key.
+        void decrease(FibNode&lt;T&gt; *node, T key);
+        
+        // Increase the value of node node in Fibonacci heap to key.
+        void increase(FibNode&lt;T&gt; *node, T key);
+        
+        // Update the key value of node node of Fibonacci heap to key.
+        void update(FibNode&lt;T&gt; *node, T key);
+        
+        // Find the node whose key value is key in the minimum heap root.
+        FibNode&lt;T&gt;* search(FibNode&lt;T&gt; *root, T key);
+        
+        // Find the node with key value in Fibonacci heap.
+        FibNode&lt;T&gt;* search(T key);
+        
+        // Delete node.
+        void remove(FibNode&lt;T&gt; *node);
+        
+        // Destroy Fibonacci heap.
+        void destroyNode(FibNode&lt;T&gt; *node);
+        
+        // Print Fibonacci heap.
+        void print(FibNode&lt;T&gt; *node, FibNode&lt;T&gt; *prev, int direction);
+};
+
+// Constructor
+template &lt;class T&gt;
+FibHeap&lt;T&gt;::FibHeap()
+{
+    keyNum = 0;
+    maxDegree = 0;
+    min = NULL;
+    cons = NULL;
+}
+
+// Destructor
+template &lt;class T&gt;
+FibHeap&lt;T&gt;::~FibHeap() 
+{
+}</code></pre>
+						<p>It can be seen from this that Fibonacci heap is composed of a set of minimum heaps, and the root nodes of
+							these minimum heaps form a bidirectional list (hereinafter referred to as root list); the minimum node in
+							Fibonacci heap is the minimum node in the root list!</p>
+							<div><img src="images/Fibonacci heap picture/2.jpg" width="70%" height="70%" /></div>
+						<h1>3. Insertion operation of Fibonacci heap</h1>
+						<p>The insert operation is very simple: insert a node into the heap, directly insert the node before the Min node
+							of the root list; if the inserted min node is small, update the Min node to the inserted node.</p>
+							<div><img src="images/Fibonacci heap picture/3.jpg" width="70%" height="70%" /></div>
+						<p>Above is a schematic of the insert operation.</p>
+						<p>The root list of Fibonacci heap is double linked list. Here, the Min node is regarded as the header of the
+							double linked list (the same is true later). When inserting a node, it is before inserting the node into the Min
+							node (that is, at the end of the double linked list) every time. In addition, when there is only one node in the
+							minimum heap of the root list, the insert operation evolves into the insert operation of the two-way list.</p>
+						<p>Insert the operation code as follows:</p>
+						<pre><code>// Before adding node heap node to root node (in circular list).
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::addNode(FibNode&lt;T&gt; *node, FibNode&lt;T&gt; *root)
+{
+    node->left        = root->left;
+    root->left->right = node;
+    node->right       = root;
+    root->left        = node;
+}
+ 
+// Insert node node into Fibonacci heap.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::insert(FibNode&lt;T&gt; *node)
+{
+    if (keyNum == 0)
+        min = node;
+    else
+       {
+        addNode(node, min);
+        if (node->key < min->key)
+            min = node;
+    }
+    keyNum++;
+}
+ 
+// Create a new node with key value and insert it into Fibonacci heap.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::insert(T key)
+{
+    FibNode&lt;T&gt; *node;
+
+    node = new FibNode&lt;T&gt;(key);
+    if (node == NULL)
+        return ;
+
+    insert(node);
+}</code></pre>
+						<h1>4. Merger operation of Fibonacci heap</h1>
+						<p>The principle of merge operation and insert operation is very similar: insert the root list of one heap into
+							the root list of another heap. To put it simply, two double linked lists are spliced into a double linked list.</p>
+						<p>The following is a schematic diagram of the merge operation:</p>
+						<div><img src="images/Fibonacci heap picture/4.jpg" width="70%" height="70%" /></div>
+						<p>The merge operation code is as follows:</p>
+						<pre><code>// Link double linked list B to the back of double linked list a.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::catList(FibNode&lt;T&gt; *a, FibNode&lt;T&gt; *b)
+{
+	FibNode&lt;T&gt; *tmp;
+
+    tmp            = a->right;
+    a->right       = b->right;
+    b->right->left = a;
+    b->right       = tmp;
+    tmp->left      = b;
+}
+
+  
+// Merge other into the current heap.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::combine(FibHeap&lt;T&gt; *other)
+{
+    if (other==NULL)
+        return ;
+
+    if(other->maxDegree > this->maxDegree)
+        swap(*this, *other);
+
+    if((this->min) == NULL)                // This has no minimum node.
+    {
+        this->min = other->min;
+        this->keyNum = other->keyNum;
+        free(other->cons);
+        delete other;
+    }
+    else if((other->min) == NULL)           // This has the smallest node && other has no the smallest node.
+    {
+        free(other->cons);
+        delete other;
+    }                                       // This has the smallest node && other has the smallest node.
+    else
+    {
+        // Add other's root list to this.
+        catList(this->min, other->min);
+
+        if (this->min->key > other->min->key)
+            this->min = other->min;
+        this->keyNum += other->keyNum;
+        free(other->cons);
+        delete other;
+    }
+}</code></pre>
+						<h1>5. Take out the minimum node</h1>
+						<p>The operation of extracting the smallest node is a more complex operation in Fibonacci heap.</p>
+						<ol>
+							<li>All the subtrees to extract the smallest nodes are directly connected in series in the root table;</li>
+							<li>Merge all trees with equal degree until there are no trees with equal degree.</li>
+						</ol>
+						<p>The following is the schematic diagram of taking out the smallest node:</p>
+						<div><img src="images/Fibonacci heap picture/5.jpg" width="70%" height="70%" /></div><div><img src="images/Fibonacci heap picture/4.jpg" width="70%" height="70%" /></div>
+						<div><img src="images/Fibonacci heap picture/6.jpg" width="70%" height="70%" /></div>
+						<div><img src="images/Fibonacci heap picture/7.jpg" width="70%" height="70%" /></div>
+						<div><img src="images/Fibonacci heap picture/8.jpg" width="70%" height="70%" /></div>
+						<p>Take out the minimum node code as follows:</p>
+						<pre><code>// Remove the minimum heap node from the root list,this means remove the tree to which the smallest node belongs from the heap!
+template &lt;class T&gt;
+FibNode&lt;T&gt;* FibHeap&lt;T&gt;::extractMin()
+{
+    FibNode&lt;T&gt; *p = min;
+
+    if (p == p->right)
+        min = NULL;
+    else
+    {
+        removeNode(p);
+        min = p->right;
+    }
+    p->left = p->right = p;
+
+    return p;
+}
+ 
+// Link node to root.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::link(FibNode&lt;T&gt;* node, FibNode&lt;T&gt;* root)
+{
+    // Remove node from double linked list.
+    removeNode(node);
+    // Children with node as root.
+    if (root->child == NULL)
+        root->child = node;
+    else
+        addNode(node, root->child);
+
+    node->parent = root;
+    root->degree++;
+    node->marked = false;
+}
+ 
+// Space required to create consolidate.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::makeCons()
+{
+    int old = maxDegree;
+
+    // Calculate log2 (keynum), + 1 means round up!
+    // ex. log2(13) = 3，Round up to 3 + 1 = 4.
+    maxDegree = (log(keyNum)/log(2.0)) + 1;
+    if (old >= maxDegree)
+        return ;
+
+    // Because maxdegree may be merged, maxdegree + 1 is required.
+    cons = (FibNode&lt;T&gt; **)realloc(cons, 
+            sizeof(FibHeap&lt;T&gt; *) * (maxDegree + 1));
+}
+
+//  Merge trees of the same degree in the root list of Fibonacci heap.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::consolidate()
+{
+    int i, d, D;
+    FibNode&lt;T&gt; *x, *y, *tmp;
+
+    makeCons();		//Create space for hash.
+    D = maxDegree + 1;
+
+    for (i = 0; i &lt; D; i++)
+        cons[i] = NULL;
+ 
+    // Merge root nodes of the same degree to make each degree's tree unique.
+    while (min != NULL)
+    {
+        x = extractMin();                // Take out the smallest tree in the heap (the tree where the smallest node is located).
+        d = x->degree;                    // Get the degree of the smallest tree.
+        // Cons [D]! = null, which means that two trees (x and y) have the same degree.
+        while (cons[d] != NULL)
+        {
+            y = cons[d];                // Y is a tree of the same degree as X.
+            if (x->key > y->key)        // Ensure that the key value of X is smaller than y.
+                swap(x, y);
+
+            link(y, x);    // Link y to x.
+            cons[d] = NULL;
+            d++;
+        }
+        cons[d] = x;
+    }
+    min = NULL;
+ 
+    // Add the nodes in cons back to the root table
+    for (i=0; i &lt; D; i++)
+    {
+        if (cons[i] != NULL)
+        {
+            if (min == NULL)
+                min = cons[i];
+            else
+            {
+                addNode(cons[i], min);
+                if ((cons[i])->key < min->key)
+                    min = cons[i];
+            }
+        }
+    }
+}
+ 
+// Remove minimum node.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::removeMin()
+{
+    if (min==NULL)
+        return ;
+
+    FibNode&lt;T&gt; *child = NULL;
+    FibNode&lt;T&gt; *m = min;
+    // Add each of Min's sons (son and son's brother) to the root list of Fibonacci heap.
+    while (m->child != NULL)
+    {
+        child = m->child;
+        removeNode(child);
+        if (child->right == child)
+            m->child = NULL;
+        else
+            m->child = child->right;
+
+        addNode(child, min);
+        child->parent = NULL;
+    }
+
+    // Remove m from the root list
+    removeNode(m);
+    // If M is the only node in the heap, set the minimum node of the heap to null.
+    // Otherwise, set the minimum node of the heap to a non empty node (M - > right), and then adjust it.
+    if (m->right == m)
+        min = NULL;
+    else
+    {
+        min = m->right;
+        consolidate();
+    }
+    keyNum--;
+
+    delete m;
+}</code></pre>
+						<h1>6. Reduce node value</h1>
+						<p>To reduce the key value of nodes in Fibonacci heap, the difficulty of this operation is: if the minimum heap
+							property is destroyed after reducing nodes, how to maintain it? The general situation is analyzed below.</p>
+						<ol>
+							<li>First, the reduced node is detached from its minimum heap, and then the node is associated with the root
+								list. If the reduced node is not a single node, but contains the root of the subtree. The subtree with the
+								reduced node as the root is detached from the minimum heap, and then the tree is associated with the root list.</li>
+							<li>Next, the original parent node of the reduced node is cascaded and cut. The so-called cascade cutting is to
+								perform recursive cascade cutting operation from its parent node after the reduced node destroys the minimum
+								heap property and is cut off.</li>
+							<li>Finally, the minimum nodes of the root list are updated.
+								The specific action of the cascade operation is: if the marked value of the parent node (the parent node of the
+								reduced node) is marked as false, set it to true, and then exit. Otherwise, the parent node is cut off from the
+								minimum heap (in the same way as the reduced node); then the parent node is cascaded and cut recursively.</li>
+						</ol>
+						<p>The function of the marked flag is to mark whether the child nodes of the node have been deleted. Its function
+							is to achieve cascade cutting. The real purpose of cascade cutting is to prevent the minimum heap from evolving
+							from a binary tree to a linked list.</p>
+						<p>Below is a schematic of reducing the node value. </p>
+							<div><img src="images/Fibonacci heap picture/9.jpg" width="70%" height="70%" /></div>
+							<p>The code to decrease the node value is as follows:</p>
+						<pre><code>// Modification degree.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::renewDegree(FibNode&lt;T&gt; *parent, int degree)
+{
+    parent->degree -= degree;
+    if (parent-> parent != NULL)
+        renewDegree(parent->parent, degree);
+}
+ 
+// Separate the node from the child link of the parent node and make node a member of the root list of heap.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::cut(FibNode&lt;T&gt; *node, FibNode&lt;T&gt; *parent)
+{
+    removeNode(node);
+    renewDegree(parent, node->degree);
+    // Node has no brothers.
+    if (node == node->right) 
+        parent->child = NULL;
+    else 
+        parent->child = node->right;
+
+    node->parent = NULL;
+    node->left = node->right = node;
+    node->marked = false;
+    // Add the tree of nodes to the root list.
+    addNode(node, min);
+}
+
+/*
+*Cascade cut node
+*
+*Cascade shear: if the reduced node destroys the minimum heap property,
+*Then cut it off (i.e. delete it from the double linked list, and
+*It is inserted into a two-way linked list of minimum tree root nodes,
+*Then the cascade pruning is performed recursively from the "parent node of the cut node" to the root node of the tree.
+*/
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::cascadingCut(FibNode&lt;T&gt; *node) 
+{
+    FibNode&lt;T&gt; *parent = node->parent;
+    if (parent != NULL)
+    {
+        if (node->marked == false) 
+            node->marked = true;
+        else
+        {
+            cut(node, parent);
+            cascadingCut(parent);
+        }
+    }
+}
+
+// Reduce the value of node node in Fibonacci heap to key.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::decrease(FibNode&lt;T&gt; *node, T key)
+{
+    FibNode&lt;T&gt; *parent;
+
+    if (min==NULL ||node==NULL) 
+        return ;
+
+    if ( key>=node->key)
+    {
+        cout << "decrease failed: the new key(" << key <<") "
+             << "is no smaller than current key(" << node->key <<")" << endl;
+        return ;
+    }
+
+    node->key = key;
+    parent = node->parent;
+    if (parent!=NULL && node->key < parent->key)
+    {
+        // Split the node from the parent node and add the node to the root list.
+        cut(node, parent);
+        cascadingCut(parent);
+    }
+
+    // Update minimum node.
+    if (node->key < min->key)
+        min = node;
+}</code></pre>
+						<h1>7. Increase node value</h1>
+						<p>Increasing node value is similar to reducing node value. The difficulty of this operation is how to maintain
+							the minimum heap property. The ideas are as follows:</p>
+						<ol>
+							<li>Link left child and all brothers of left child of added node to the root list.</li>
+							<li>Next, add added nodes to the root list; but don&#39;t forget to cascade them.</li>
+						</ol>
+						<p>The following is a schematic diagram of increasing node values. </p>
+						<div><img src="images/Fibonacci heap picture/10.jpg" width="70%" height="70%" /></div>
+						<p>The code to increase the node value is as follows:</p>
+						<pre><code>// Remove node from double linked list.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::removeNode(FibNode&lt;T&gt; *node)
+{
+    node->left->right = node->right;
+    node->right->left = node->left;
+}
+
+// Increase the value of node node in Fibonacci heap to key.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::increase(FibNode&lt;T&gt; *node, T key)
+{
+    FibNode&lt;T&gt; *child, *parent, *right;
+
+    if (min==NULL ||node==NULL) 
+        return ;
+
+    if (key <= node->key)
+    {
+        cout << "increase failed: the new key(" << key <<") " 
+             << "is no greater than current key(" << node->key <<")" << endl;
+        return ;
+    }
+
+    // Add each son of node (excluding grandchildren, great grandchildren,...) to the root list of Fibonacci heap.
+    while (node->child != NULL)
+    {
+        child = node->child;
+        removeNode(child);               // Remove child from the node's child list.
+        if (child->right == child)
+            node->child = NULL;
+        else
+            node->child = child->right;
+
+        addNode(child, min);       // Add child to the root list.
+        child->parent = NULL;
+    }
+    node->degree = 0;
+    node->key = key;
+
+    // If the node is not in the root list,the node is split from the child link of the parent node,
+	// And make node a member of the root list of heap,Then cascade cut.
+	// Otherwise,determine whether the minimum node of the heap needs to be updated
+    parent = node->parent;
+    if(parent != NULL)
+    {
+        cut(node, parent);
+        cascadingCut(parent);
+    }
+    else if(min == node)
+    {
+        right = node->right;
+        while(right != node)
+        {
+            if(node->key > right->key)
+                min = right;
+            right = right->right;
+        }
+    }
+}</code></pre>
+						<h1>8. Delete node</h1>
+						<p>To delete a node, this paper uses the combination of take out the minimum node and reduce the node value.</p>
+						<ol>
+							<li>First reduce the key value of the deleted node. The reduced value is better than the value of the original
+								minimum node.</li>
+							<li>Next, take out the minimum node.</li>
+						</ol>
+						<p>The code to delete the node value is as follows:</p>
+						<pre><code>// Delete node.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::remove(FibNode&lt;T&gt; *node)
+{
+    T m = min->key-1;
+    decrease(node, m-1);
+    removeMin();
+}
+
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::remove(T key)
+{
+    FibNode&lt;T&gt; *node;
+
+    if (min==NULL)
+        return ;
+
+    node = search(key);
+    if (node==NULL)
+        return ;
+
+    remove(node);
+}</code></pre>
+						<h1>9. Printing, updating and searching</h1>
+						<p>The implementation code is as follows:</p>
+						<pre><code>// Gets the minimum key value in Fibonacci heap and saves it in pkey; returns true successfully, or false otherwise.
+template &lt;class T&gt;
+bool FibHeap&lt;T&gt;::minimum(T *pkey)
+{
+    if (min==NULL || pkey==NULL)
+        return false;
+
+    *pkey = min->key;
+    return true;
+}
+
+// Update the key value of node node of Fibonacci heap to key.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::update(FibNode&lt;T&gt; *node, T key)
+{
+    if(key < node->key)
+        decrease(node, key);
+    else if(key > node->key)
+        increase(node, key);
+    else
+        cout << "No need to update!!!" << endl;
+} 
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::update(T oldkey, T newkey)
+{
+    FibNode&lt;T&gt; *node;
+
+    node = search(oldkey);
+    if (node!=NULL)
+        update(node, newkey);
+}
+
+// Find the node whose key value is key in the minimum heap root.
+template &lt;class T&gt;
+FibNode&lt;T&gt;* FibHeap&lt;T&gt;::search(FibNode&lt;T&gt; *root, T key)
+{
+    FibNode&lt;T&gt; *t = root;    // Temporary node.
+    FibNode&lt;T&gt; *p = NULL;    // Nodes to find.
+
+    if (root==NULL)
+        return root;
+
+    do
+    {
+        if (t->key == key)
+        {
+            p = t;
+            break;
+        } 
+        else
+        {
+            if ((p = search(t->child, key)) != NULL) 
+                break;
+        }    
+        t = t->right;
+    } while (t != root);
+
+    return p;
+}
+ 
+//  Find the node with key value in Fibonacci heap.
+template &lt;class T&gt;
+FibNode&lt;T&gt;* FibHeap&lt;T&gt;::search(T key)
+{
+    if (min==NULL)
+        return NULL;
+
+    return search(min, key);
+}
+
+// Whether there is a node with key value in Fibonacci heap,if there is one, return true; otherwise, return false.
+template &lt;class T&gt;
+bool FibHeap&lt;T&gt;::contains(T key)
+{
+    return search(key)!=NULL ? true: false;
+}
+
+// Destroy Fibonacci heap.
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::destroyNode(FibNode&lt;T&gt; *node)
+{
+    FibNode&lt;T&gt; *start = node;
+
+    if(node == NULL)
+        return;
+
+    do {
+        destroyNode(node->child);
+        // Destroy the node and point it to the next.
+        node = node->right;
+        delete node->left;
+    } while(node != start);
+}
+ 
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::destroy()
+{
+    destroyNode(min);
+    free(cons);
+}
+
+/*
+*Print Fibonacci heap
+*
+*Parameter Description:
+*Node -- current node
+*Prev -- the previous node of the current node (parent or sibling)
+*Direction -- 1, indicating that the current node is a left child;
+*2. Indicates that the current node is a sibling node.
+*/
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::print(FibNode&lt;T&gt; *node, FibNode&lt;T&gt; *prev, int direction)
+{
+    FibNode&lt;T&gt; *start=node;
+
+    if (node==NULL)
+        return ;
+    do
+    {
+        if (direction == 1)
+            cout << setw(8) << node->key << "(" << node->degree << ") is "<< setw(2) << prev->key << "'s child" << endl;
+        else
+            cout << setw(8) << node->key << "(" << node->degree << ") is "<< setw(2) << prev->key << "'s next" << endl;
+
+        if (node->child != NULL)
+            print(node->child, node, 1);
+
+        // Brother node
+        prev = node;
+        node = node->right;
+        direction = 2;
+    } while(node != start);
+}
+
+template &lt;class T&gt;
+void FibHeap&lt;T&gt;::print()
+{
+    int i=0;
+    FibNode&lt;T&gt; *p;
+
+    if (min==NULL)
+        return ;
+
+    cout << "== Fibonacci heap details: ==" << endl;
+    p = min;
+    do {
+        i++;
+        cout << setw(2) << i << ". " << setw(4) << p->key << "(" << p->degree << ") is root" << endl;
+
+        print(p->child, p, 1);
+        p = p->right;
+    } while (p != min);
+    cout << endl;
+}
+#endif</code></pre>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="fh5co-navigation">
+			<div class="fh5co-cover prev fh5co-cover-sm" style="background-image: url(images/project_2.jpg)">
+				<div class="overlay"></div>
+
+				<a class="copy" href="#">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Previous Post</span>
+								<h2>How to be an affective web developer</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+			<div class="fh5co-cover next fh5co-cover-sm" style="background-image: url(images/project_3.jpg)">
+				<div class="overlay"></div>
+				<a class="copy" href="Binomial heap.html">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Next Post</span>
+								<h2>Binomial heap</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+		</div>
+
+		<footer>
+			<div>
+				&copy; Copyright MyWebSite. Designed by Guangsheng Liu.
+			</div>
+		</footer>
+
+		<div class="gototop js-top">
+			<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+		</div>
+
+		<!-- jQuery -->
+		<script src="js/jquery.min.js"></script>
+		<!-- jQuery Easing -->
+		<script src="js/jquery.easing.1.3.js"></script>
+		<!-- Bootstrap -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- Waypoints -->
+		<script src="js/jquery.waypoints.min.js"></script>
+		<!-- Stellar Parallax -->
+		<script src="js/jquery.stellar.min.js"></script>
+		<!-- Main -->
+		<script src="js/main.js"></script>
+
+	</body>
+</html>
