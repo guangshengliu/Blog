@@ -271,7 +271,7 @@ AVLTreeNode&lt;T&gt;* AVLTree&lt;T&gt;::iterativeSearch(T key)
 						<h2>2). Balanced binary tree insertion</h2>
 						<p>The insertion process is similar to finding a binary tree, but the balance factor should be adjusted according
 							to the left and right rotation. So first we need to discuss how to carry out left and right turns.</p>
-						<div><img src="images/Balanced binary tree picture/left.jpg" width="50%" height="50%" /></div>
+						<div><img src="images/Balanced binary tree picture/left.jpg" width="70%" height="70%" /></div>
 						<p>The left-hand adjustment procedure is as follows: <br />
 							1. Let the left subtree of B become the right subtree of a <br />
 							2. Let a be the left subtree of B <br />
@@ -289,7 +289,7 @@ void AVLTree&lt;T&gt;::L(AVLTreeNode&lt;T&gt;* &root)
 }</code></pre>
 						<p>Since there is a left turn, there must be a right turn. In fact, right-hand and left-hand rotation are
 							symmetrical processes, so left-hand reverse operation can be carried out. </p>
-						<div><img src="images/Balanced binary tree picture/right.jpg" width="50%" height="50%" /></div>
+						<div><img src="images/Balanced binary tree picture/right.jpg" width="70%" height="70%" /></div>
 						<p>Right turn adjustment steps are as follows: <br />
 							1. Let the right subtree of a become the left subtree of B <br />
 							2. Let B be the left subtree of a <br />
@@ -313,13 +313,13 @@ void AVLTree&lt;T&gt;::R(AVLTreeNode&lt;T&gt;* &root)
 							top, so it is necessary to update the height of the current subtree after each insert function, and then adjust
 							the balance according to four tree types. </p>
 						<p>This is a LL type binary tree and its adjustment plan.</p>
-						<div><img src="images/Balanced binary tree picture/LL.jpg" width="50%" height="50%" /></div>
+						<div><img src="images/Balanced binary tree picture/LL.jpg" width="70%" height="70%" /></div>
 						<p>This is a LR type binary tree and its adjustment plan.</p>
-						<div><img src="images/Balanced binary tree picture/LR.jpg" width="50%" height="50%" /></div>
+						<div><img src="images/Balanced binary tree picture/LR.jpg" width="70%" height="70%" /></div>
 						<p>This is a RR type binary tree and its adjustment plan</p>
-						<div><img src="images/Balanced binary tree picture/RR.jpg" width="50%" height="50%" /></div>
+						<div><img src="images/Balanced binary tree picture/RR.jpg" width="70%" height="70%" /></div>
 						<p>This is a RL type binary tree and its adjustment plan</p>
-						<div><img src="images/Balanced binary tree picture/RL.jpg" width="50%" height="50%" /></div>
+						<div><img src="images/Balanced binary tree picture/RL.jpg" width="70%" height="70%" /></div>
 						<p>The type of tree can be determined according to the balance factor of node A. the criteria are as follows:</p>
 						<table frame="border" rules="all">
 							<tr align="center">
@@ -650,12 +650,12 @@ void AVLTree&lt;T&gt;::postOrder()
 		<div class="fh5co-navigation">
 			<div class="fh5co-cover next fh5co-cover-sm" style="background-image: url(images/project_3.jpg)">
 				<div class="overlay"></div>
-				<a class="copy" href="Binary search tree.html">
+				<a class="copy" href="Splay tree.html">
 					<div class="display-t">
 						<div class="display-tc">
 							<div>
 								<span>Previous Post</span>
-								<h2>Binary search tree</h2>
+								<h2>Splay tree</h2>
 							</div>
 						</div>
 					</div>
@@ -664,12 +664,12 @@ void AVLTree&lt;T&gt;::postOrder()
 
 			<div class="fh5co-cover prev fh5co-cover-sm" style="background-image: url(images/project_2.jpg)">
 				<div class="overlay"></div>
-				<a class="copy" href="Red-Black tree.html">
+				<a class="copy" href="Binary search tree.html">
 					<div class="display-t">
 						<div class="display-tc">
 							<div>
 								<span>Next Post</span>
-								<h2>Red-Black Trees</h2>
+								<h2>Binary search tree</h2>
 							</div>
 						</div>
 					</div>
