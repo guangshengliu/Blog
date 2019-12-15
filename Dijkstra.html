@@ -1,0 +1,274 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Dijkstra</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="highly balanced binary search tree" />
+		<meta name="author" content="Guangsheng Liu" />
+
+		<!-- Animate.css -->
+		<link rel="stylesheet" href="css/animate.css">
+		<!-- Icomoon Icon Fonts-->
+		<link rel="stylesheet" href="css/icomoon.css">
+		<!-- Bootstrap  -->
+		<link rel="stylesheet" href="css/bootstrap.css">
+
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Modernizr JS -->
+		<script src="js/modernizr-2.6.2.min.js"></script>
+		<!-- FOR IE9 below -->
+		<!--[if lt IE 9]>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+
+	</head>
+	<body class="single">
+
+		<div class="fh5co-loader"></div>
+
+		<div id="page">
+			<div id="fh5co-aside" style="background-image: url(images/image_2.jpg)" data-stellar-background-ratio="0.5">
+				<div class="overlay"></div>
+				<nav role="navigation">
+					<ul>
+						<li><a href="index.html"><i class="icon-home"></i></a></li>
+					</ul>
+				</nav>
+				<div class="page-title">
+					<img src="images/person_1.jpg" alt="Free HTML5 by FreeHTMl5.co">
+					<span>December 15, 2019</span>
+					<h2>Dijkstra</h2>
+				</div>
+			</div>
+			<div id="fh5co-main-content">
+				<div class="fh5co-post">
+					<div class="fh5co-entry padding">
+						<h1>1. Introduction to Dijkstra algorithm</h1>
+						<p>Dijkstra algorithm (Dijkstra) was proposed by Dijkstra, a Dutch computer scientist, in 1959, so it is also
+							called Dijkstra algorithm. It is the shortest path algorithm from one vertex to other vertices, which solves the
+							shortest path problem in weighted graph. The main feature of Dijkstra algorithm is to extend from the starting
+							point to the end. Dijkstra algorithm can only deal with the situation that all edge weights are non negative.</p>
+						<h1>2. The idea of Dijkstra algorithm</h1>
+						<p>First of all, Dijkstra algorithm solves the problem of <strong> single source shortest path </strong>, that
+							is, given the graph G (v, e) and the starting point s (the starting point is also called the source point), to
+							find the shortest distance from the starting point s to other vertices.</p>
+						<p>The strategy of Dijkstra algorithm is:
+							Set that the set is that s has access vertices (i.e. occupied cities), and then perform the following two steps
+							n times (n is the number of vertices):</p>
+						<ol>
+							<li>Select the shortest vertex (U) from the set V-s (i.e. the city not occupied) with the shortest distance from
+								the starting point s, access and join the set s (i.e. make it occupied).</li>
+							<li>Then, the shortest distance between the starting point s and all the vertices V that can be reached from u
+								is optimized.</li>
+						</ol>
+						<h1>3. Implementation of Dijkstra algorithm</h1>
+						<p>Because Dijkstra algorithm&#39;s strategy is more theoretical, in order to write code conveniently, we need to
+							find a way to realize the two key things in the strategy, that is, the realization of set s and the shortest
+							distance from starting point s to vertex Vi.</p>
+						<ol>
+							<li>Set s can be implemented by a bool type array vis [], that is, when vis [i] == true, it means that vertex
+								Vi has been accessed; when vis [i] == false, it means that vertex Vi has not been accessed.</li>
+							<li>Let the int Array D [u] represent the shortest distance from the starting point s to the vertex Vi. at the
+								beginning, except that the d [S] of the starting point s is 0, all the other vertices use a large number to
+								represent inf, that is, it is not reachable.</li>
+						</ol>
+						<p>The algorithm analysis is shown in the figure below:</p>
+						<p>The figure that needs to find the shortest path is as follows.</p>
+						<div><img src="images/Dijkstra picture/1.jpg" width="50%" height="50%" /></div>
+						<p>Dijkstra algorithm to find the shortest path process.</p>
+						<div><img src="images/Dijkstra picture/2.jpg" width="80%" height="80%" /></div>
+						<div><img src="images/Dijkstra picture/3.jpg" width="80%" height="80%" /></div>
+						<p>Implementation code:</p>
+						<pre><code>#include&lt;iostream&gt;
+#include&lt;cstring&gt;
+#include&lt;vector&gt;
+#include&lt;queue&gt;
+#include&lt;algorithm&gt;
+using namespace std;
+const int MAXV=510;        //max vertex 
+const int INF=1000000;        //Infinity
+struct Node{
+    int v;
+    int dis;        //V is the target vertex of the edge, DIS is the edge weight.
+    friend bool operator <(Node f1,Node f2){    //Default from large to small output, so reverse overload.
+        return f1.dis>f2.dis;
+    }
+}; 
+int n,m,st,ed;         //N is the vertex number, figure G is implemented by adjacency table, st and ED are the start and end points respectively.
+int d[MAXV],minCost=INF;        //The distance from the starting point to itself is 0.
+int cost[MAXV][MAXV],G[MAXV][MAXV];
+vector&lt;int&gt; pre[MAXV];        //precursor
+vector&lt;int&gt; tempPath,path;        //Temporary path
+bool vis[MAXV]={false};
+priority_queue&lt;Node&gt; q; 
+void Dijkstra(int s){
+    fill(d,d+MAXV,INF);        //The fill function assigns the entire d array to inf.
+    d[s]=0;
+    for(int i=0;i&lt;n;i++){        //Circular n times.
+        int u=-1,MIN=INF;        //u makes d [u] minimum, min stores the minimum d [u].
+        for(int j=0;j&lt;n;j++){
+            if(vis[j]==false&&d[j]&lt;MIN){
+                u=j;
+                MIN=d[j];
+            }
+        }
+        if(u==-1)
+            return ;
+        vis[u]=true;
+        for(int v=0;v&lt;n;v++){
+            if(vis[v]==false&&G[u][v]!=INF){
+                //If V is not accessed & & u can reach V
+                if(d[u]+G[u][v]&lt;d[v]){
+                    //If V is not accessed and u is the intermediary point, d [v] will be better.
+                    d[v]=d[u]+G[u][v];    //Optimizing d[v]
+                    q.push({v,d[v]});
+                    pre[v].clear();            //clear pre[v] 
+                    pre[v].push_back(u);    //U is the precursor of V 
+                }
+                else if(d[u]+G[u][v]==d[v]){        //Find a path of the same length
+                    pre[v].push_back(u);    //U is one of the precursors of V
+                }
+            }
+        }
+    }
+} 
+void DFS(int v){        //V is the current node.
+    if(v==st){            //V is the starting point number, s is the vertex number currently accessed.
+        tempPath.push_back(v);
+        int tempCost=0;            //Record the total cost of the current path.
+        for(int i=tempPath.size()-1;i>0;i--){        //Backward visit.
+            //Current node ID, next node idnext.
+            int id=tempPath[i],idNext=tempPath[i-1];
+            tempCost+=cost[id][idNext];        //Add edge weight of edge ID - > idnext.
+        }
+        if(tempCost&lt;minCost){        //If the sum of edge weights of the current path is smaller.
+            minCost=tempCost;        //update minCost .
+            path=tempPath;            //update path .
+        } 
+        tempPath.pop_back();
+        return;
+    }
+    tempPath.push_back(v);
+    for(int i=0;i&lt;pre[v].size();i++){
+        DFS(pre[v][i]);        //Recursive access to the precursor node of V pre [v].    
+    }
+    tempPath.pop_back();
+}
+int main(){
+    scanf("%d%d%d%d",&n,&m,&st,&ed);
+    int u,v;
+    fill(G[0],G[0]+MAXV*MAXV,INF);        //Initialize G.
+    fill(cost[0],cost[0]+MAXV*MAXV,INF);
+    for(int i=0;i&lt;m;i++){
+        scanf("%d%d",&u,&v);
+        scanf("%d%d",&G[u][v],&cost[u][v]);
+        G[v][u]=G[u][v];
+        cost[v][u]=G[u][v];
+    } 
+    Dijkstra(st);         
+    DFS(ed);        //Get the best path.
+    for(int i=path.size()-1;i>=0;i--){
+        printf("%d ",path[i]);        //Reverse the nodes on the output path.
+    }
+    printf("%d %d\n",d[ed],minCost);        //Cost on shortest path.
+    return 0;
+}</code></pre>
+						<h1>4. Optimization of Dijkstra algorithm</h1>
+						<p>Using priority queue in STL can reduce the time complexity of Dijkstra algorithm implemented by adjacency
+							table to O (V * logv + e).</p>
+						<p>The implementation code is as follows:</p>
+						<pre><code>void Dijkstra(int s){
+    fill(d,d+MAXV,INF);        //The fill function assigns the entire d array to inf.
+    d[s]=0;
+    q.push({s,0});        //u makes d [u] minimum, min stores the minimum d [u].
+    for(int i=0;i&lt;n;i++){        //Circular n times.
+        int u=-1,MIN=INF;        //u makes d [u] minimum, min stores the minimum d [u].
+        u=q.top().v;        //Heap optimization.
+        q.pop();
+        //No d [u] less than inf can be found, indicating that the remaining vertices are not connected with the starting point s.
+        if(u==-1)
+            return ;
+        vis[u]=true;
+        for(int v=0;v&lt;n;v++){
+            if(vis[v]==false&&G[u][v]!=INF){
+                //If V is not accessed && u can reach V
+                if(d[u]+G[u][v]&lt;d[v]){
+                    //If V is not accessed and u is the intermediary point, d [v] will be better.
+                    d[v]=d[u]+G[u][v];    //Optimizing d[v]
+                    q.push({v,d[v]});
+                    pre[v].clear();            //clear pre[v] 
+                    pre[v].push_back(u);    //U is the precursor of V 
+                }
+                else if(d[u]+G[u][v]==d[v]){        //Find a path of the same length
+                    pre[v].push_back(u);    //U is one of the precursors of V
+                }
+            }
+        }
+    }
+}</code></pre>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="fh5co-navigation">
+			<div class="fh5co-cover prev fh5co-cover-sm" style="background-image: url(images/project_2.jpg)">
+				<div class="overlay"></div>
+
+				<a class="copy" href="#">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Previous Post</span>
+								<h2>How to be an affective web developer</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+			<div class="fh5co-cover next fh5co-cover-sm" style="background-image: url(images/project_3.jpg)">
+				<div class="overlay"></div>
+				<a class="copy" href="DFS and BFS.html">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Next Post</span>
+								<h2>DFS and BFS</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+		</div>
+
+		<footer>
+			<div>
+				&copy; Copyright MyWebSite. Designed by Guangsheng Liu.
+			</div>
+		</footer>
+
+		<div class="gototop js-top">
+			<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+		</div>
+
+		<!-- jQuery -->
+		<script src="js/jquery.min.js"></script>
+		<!-- jQuery Easing -->
+		<script src="js/jquery.easing.1.3.js"></script>
+		<!-- Bootstrap -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- Waypoints -->
+		<script src="js/jquery.waypoints.min.js"></script>
+		<!-- Stellar Parallax -->
+		<script src="js/jquery.stellar.min.js"></script>
+		<!-- Main -->
+		<script src="js/main.js"></script>
+
+	</body>
+</html>
