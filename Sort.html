@@ -1,0 +1,648 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Sort</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="highly balanced binary search tree" />
+		<meta name="author" content="Guangsheng Liu" />
+
+		<!-- Animate.css -->
+		<link rel="stylesheet" href="css/animate.css">
+		<!-- Icomoon Icon Fonts-->
+		<link rel="stylesheet" href="css/icomoon.css">
+		<!-- Bootstrap  -->
+		<link rel="stylesheet" href="css/bootstrap.css">
+
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Modernizr JS -->
+		<script src="js/modernizr-2.6.2.min.js"></script>
+		<!-- FOR IE9 below -->
+		<!--[if lt IE 9]>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+
+	</head>
+	<body class="single">
+
+		<div class="fh5co-loader"></div>
+
+		<div id="page">
+			<div id="fh5co-aside" style="background-image: url(images/image_2.jpg)" data-stellar-background-ratio="0.5">
+				<div class="overlay"></div>
+				<nav role="navigation">
+					<ul>
+						<li><a href="index.html"><i class="icon-home"></i></a></li>
+					</ul>
+				</nav>
+				<div class="page-title">
+					<img src="images/person_1.jpg" alt="Free HTML5 by FreeHTMl5.co">
+					<span>October 19, 2019</span>
+					<h2>Sort</h2>
+				</div>
+			</div>
+			<div id="fh5co-main-content">
+				<div class="fh5co-post">
+					<div class="fh5co-entry padding">
+						<h2>1. Bubble sort</h2>
+
+						<p>Bubble Sort, also known as bubble sort or bubble sort, is a simpler sorting algorithm in the field of computer
+							science.
+							It repeatedly visits the element columns to be sorted, and compares two adjacent elements in turn. If the order
+							(such as from large to small, and the first letter from Z to a) is wrong, it exchanges them. The work of
+							visiting elements is repeated until no adjacent elements need to be exchanged, that is to say, the element
+							column has been sorted.
+							The name of this algorithm comes from the fact that the smaller elements will slowly &quot;float&quot; to the
+							top of the sequence (ascending or descending) through exchange, just like the bubbles of carbon dioxide in
+							carbonated drinks will eventually float to the top, so it is called bubble sorting.
+							It repeatedly visits the element columns to be sorted, and compares two adjacent elements in turn. If the order
+							(such as from large to small, and the first letter from Z to a) is wrong, it exchanges them. The work of
+							visiting elements is repeated until no adjacent elements need to be exchanged, that is to say, the element
+							column has been sorted. The time complexity and space complexity of bubble sorting are o (n ^ 2) and O (1).</p>
+
+						<p>The process of bubble sorting is shown in the following pictures:</p>
+						<div><img src="images/Sort picture/BubbleSort.gif" width="90%" height="90%" /></div>
+						<p>The implementation code is as follows:</p>
+
+						<pre><code>// Bubble sort
+// A is the array name, N is the array length.
+template &lt;typename T&gt;
+void BubbleSort(T *a,int N)
+{
+    T tmp;
+    
+    for (int i = 0; i &lt; N-1; i++)
+    {
+        bool flag = false;        // Mark as false.
+        for (int j = 0; j &lt; N-1-i; j++)
+        {
+            if (a[j] > a[j+1])
+            {        
+                tmp = a[j];
+                a[j] = a[j+1];
+                a[j+1] = tmp;
+                flag = true;        // Set flag to 1 if exchange occurs.
+            }
+            
+        }
+        if (flag == false)
+            break;        // If no exchange occurs, the sequence is in order.        
+    }
+}</code></pre>
+
+						<h2>2. Insert sort</h2>
+
+						<p>Insert sort is a simple, intuitive and stable sorting algorithm. If there is an ordered data sequence, it
+							is required to insert a number into the arranged data sequence, but the data sequence is still orderly after
+							insertion. At this time, a new sort method, insertion sort algorithm, which is applicable to the arrangement of
+							a small amount of data, is a stable sort method, should be used.
+							The insertion algorithm divides the array to be sorted into two parts: the first part contains all elements of
+							the array, except for the last element (let the array have an additional space for insertion), while the second
+							part only contains this element (That is, elements to be inserted). After the first part is sorted, insert this
+							last element into the first part of the sorted part.</p>
+
+						<h3>1). Direct insertion sort</h3>
+
+						<p>The basic idea of inserting and sorting is: insert a record to be sorted into a proper position in the
+							previously sorted file according to the size of its key (the key is the value of a data item in the data
+							element, which can be used to mark a data element), until all the records are inserted. The time complexity of
+							insertion sorting is O (n ^ 2), and the space complexity is O (1)</p>
+
+						<p>The following shows the process of inserting sorting directly through pictures:</p>
+						<div><img src="images/Sort picture/InsertSort.gif" width="90%" height="90%" /></div>
+						<p>The implementation code is as follows:</p>
+
+						<pre><code>// Direct insertion sort
+// A is the array name, N is the array length.
+template     &lt;typename T&gt;
+void InsertSort(T *a,int N){
+    int i,j,k;
+    for (i = 1; i &lt; N; i++)
+    {
+        //Find a suitable position for a [i] in the previous a [0... I-1] ordered interval.
+        for (j = i-1; j >= 0; j--)
+        {
+            if (a[i]>a[j])
+                break;    
+        }
+        //If you find a suitable location.
+        if (j != i-1)
+        {
+            T temp = a[i];
+            //Move data larger than a [i] backward.
+            for (k = i-1; k > j; k--)
+                a[k+1] = a[k];
+            //Put a [i] in the right position.
+            a[k+1] = temp;            
+        }
+    }
+}</code></pre>
+
+						<h3>2). Shell sort</h3>
+
+						<p>Shell sort is a kind of insertion sort, also known as reducing increment sort. It is a more efficient version
+							of direct insertion sort algorithm. Hill sort is an unstable sort algorithm. This method was named after
+							d.l.shell in 1959.
+							Its basic idea is: for n sequences to be sorted, take an integer gap (gap is called step size) smaller than n to
+							divide the elements to be sorted into several group subsequences, and put all the records with multiple of gap
+							in the same group; then, insert and sort the elements in each group directly. After this sorting, the elements
+							of each group are ordered. Then reduce the gap value and repeat the above grouping and sorting. Repeat this
+							operation. When gap = 1, the whole sequence is ordered.
+							Significance of Hill sort: for an almost ordered unordered sequence, the efficiency of insertion sort is very
+							high, and the efficiency of linear sort can be achieved. For example, when there is only one element in the
+							sequence that is not in the proper position, the whole sequence only needs to move the position of the sequence
+							to complete the task of sorting. However, the general unordered sequence is not an almost ordered sequence,
+							because it can only move one bit of elements at a time, so insertion sorting is inefficient.
+							The principle of hill sorting: according to the value of incremental sequence, each sorting will divide the
+							initial sequence into subsequences of several elements, and then insert sorting will be used for these
+							subsequences. Because this is a decreasing incremental sequence, the first sorting will have the largest
+							incremental value, so the number of subsequences will be the largest, and the fewer elements of each
+							subsequence, which can be regarded as one Almost ordered sequence, when the increment value is smaller, the
+							number of subsequences is smaller, and the elements of each subsequence are more. However, based on the previous
+							sorting, although there are many elements in these subsequences, they are almost ordered sequence. When the last
+							sorting, that is, when the increment value is 1, it means the whole unordered sequence To sort, the whole
+							sequence is almost in order.
+							In the worst case, the time complexity of hill sorting is O (n ^ 2), the average time complexity is O (n ^ 1.3),
+							and the space complexity is O (1).</p>
+
+						<p>The following shows the process of inserting sorting directly through pictures:</p>
+						<div><img src="images/Sort picture/ShellSort.gif" width="90%" height="90%" /></div>
+						<p>The implementation code is as follows:</p>
+
+						<pre><code>//Sort individual groups in a shell sort.
+//A is the array to be sorted, n is the total length of the array, I is the starting position of the group, and gap is the step size of the group.
+template     &lt;typename T&gt;
+void GroupSort(T *a, int n, int i,int gap)
+{
+    int j;
+
+    for (j = i + gap; j &lt; n; j += gap) 
+    {
+        // If a [J] &lt; a [j-gap], look for a [J] position, and move back the positions of the subsequent data.
+        if (a[j] &lt; a[j - gap])
+        {
+            T tmp = a[j];
+            int k = j - gap;
+            while (k >= 0 && a[k] > tmp)
+            {
+                a[k + gap] = a[k];
+                k -= gap;
+            }
+            a[k + gap] = tmp;
+        }
+    }
+}
+//Shell sort
+//A is the array to be sorted, n is the length of the array.
+template     &lt;typename T&gt;
+void ShellSort(T *a, int n)
+{
+    int i,gap;
+
+    // Gap is the step size, which is reduced to half of the original value each time.
+    for (gap = n / 2; gap > 0; gap /= 2)
+    {
+        // There are gap groups in total, and direct insertion sorting is performed for each group.
+        for (i = 0 ;i &lt; gap; i++)
+            GroupSort(a, n, i, gap);
+    }
+}</code></pre>
+
+
+						<h2>3. Quick sort</h2>
+
+						<p>Quick sort is an improvement of bubble sort.
+							Fast sorting was proposed by C. A. R. Hoare in 1960. Its basic idea is: the data to be sorted is divided into
+							two independent parts by a single sorting. All the data in one part is smaller than all the data in the other
+							part, and then the two parts are sorted rapidly according to this method. The whole sorting process can be
+							carried out recursively, so that the whole data becomes an ordered sequence. In the worst case, the time
+							complexity of fast sorting is O (n ^ 2), the average time complexity is O (n * log (n)), and the space
+							complexity is O (1).
+							The fast sorting algorithm realizes sorting through multiple comparisons and exchanges. The sorting process is
+							as follows:</p>
+
+						<ol>
+							<li>
+								<p>First, set a boundary value to divide the array into left and right parts. (the first value is generally
+									selected)</p>
+							</li>
+							<li>
+								<p>Set the data greater than or equal to the boundary value to the right of the array, and the data less than
+									the boundary value to the left of the array. At this time, each element in the left part is less than or equal
+									to the boundary value, while each element in the right part is greater than or equal to the boundary value.</p>
+							</li>
+							<li>
+								<p>Then, the data on the left and right can be sorted independently. For the array data on the left, you can
+									take another boundary value, and divide this part of data into two parts: left and right. Similarly, you can
+									put smaller values on the left and larger values on the right. The array data on the right can be processed
+									similarly.</p>
+							</li>
+							<li>
+								<p>Repeat the above process. It can be seen that this is a recursive definition. After the left part is
+									arranged in order by recursion, the right part is arranged in order by recursion. When the data sorting of the
+									left and right parts is completed, the sorting of the whole array is completed.</p>
+							<li>
+						</ol>
+						<p>The following shows the process of inserting sorting directly through pictures:</p>
+						<div><img src="images/Sort picture/QuickSort.gif" width="90%" height="90%" /></div>
+						<p>The implementation code is as follows:</p>
+						<pre><code>//Principal component search.
+template     &lt;typename T&gt;
+int Partition(T *a,int left,int right){
+    T temp = a[left];
+    while(left &lt; right)
+    {
+        while(left &lt; right && a[right] > temp)
+            right--;    //Repeated left shift.
+        a[left] = a[right];    //Change of position.
+        while(left &lt; right && a[left] &lt;= temp)
+            left++;        //Repeated right shift
+        a[right] = a[left];    //Change of position.
+    }
+    a[left] = temp;
+    return left;        //Return to meet subscript.
+}
+//Quick sort
+template     &lt;typename T&gt;
+void QuickSort(T *a,int left,int right){
+    if(left &lt; right)
+    {
+        int pos =Partition(a,left,right);
+        QuickSort(a,left,pos - 1);    //Fast sorting of left interval.
+        QuickSort(a,pos + 1,right);    //Fast sorting of right interval.
+    }
+}</code></pre>
+
+						<h2>4. Select sort</h2>
+
+						<p>Select sort is a simple and intuitive sorting algorithm.
+							Its basic idea is: first find the smallest (or largest) element in the unsorted sequence, and then store it at
+							the beginning of the sequence; then, continue to find the smallest (or largest) element from the remaining
+							unsorted elements, and then put it at the end of the ordered sequence. And so on until all elements are sorted.
+							The time complexity is O (n^2) and the space complexity is O (1).</p>
+
+						<p>The following shows the process of inserting sorting directly through pictures:</p>
+						<div><img src="images/Sort picture/SelectSort.gif" width="90%" height="90%" /></div>
+						<p>The algorithm is simple to implement and has little significance:</p>
+
+						<pre><code>//slect sort
+//A is the array to be sorted, n is the length of the array
+template     &lt;typename T&gt;
+void SelectSort(T *a, int n)
+{
+    int i;        // End position of ordered area
+    int j;        // Starting position of disorder area
+    int min;    // Minimum element position in disorder region
+
+    for(i=0; i &lt; n; i++)
+    {
+        min=i;
+        // Find the smallest element between a [i + 1]... A [n] and assign it to min.
+        for(j=i+1; j &lt; n; j++)
+        {
+            if(a[j] &lt; a[min])
+                min=j;
+        }
+        // After exchange, the elements between a [0]... A [i] are ordered.
+        if(min != i)
+            swap(a[i], a[min]);
+    }
+}</code></pre>
+
+
+						<h2>5. Heap sort</h2>
+
+						<p><strong>Heap sort </strong>is a sort algorithm designed by using heap data structure.
+							Heap is a structure of nearly complete binary tree, which satisfies the nature of <strong>heap </strong>: that
+							is, the key value or index of a child node is always less than (or greater than) its parent node.
+							The time complexity of heap sorting is O (n * log (n)), and the space complexity is O (1).</p>
+
+						<p>The following shows the process of direct heap sorting through pictures:</p>
+						<div><img src="images/Sort picture/HeapSort.gif" width="90%" height="90%" /></div>
+						<p>The implementation code is as follows:</p>
+						<pre><code>//Downward adjustment algorithm of (maximum) heap.
+//A is the array to be sorted, start is the starting position of the node to be downgraded (generally 0, which means starting from the first), and end is the ending range (generally the index of the last element in the array).
+template     &lt;typename T&gt;
+void maxheap_down(T *a, int start, int end)
+{
+    int c = start;            // Current node location
+    int l = 2*c + 1;        // Left child's position
+    T tmp = a[c];            // Current node size
+    for (; l &lt;= end; c=l,l=2*l+1)
+    {
+        // L is the left child, L + 1 is the right child
+        if ( l &lt; end && a[l] &lt; a[l+1])
+            l++;        // The older of the left and right children, i.e. m ﹣ heap [L + 1]
+        if (tmp >= a[l])
+            break;        // End of adjustment
+        else            // swap value
+        {
+            a[c] = a[l];
+            a[l]= tmp;
+        }
+    }
+}
+//Heap sort (small to large)
+//A is the array to be sorted, n is the length of the array
+template     &lt;typename T&gt;
+void HeapSort(T *a, int n)
+{
+    int i;
+    // Step by step from (n / 2-1) --> 0. After traversal, the resulting array is actually a (maximum) binary heap.
+    for (i = n / 2 - 1; i >= 0; i--)
+        maxheap_down(a, i, n-1);
+    // Adjust the sequence from the last element, and continuously narrow the scope of adjustment to the first element.
+    for (i = n - 1; i > 0; i--)
+    {
+        // Exchange a [0] and a [i]. After exchange, a [i] is the largest of a [0... i].
+        swap(a[0], a[i]);
+        // Adjust a [0... i-1] so that a [0... i-1] is still a maximum heap.
+        // That is, ensure that a [i-1] is the maximum value in a [0... i-1].
+        maxheap_down(a, 0, i-1);
+    }
+}</code></pre>
+
+						<h2>6. Merge sort</h2>
+
+						<p>Merge sort is an effective sort algorithm based on merge operation, which is a typical application of divide
+							and conquer. By combining the ordered subsequences, we can get the completely ordered sequence, that is, first
+							make each subsequence orderly, then make the subsequence segments orderly. If two ordered tables are combined
+							into one ordered table, it is called two-way merge. Merge sort is a stable sort method.
+							The time complexity of merging and sorting is O (n * log (n)), and the space complexity is O (1).
+							The steps of merging and sorting are as follows:</p>
+
+						<ol>
+							<li>
+								<p>Apply for a space that is the sum of two sorted sequences. The space is used to store the merged sequences</p>
+							</li>
+							<li>
+								<p>Set two pointers, and the initial positions are the starting positions of two sorted sequences respectively</p>
+							</li>
+							<li>
+								<p>Compare the elements pointed by the two pointers, select the relatively small elements and put them into the
+									merge space, and move the pointer to the next position
+									Repeat step 3 until a pointer is past the end of the sequence</p>
+							</li>
+						</ol>
+						<p>Copy all remaining elements of another sequence directly to the end of the merge sequence</p>
+						<p>The process of merging and sorting is shown in the following picture:</p>
+						<div><img src="images/Sort picture/MergeSort.gif" width="90%" height="90%" /></div>
+						<p>The implementation code is as follows:</p>
+						<pre><code>//merge sort
+const int maxn = 100;
+//Merge [L1, R1] and [L2, R2] intervals of array a into ordered intervals.
+template     &lt;typename T&gt;
+void merge(T *a,int L1,int R1,int L2,int R2){
+    int i = L1,j = L2;    //I points to a [L1], J points to a [L2]
+    T temp[maxn];
+    int index= 0;
+    while(i &lt;= R1 && j &lt;= R2){
+        if (a[i] &lt;= a[j])
+        {
+            temp[index++] = a[i++];        //Add a [i] to the sequence temp.
+        }
+        else
+        {
+            temp[index++] = a[j++];        //Add a [J] to the sequence temp.
+        }
+    }
+    while(i &lt;= R1)
+        temp[index++] = a[i++];    //Add the remaining elements of [L1, R1] to the sequence temp.
+    while(j &lt;= R2)
+        temp[index++] = a[j++];    //Add the remaining elements of [L2, R2] to the sequence temp.
+    for (int i = 0; i &lt; index; i++)
+    {
+        a[L1 + i] = temp[i];  //Add the remaining elements of [L1, R1] to the sequence temp.
+}
+//Merge and sort the current range [left, right] of array array.
+template     &lt;typename T&gt;
+void MergeSort(T *a,int left,int right){
+    if(left &lt; right){    //As long as left is less than right.
+        int mid = (left + right)/2;    //Take the midpoint of [left, right].
+        MergeSort(a,left,mid);    //Recursion, merging and sorting the left subinterval [left, mid].
+        MergeSort(a,mid+1,right);    //Recursion, merging and sorting the right subinterval [mid + 1, right].
+        merge(a,left,mid,mid+1,right);    //Merge left subinterval and right subinterval.
+    }
+}</code></pre>
+
+						<h2>7. Count sort</h2>
+
+						<p>Counting sorting is a non comparison based sorting algorithm, which was proposed by Harold h. Seward in 1954.
+							Its advantage is that when sorting integers in a certain range, its complexity is Ο (n + k) (where k is the
+							range of integers), which is faster than any comparative sorting algorithm. Of course, this is a way of
+							sacrificing space for time, and when o (k) &gt; O (n * log (n)), its efficiency is not as efficient as
+							comparison based sorting.
+							Count sorting has additional restrictions on the input data:</p>
+
+						<ol>
+							<li>
+								<p>The elements of the input linear table belong to the finite poset s;</p>
+							</li>
+							<li>
+								<p>If the length of the input linear table is n, |s| = K (indicating that the total number of elements in set s
+									is k), then k = O (n).
+							</li>
+						</ol>
+						<p>Under these two conditions, the complexity of counting and sorting is O (n).</p>
+						<p>The following shows the process of counting and sorting through pictures:</p>
+						<div><img src="images/Sort picture/CountSort.gif" width="90%" height="90%" /></div>
+						<p>The implementation code is as follows:</p>
+
+						<pre><code>//Count sort
+void CountSort (int *a, int size)
+{
+    int startScan, minIndex, minValue;
+    for (startScan = 0; startScan &lt; (size - 1); startScan++)
+    {
+        //Assume the first element has the lowest value.
+        minIndex = startScan;
+        minValue = a[startScan];
+        for (int index = startScan + 1; index &lt; size; index++)
+        {
+            if (a[index] &lt; minValue)        //Find the current minimum.
+            {
+                minValue = a[index];
+                minIndex = index;
+            }
+        }
+        a[minIndex] = a[startScan];
+        a[startScan] = minValue;
+    }
+}</code></pre>
+
+						<h2>8. Bucket sorting</h2>
+
+						<p>Bucket sort, or so-called box sort, is a sort algorithm that works by dividing arrays into a limited number of
+							buckets. Each bucket is sorted individually (possibly using a different sorting algorithm or continuing to use
+							bucket sorting recursively).Bucket sorting is a generalization of pigeon nest sorting. When the values in the
+							array to be sorted are evenly distributed, bucket sorting uses a linear time O(n), but bucket sorting is not a
+							comparative sort and is not affected by the lower limit of O(n*log(n)).
+							When the input data can be evenly allocated to each bucket, the bucket sorting efficiency is the highest; when
+							the input data is allocated to the same bucket. The efficiency is lowest.
+							The steps for sorting buckets are as follows:</p>
+
+						<ol>
+							<li>
+								<p>Determine the number of buckets to be applied according to the difference range and mapping rules between
+									the largest and smallest elements in the set to be sorted;</p>
+							</li>
+							<li>
+								<p>Traverse the set to be sorted and move each element into the corresponding bucket;</p>
+							</li>
+							<li>
+								<p>Sort the elements in each bucket and move them to the sorted set.</p>
+							</li>
+						</ol>
+						<p>Here is a picture showing the direct heap sorting process:</p>
+						<div><img src="images/Sort picture/BucketSort.gif" width="90%" height="90%" /></div>
+						<p>The implementation code is as follows:</p>
+						<pre><code>// Bucket sort
+// A is the array to be sorted, n is the length of array a, and Max is the maximum range of array a.
+void BucketSort(int a[], int n, int max)
+{
+    int i,j;
+    int buckets[max];
+
+    // Initialize all data in buckets to 0.
+    for(int k = 0;k &lt; max;k++)
+        buckets[k]=0;
+    // 1. count
+    for(i = 0; i &lt; n; i++) 
+        buckets[a[i]]++; 
+    // 2. sort
+    for (i = 0, j = 0; i &lt; max; i++) 
+    {
+        while( (buckets[i]--) >0 )
+            a[j++] = i;
+    }
+}</code></pre>
+
+						<h2>9. Radix Sorting</h2>
+
+						<p>Radix sort, also known as bucket sort or bin sort, is an extension of bucket sort. As its name implies, it
+							distributes sorted elements to some &quot;buckets&quot; through some information of key values in order to
+							achieve sorting. Radix sort is a stable sort with O time complexity.(nlog(r)m), where R is the cardinality used
+							and M is the heap number, the cardinality sorting method is sometimes more efficient than other stable sorting
+							methods.
+							Its basic idea is to cut integers into different numbers by bits, and then compare them by bits, which can be
+							divided into two implementation methods, the highest priority method and the lowest priority method.
+							This is done by unifying all the values to be compared to the same number of digits, with the shorter digits
+							preceded by zeros. Then, start with the lowest bit and sort one by one. In this way, the sequence becomes an
+							ordered sequence from the lowest to the highest.</p>
+
+						<p>Here is a picture showing the direct heap sorting process:</p>
+						<div><img src="images/Sort picture/RadixSort.gif" width="90%" height="90%" /></div>
+						<p>The implementation code is as follows:</p>
+
+						<pre><code>//Get the maximum value in array a.
+//A is array, n is array length.
+int get_max(int *a, int n)
+{
+    int i, max;
+
+    max = a[0];
+    for (i = 1; i &lt; n; i++)
+        if (a[i] > max)
+            max = a[i];
+    return max;
+}
+//Advanced bucket sorting.
+//A is a n array, n is the length of the array, and exp is the exponent. Sort array a by this index.
+void count_sort(int a[], int n, int exp)
+{
+    int output[n];             // A temporary array for storing sorted data.
+    int i, buckets[10] = {0};
+
+    // Store the number of data occurrences in buckets [].
+    for (i = 0; i &lt; n; i++)
+        buckets[ (a[i]/exp)%10 ]++;
+    // Change buckets [i]. The purpose is to let the value of the changed buckets [i] be the position of the data in the output [].
+    for (i = 1; i &lt; 10; i++)
+        buckets[i] += buckets[i - 1];
+    // Store data in the temporary array output [].
+    for (i = n - 1; i >= 0; i--)
+    {
+        output[buckets[ (a[i]/exp)%10 ] - 1] = a[i];
+        buckets[ (a[i]/exp)%10 ]--;
+    }
+    // Assign sorted data to a [].
+    for (i = 0; i &lt; n; i++)
+        a[i] = output[i];
+}
+//Radix sort
+//A is array, n is array length
+void RadixSort(int a[], int n)
+{
+    int exp;    // Index, when sorting the array by bits, exp = 1; when sorting by tens, exp = 10
+    int max = get_max(a, n);    // Maximum value in array a.
+
+    // Starting from bits, sort array a by index.
+    for (exp = 1; max/exp > 0; exp *= 10)
+        count_sort(a, n, exp);
+}</code></pre>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="fh5co-navigation">
+			<div class="fh5co-cover prev fh5co-cover-sm" style="background-image: url(images/project_2.jpg)">
+				<div class="overlay"></div>
+
+				<a class="copy" href="single.html">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Previous Post</span>
+								<h2>How to becomes </h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+			<div class="fh5co-cover next fh5co-cover-sm" style="background-image: url(images/project_3.jpg)">
+				<div class="overlay"></div>
+				<a class="copy" href="Binary search tree.html">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Next Post</span>
+								<h2>Binary search tree.html</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+		</div>
+
+		<footer>
+			<div>
+				&copy; Copyright MyWebSite. Designed by Guangsheng Liu.
+			</div>
+		</footer>
+
+		<div class="gototop js-top">
+			<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+		</div>
+
+		<!-- jQuery -->
+		<script src="js/jquery.min.js"></script>
+		<!-- jQuery Easing -->
+		<script src="js/jquery.easing.1.3.js"></script>
+		<!-- Bootstrap -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- Waypoints -->
+		<script src="js/jquery.waypoints.min.js"></script>
+		<!-- Stellar Parallax -->
+		<script src="js/jquery.stellar.min.js"></script>
+		<!-- Main -->
+		<script src="js/main.js"></script>
+
+	</body>
+</html>
