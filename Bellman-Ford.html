@@ -1,0 +1,276 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Bellman-Ford</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="highly balanced binary search tree" />
+		<meta name="author" content="Guangsheng Liu" />
+
+		<!-- Animate.css -->
+		<link rel="stylesheet" href="css/animate.css">
+		<!-- Icomoon Icon Fonts-->
+		<link rel="stylesheet" href="css/icomoon.css">
+		<!-- Bootstrap  -->
+		<link rel="stylesheet" href="css/bootstrap.css">
+
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Modernizr JS -->
+		<script src="js/modernizr-2.6.2.min.js"></script>
+		<!-- FOR IE9 below -->
+		<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+	</head>
+	<body class="single">
+
+		<div class="fh5co-loader"></div>
+
+		<div id="page">
+			<div id="fh5co-aside" style="background-image: url(images/image_2.jpg)" data-stellar-background-ratio="0.5">
+				<div class="overlay"></div>
+				<nav role="navigation">
+					<ul>
+						<li><a href="index.html"><i class="icon-home"></i></a></li>
+					</ul>
+				</nav>
+				<div class="page-title">
+					<img src="images/person_1.jpg" alt="Free HTML5 by FreeHTMl5.co">
+					<span>February 25, 2020</span>
+					<h2>Bellman-Ford</h2>
+				</div>
+			</div>
+			<div id="fh5co-main-content">
+				<div class="fh5co-post">
+					<div class="fh5co-entry padding">
+						<h1>1. Introduction to Bellman-Ford algorithm</h1>
+
+						<p>Bellman-Ford algorithm, an algorithm for solving single-source shortest path problems, was created by Richard
+							Bellman and Lester Ford. Sometimes this algorithm is also known as the Moore-Bellman-Ford algorithm because
+							Edward F. Moore contributed to its development.</p>
+						<p>It works by unrelaxing the graph to get all possible shortest paths. It is superior to the Dijkstra algorithm
+							in that edge weights can be negative and easy to implement. The disadvantage is that the time complexity is too
+							high. However, the algorithm can be optimized to improve efficiency.</p>
+
+						<h1>2. Ideas of Bellman-Ford algorithm</h1>
+
+						<p>Now consider the case where a ring, starting from a vertex, can return to that vertex after several different
+							vertices. The rings can be divided into zero rings, positive rings and negative rings (the sum of edge weights
+							is 0, positive and negative, respectively).Obviously, the zero and positive rings in the graph will not affect
+							the solution of the shortest path, because the existence of zero and positive rings will not shorten the
+							shortest path; if there are negative rings in the graph and they can be reached from the source point, the
+							solution of the shortest path will be affected; however, if the negative rings in the graph cannot be reached
+							from the source point, the solution of the shortest path will not be affected.</p>
+						<p>Like the Dijkstra algorithm, the Bellman-Ford algorithm sets an array d to hold the shortest distance from the
+							source point to each vertex. The Bellman-Ford algorithm also returns a bool value: if there is a negative ring
+							reachable from the source point, the function returns false; otherwise, the function returns true, where the
+							value in Array D is the shortest distance from the source point to each vertex.</p>
+						<p>The main idea of the Bellman-Ford algorithm is shown in the code below. The edges in the graph need to be V-1
+							rounds, each of which traverses all edges in the graph: for each edge u-&gt;v, if u is the intermediate point to
+							make d[v] smaller, that is, when d[u]+length[u-&gt;v]&lt;d[v] is established, d[u]+length[u-&gt;v] is used to
+							update d[v].It can also be seen that the time complexity of the Bellman-Ford algorithm is <strong>O(VE)</strong>,
+							where V is the number of vertices and E is the number of edges.</p>
+						<p>The algorithm is implemented as follows:</p>
+							<pre><code>#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string.h&gt;
+#include &lt;queue&gt;
+using namespace std;
+
+struct Node {
+    int v,dis;      //V is the target vertex of adjacent edge, DIS is the edge weight of adjacent edge.
+};
+const int MAXV = 1010;
+vector&lt;Node&gt; Adj[MAXV];     //Adjacency table of graph G.
+int n;      //N is the number of vertices, maxv is the maximum number of vertices.
+int d[MAXV];    //The shortest path length from the starting point to each point.
+
+bool Bellman(int s){
+    fill(d , d + MAXV, INT_FAST32_MAX);
+    d[s] = 0;       //The distance from the starting point s to itself is 0.
+    //Here is the part of solving group D.
+    for(int i = 0; i &lt; n-1; i++) {      //Perform n-1 rounds of operation, n is the top number of points.
+        for (int u = 0; u &lt; n; u++){    //Every round of operation traverses all sides.
+            for (int j = 0; j &lt; Adj[u].size(); j++){
+                int v = Adj[u][j].v;    //Vertex of adjacent edge.
+                int dis = Adj[u][j].dis;    //Edge weight of adjacent edge.
+                if(d[u] + dis &lt; d[v]){      //Taking u as the intermediate point can make d [v] smaller.
+                    d[v] = d[u] +dis;   //Relaxation operation.
+                }
+            }           
+        }      
+    }
+    //Here is the code to judge the negative ring.
+    for (int u = 0; u &lt; n; u++){
+        for (int j = 0; j &lt; Adj[u].size(); j++){
+            int v = Adj[u][j].v;    //Vertex of adjacent edge.
+            int dis = Adj[u][j].dis;    //Edge weight of adjacent edge.
+            if(d[u] + dis &lt; d[v]) {     //If it can still be relaxed.
+                return false;       //It shows that there is a negative ring reachable from the source point in the graph.
+            }
+        }
+    }
+    return true;    //All values of array d have been optimized.
+}</code></pre>
+						<p>At this point, if there are no negative rings reachable from the source point in the graph, then all values in
+							Array D should be optimal. Therefore, as shown in the pseudo code below, only one more round of operation is
+							needed on all edges to determine if an edge u-&gt;v still satisfies d[u]+length[u-&gt;v]&lt;d[v]. If so, a
+							negative ring reachable from the source point in the graph returns false; otherwise, all values in Array D are
+							optimal and return true.</p>
+
+						<h1>3.Proof of Bellman-Ford algorithm</h1>
+
+						<p>First, if the shortest path exists, the number of vertices on the shortest path must not exceed V. Thus, if
+							the source point s is used as the root node of a tree, connecting other nodes in the shortest path order will
+							result in a <strong>shortest path tree </strong>.Obviously, in the shortest path tree, the path from source
+							point s to the remaining vertices is the corresponding shortest path in the original map, and once the original
+							map and source point are determined, the shortest path tree is also determined. In addition, since the number of
+							vertices on the shortest path does not exceed V, the number of layers of the shortest path tree must not exceed
+							V.</p>
+						<p>Since d[s] is zero in the initial state, d[s] will not be changed in the next steps (that is, the D value of
+							the first layer node in the shortest path tree is determined).Then, after the first operation of the
+							Bellman-Ford algorithm, the D value of the second vertex in the shortest path tree is determined, and then the second
+							operation is performed, so the D value of the third vertex is also determined. This is calculated until the
+							D-value of the last layer is determined. Since the shortest path tree has no more than V layers, the relaxation
+							of the Bellman-Ford algorithm will not exceed V-1 rounds.</p>
+
+						<h1>4.Optimization of Bellman-Ford algorithm</h1>
+
+						<p>Although the Bellman-Ford algorithm has a concise idea, the time complexity of O (VE) is determined to be very
+							high and in many cases unsatisfactory. After careful consideration, Bellman-Ford algorithm requires operations
+							in each round of operation, so edges, which obviously has a lot of meaningless operations, seriously affecting
+							the performance of the algorithm. It is therefore noted that only when the d[u] value of a vertex u changes will
+							it be possible to change the d[v] value of the adjacent point V on the edge from which it originates. Therefore,
+							an optimization can be made: a queue is established, the first vertex u of the queue is taken out, and then all
+							edges u-&gt;v from u are relaxed, that is, to judge whether d[u]+length[u-&gt;v]&lt;d[v] is valid, if it is
+							valid, d[u]+length[u-&gt;v] is used to cover d[v], so d[v] gets a better value, and if V is not in the queue, V
+							is added to the queue. Do this until the queue is empty (there are no negative rings reachable from the source
+							point in the diagram), or a vertex has been queued more than V-1 (there are negative rings reachable from the
+							source point in the diagram).</p>
+						<p>This optimized algorithm is called SPFA (Shortest Path Faster Algorithm), and its expected time complexity is
+							O(KE), where E is the number of edges of the graph and K is a constant. In many cases, K does not exceed 2. This
+							shows that this algorithm is very efficient in most data and is often superior to the Dijkstra algorithm for
+							heap optimization. However, if there are negative rings reachable from the source point in the graph, the time
+							complexity of traditional SPFA will degenerate to O (VE).</p>
+						<p>The algorithm is implemented as follows:</p>
+							<pre><code>#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string.h&gt;
+#include &lt;queue&gt;
+using namespace std;
+
+struct Node {
+    int v,dis;      //V is the target vertex of adjacent edge, DIS is the edge weight of adjacent edge.
+};
+const int MAXV = 1010;
+vector&lt;Node&gt; Adj[MAXV];     //Adjacency table of graph G.
+int n;      //N is the number of vertices, maxv is the maximum number of vertices.
+int d[MAXV];    //The shortest path length from the starting point to each point.
+int num[MAXV];
+bool inq[MAXV];
+bool SPFA(int s) {
+    //Initialization section.
+    memset(inq ,false, sizeof(inq));
+    memset(num, 0, sizeof(num));
+    fill(d, d + MAXV, INT_FAST32_MAX);
+    //Source entry part.
+    queue&lt;int&gt; Q;
+    Q.push(s);      //Source point entry.
+    inq[s] = true;      //Source point has joined the team.
+    num[s]++;       //Source entry times plus 1.
+    d[s] = 0;       //The D value of the source point is 0.
+    //Main part.
+    while (!Q.empty()) {
+        int u = Q.front();
+        Q.pop();    //Team out.
+        inq[u] = false; //Set u to not in queue.
+        //All adjacency edges V of ergodic u.
+        for(int j = 0;j &lt; Adj[u].size(); j++){
+            int v = Adj[u][j].v;
+            int dis = Adj[u][j].dis;
+            //Relaxation operation.
+            if(d[u] + dis &lt; d[v]){
+                d[v] = d[u] + dis;
+                if(!inq[v]) {
+                    Q.push(v);      //V team entry.
+                    inq[v] = true;      //Set V to in queue.
+                    num[v]++;       //V 's entry times plus 1.
+                    if(num[v] >= n)
+                        return false;       //Have reachable negative ring.
+                }
+            }
+        }
+    }
+    return true;        //No reachable negative ring.
+}</code></pre>
+						<p>SPFA is flexible and its internal writing can be adjusted to suit different scenarios. For example, FIFO
+							queues can be replaced with priority queues to speed up, or with double-ended queues (deque), using SLF
+							optimization and LLL optimization to increase efficiency by at least 50%.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="fh5co-navigation">
+			<div class="fh5co-cover prev fh5co-cover-sm" style="background-image: url(images/project_2.jpg)">
+				<div class="overlay"></div>
+
+				<a class="copy" href="#">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Previous Post</span>
+								<h2>How to be an affective web developer</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+			<div class="fh5co-cover next fh5co-cover-sm" style="background-image: url(images/project_3.jpg)">
+				<div class="overlay"></div>
+				<a class="copy" href="#">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Next Post</span>
+								<h2>How to be an affective web developer</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+		</div>
+
+		<footer>
+			<div>
+				&copy; Copyright MyWebSite. Designed by Guangsheng Liu.
+			</div>
+		</footer>
+
+		<div class="gototop js-top">
+			<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+		</div>
+
+		<!-- jQuery -->
+		<script src="js/jquery.min.js"></script>
+		<!-- jQuery Easing -->
+		<script src="js/jquery.easing.1.3.js"></script>
+		<!-- Bootstrap -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- Waypoints -->
+		<script src="js/jquery.waypoints.min.js"></script>
+		<!-- Stellar Parallax -->
+		<script src="js/jquery.stellar.min.js"></script>
+		<!-- Main -->
+		<script src="js/main.js"></script>
+
+	</body>
+</html>
