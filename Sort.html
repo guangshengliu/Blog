@@ -585,7 +585,27 @@ void RadixSort(int a[], int n)
     for (exp = 1; max/exp > 0; exp *= 10)
         count_sort(a, n, exp);
 }</code></pre>
-
+					<h2>10. Algorithm time complexity and space complexity</h2>
+					<table border="2">
+					  <tr align="center">
+					    <th>Ranking method</th>
+					    <th>Time complexity (average)</th>
+						<th>Time complexity (worst)</th>
+						<th>Time complexity (best)</th>
+						<th>Spatial complexity</th>
+						<th>stability</th>
+					  </tr>
+					  <tr><td>Bubble sort</td><td>O(n^2)</td><td>O(n^2)</td><td>O(n)</td><td>O(1)</td><td>Stable</td></tr>
+					  <tr><td>Direct insertion sort</td><td>O(n^2)</td><td>O(n^2)</td><td>O(n)</td><td>O(1)</td><td>Stable</td></tr>
+					  <tr><td>Shell sort</td><td>O(n*log(n))</td><td>O(n^2)</td><td>O(n^1.3)</td><td>O(1)</td><td>Instable</td></tr>
+					  <tr><td>Quick sort</td><td>O(n*log(n))</td><td>O(n^2)</td><td>O(n*log(n))</td><td>O(log(n))~O(n)</td><td>Instable</td></tr>
+					  <tr><td>Select sort</td><td>O(n^2)</td><td>O(n^2)</td><td>O(n^2)</td><td>O(1)</td><td>Instable</td></tr>
+					  <tr><td>Heap sort</td><td>O(n*log(n))</td><td>O(n*log(n))</td><td>O(n*log(n))</td><td>O(1)</td><td>Stable</td></tr>
+					  <tr><td>Merge sort</td><td>O(n*log(n))</td><td>O(n*log(n))</td><td>O(n*log(n))</td><td>O(1)</td><td>Instable</td></tr>
+					  <tr><td>Count sort</td><td>O(n)</td><td>O(n)</td><td>O(n)</td><td>O(max(n))</td><td>Stable</td></tr>
+					  <tr><td>Bucket sort</td><td>O(n)</td><td>O(n)</td><td>O(n)</td><td>O(max(n))</td><td>Stable</td></tr>
+					  <tr><td>Cardinal sort</td><td>O(d(n+r))</td><td>O(d(n+r))</td><td>O(d(n+r))</td><td>O(d(n+r))</td><td>Stable</td></tr>
+					</table>
 					</div>
 				</div>
 			</div>
