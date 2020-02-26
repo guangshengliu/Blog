@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Floyd</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="highly balanced binary search tree" />
+		<meta name="author" content="Guangsheng Liu" />
+
+		<!-- Animate.css -->
+		<link rel="stylesheet" href="css/animate.css">
+		<!-- Icomoon Icon Fonts-->
+		<link rel="stylesheet" href="css/icomoon.css">
+		<!-- Bootstrap  -->
+		<link rel="stylesheet" href="css/bootstrap.css">
+
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Modernizr JS -->
+		<script src="js/modernizr-2.6.2.min.js"></script>
+		<!-- FOR IE9 below -->
+		<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+	</head>
+	<body class="single">
+
+		<div class="fh5co-loader"></div>
+
+		<div id="page">
+			<div id="fh5co-aside" style="background-image: url(images/image_2.jpg)" data-stellar-background-ratio="0.5">
+				<div class="overlay"></div>
+				<nav role="navigation">
+					<ul>
+						<li><a href="index.html"><i class="icon-home"></i></a></li>
+					</ul>
+				</nav>
+				<div class="page-title">
+					<img src="images/person_1.jpg" alt="Free HTML5 by FreeHTMl5.co">
+					<span>February 26, 2020</span>
+					<h2>Floyd</h2>
+				</div>
+			</div>
+			<div id="fh5co-main-content">
+				<div class="fh5co-post">
+					<div class="fh5co-entry padding">
+						<h1>1. Introduction to Floyd algorithm</h1>
+
+						<p>Floyd, also known as interpolation, is an algorithm that uses the idea of dynamic programming to find the
+							shortest path between multiple source points in a given weighted graph, similar to Dijkstra&#39;s algorithm. The
+							algorithm is named after Robert Freud, one of the founders, a winner of the Turing Award in 1978, and a
+							professor of computer science at Stanford University. The algorithm finds the shortest path length between any
+							two points u and V for a given graph G (V, E) with a time complexity of O (n^3).Since the complexity of n^3
+							determines the limit of vertex number n to less than 200, it is appropriate and convenient to implement the
+							Floyd algorithm using an adjacency matrix.</p>
+
+						<h1>2. Floyd algorithm idea</h1>
+
+						<p>Algorithmic process:</p>
+
+						<ol>
+							<li>Start with any one-sided path. The distance between all two points is the weight of the edge, and if there
+								is no edge connecting between the two points, the weight is infinite.</li>
+							<li>For each pair of vertices u and v, see if there is a vertex w that makes the path from u to w to V shorter
+								than known. If it is updated.
+								The Floyd algorithm is based on the fact that if there is vertex k, which shortens the current distance between
+								vertex i and vertex J when k is used as the intermediate point, vertex K is used as the intermediate point
+								between vertex i and j, that is, when dis[i] [j] + dis[k] [j] &lt; dis[i] [j], dis[i] = dis[i] [k] + dis[k] [j]
+								(where dis[i] [j] represents the shortest distance from vertex i to vertex j).</li>
+						</ol>
+
+						<h1>3. Floyd algorithm implementation</h1>
+
+						<p>Based on the above facts, the implementation code of the Floyd algorithm is as follows:</p>
+						<pre><code>const int INF = 100000000;
+const int MAXV = 200;   //MAXV is the maximum number of vertices.
+int n,m;        //N is the number of vertices and M is the number of edges.
+int dis[MAXV][MAXV];    //dis[i][j] represents the shortest distance between vertex i and j.
+
+void Floyd(){
+    for (int k = 0; k &lt; n; k++){
+        for (int i = 0; i &lt; n; i++){
+            for (int j = 0; j &lt; n; j++){
+                if(dis[i][k]!=INF&&dis[k][j]!=INF&&dis[i][k]+dis[k][j] &lt; dis[i][j]){
+                    dis[i][j] = dis[i][k] + dis[k][j];  //Find a shorter path.
+                }
+            }           
+        }       
+    }    
+}</code></pre>
+						
+						<p>For the Floyd algorithm, it is important to note that the outermost K loop cannot be put into the inner layer
+							(That is, a triple loop of i-&gt;j-&gt;k is generated) which will result in an error in the final result. The
+							reason is: if dis[u] [v] accessed later is optimized, dis[i] [j] accessed earlier will not be further optimized
+							because it has already been accessed (i, J is accessed before u, V here).</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="fh5co-navigation">
+			<div class="fh5co-cover prev fh5co-cover-sm" style="background-image: url(images/project_2.jpg)">
+				<div class="overlay"></div>
+
+				<a class="copy" href="#">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Previous Post</span>
+								<h2>How to be an affective web developer</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+			<div class="fh5co-cover next fh5co-cover-sm" style="background-image: url(images/project_3.jpg)">
+				<div class="overlay"></div>
+				<a class="copy" href="Bellman-Ford.html">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Next Post</span>
+								<h2>Bellman-Ford</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+		</div>
+
+		<footer>
+			<div>
+				&copy; Copyright MyWebSite. Designed by Guangsheng Liu.
+			</div>
+		</footer>
+
+		<div class="gototop js-top">
+			<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+		</div>
+
+		<!-- jQuery -->
+		<script src="js/jquery.min.js"></script>
+		<!-- jQuery Easing -->
+		<script src="js/jquery.easing.1.3.js"></script>
+		<!-- Bootstrap -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- Waypoints -->
+		<script src="js/jquery.waypoints.min.js"></script>
+		<!-- Stellar Parallax -->
+		<script src="js/jquery.stellar.min.js"></script>
+		<!-- Main -->
+		<script src="js/main.js"></script>
+
+	</body>
+</html>
