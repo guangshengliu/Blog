@@ -1,0 +1,192 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Prim Algorithm</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="highly balanced binary search tree" />
+		<meta name="author" content="Guangsheng Liu" />
+
+		<!-- Animate.css -->
+		<link rel="stylesheet" href="css/animate.css">
+		<!-- Icomoon Icon Fonts-->
+		<link rel="stylesheet" href="css/icomoon.css">
+		<!-- Bootstrap  -->
+		<link rel="stylesheet" href="css/bootstrap.css">
+
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Modernizr JS -->
+		<script src="js/modernizr-2.6.2.min.js"></script>
+		<!-- FOR IE9 below -->
+		<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+	</head>
+	<body class="single">
+
+		<div class="fh5co-loader"></div>
+
+		<div id="page">
+			<div id="fh5co-aside" style="background-image: url(images/image_2.jpg)" data-stellar-background-ratio="0.5">
+				<div class="overlay"></div>
+				<nav role="navigation">
+					<ul>
+						<li><a href="index.html"><i class="icon-home"></i></a></li>
+					</ul>
+				</nav>
+				<div class="page-title">
+					<img src="images/person_1.jpg" alt="Free HTML5 by FreeHTMl5.co">
+					<span>February 28, 2020</span>
+					<h2>Prim</h2>
+				</div>
+			</div>
+			<div id="fh5co-main-content">
+				<div class="fh5co-post">
+					<div class="fh5co-entry padding">
+						<h1>1. Minimum spanning tree and its properties</h1>
+
+						<p>The minimum spanning tree is to find a tree T in a given undirected graph G (V, E) so that the tree has all
+							vertices in graph G, all edges are from edges in graph G, and the sum of edge weights of the whole tree is
+							satisfied. The following figure gives a graph G and its minimum spanning tree T, where the thicker line is the
+							edge of the minimum spanning tree. You can see that edges AB, BC, BD contain all the vertices of graph G, and
+							the sum of the edge weights of the trees they generate is 6, which is the smallest of all the spanning trees.
+							Minimum spanning trees have three characteristics to master:</p>
+
+						<ol>
+							<li>
+								<p>The minimum spanning tree is a tree, so its edges are equal to the vertex tree minus 1, and there must be no
+									rings in the tree.</p>
+							</li>
+							<li>
+								<p>For a given graph G (V, E), its minimum spanning tree may not be unique, but the sum of its edge weights
+									must be unique.</p>
+							</li>
+							<li>
+								<p>Since the minimum spanning tree is generated on an undirected graph, its root node can be any node on the
+									tree.</p>
+							</li>
+						</ol>
+						
+						<p>There are two general algorithms for solving the minimum spanning tree, namely the prim algorithm and the
+							Kruskal algorithm. Both algorithms are greedy ideas, but the greedy strategies are different.</p>
+							
+						<h1>2. Prim algorithm</h1>
+
+						<p>The prim algorithm is used to solve the minimum spanning tree problem. The basic idea is to set set set S for
+							graph G (V, E), store the vertices that have been visited, and then select one vertex (denoted as u) which is
+							the shortest distance from set S each time from set V-S to access and join set S. Sum, make vertex u the
+							intermediate point, and optimize the shortest distance between all vertices V reachable from u and set S. This
+							is done n times (n is the number of vertices) until the set S already contains all vertices. It can be found
+							that the idea of the prim algorithm is almost the same as that of the Dijkstra algorithm in the shortest path,
+							except that the set S is used instead of the starting point s in the Dijkstra algorithm when the shortest
+							distance is involved.</p>
+						<div><img src="images/Prim picture/Map.jpg" width="30%" height="30%"/></div>
+						<p>As an example, the prim algorithm is demonstrated in the figure above: </p>
+						<div><img src="images/Prim picture/MapOperation.jpg" width="80%" height="80%"/></div>
+						<p>The minimum spanning tree generated is as follows:</p>
+						<div><img src="images/Prim picture/MinTree.jpg" width="30%" height="30%"/></div>
+						<h1>3. Implementation of prim algorithm</h1>
+
+						<p>Based on the above ideas, the implementation code is as follows:</p>
+						<pre><code>#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+const int MAXV = 1000;
+const int INF = INT32_MAX;
+int n,G[MAXV][MAXV];    //n is the number of vertices, maxv is the maximum number of vertices.
+int d[MAXV];    //The shortest distance between vertex and set s.
+bool vis[MAXV] = {false};   //Tag array, VIS [i] = = true indicates access. Initial values are all false
+
+int prim(){     //By default, 0 is the initial point, and the function returns the sum of the edge weights of the minimum spanning tree.
+    fill(d,d+MAXV,INF);
+    d[0] = 0;   //Only the distance from vertex 0 to set s is 0, and other authoritative INF.
+    int ans = 0;    //Store the sum of edge weights of the minimum spanning tree.
+    for (int i = 0; i &lt; n; i++){    
+        int u = -1,MIN = INF;   //u makes d [u] minimum, min stores the minimum d [u].
+        for (int j = 0; j &lt; n; j++){    //Find the smallest d [] of the unreachable vertices.
+            if(vis[j] == false && d[j] &lt; MIN){
+                u = j;
+                MIN = d[j];
+            }
+        }
+        //If d [u] less than inf cannot be found, the remaining vertices are not connected with set s.
+        if(u == -1)
+            return -1;
+        vis[u] = true;  //Mark u as accessed.
+        ans += d[u];    //Add the edge with the minimum distance from the set s to the minimum spanning tree.
+        for (int v = 0; v &lt; n; v++){
+            //V unreachable & & u can reach V & & u as the intermediary point can make V closer to the set s
+            if(vis[v] == false&&G[u][v]!=INF&&G[u][v]&lt;d[v]){
+                d[v] = G[u][v];     //Assign G [u] [v] to d [v].
+            }
+        }               
+    }
+    return ans;     //Returns the sum of edge weights of the minimum spanning tree.
+}
+						</code></pre>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="fh5co-navigation">
+			<div class="fh5co-cover prev fh5co-cover-sm" style="background-image: url(images/project_2.jpg)">
+				<div class="overlay"></div>
+
+				<a class="copy" href="Kruskal.html">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Previous Post</span>
+								<h2>Kruskal</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+			<div class="fh5co-cover next fh5co-cover-sm" style="background-image: url(images/project_3.jpg)">
+				<div class="overlay"></div>
+				<a class="copy" href="Floyd.html">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Next Post</span>
+								<h2>Floyd</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+		</div>
+
+		<footer>
+			<div>
+				&copy; Copyright MyWebSite. Designed by Guangsheng Liu.
+			</div>
+		</footer>
+
+		<div class="gototop js-top">
+			<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+		</div>
+
+		<!-- jQuery -->
+		<script src="js/jquery.min.js"></script>
+		<!-- jQuery Easing -->
+		<script src="js/jquery.easing.1.3.js"></script>
+		<!-- Bootstrap -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- Waypoints -->
+		<script src="js/jquery.waypoints.min.js"></script>
+		<!-- Stellar Parallax -->
+		<script src="js/jquery.stellar.min.js"></script>
+		<!-- Main -->
+		<script src="js/main.js"></script>
+
+	</body>
+</html>
