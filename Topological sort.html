@@ -1,0 +1,194 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Topological Sort</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="keywords" content="highly balanced binary search tree" />
+		<meta name="author" content="Guangsheng Liu" />
+
+		<!-- Animate.css -->
+		<link rel="stylesheet" href="css/animate.css">
+		<!-- Icomoon Icon Fonts-->
+		<link rel="stylesheet" href="css/icomoon.css">
+		<!-- Bootstrap  -->
+		<link rel="stylesheet" href="css/bootstrap.css">
+
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Modernizr JS -->
+		<script src="js/modernizr-2.6.2.min.js"></script>
+		<!-- FOR IE9 below -->
+		<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+	</head>
+	<body class="single">
+
+		<div class="fh5co-loader"></div>
+
+		<div id="page">
+			<div id="fh5co-aside" style="background-image: url(images/image_2.jpg)" data-stellar-background-ratio="0.5">
+				<div class="overlay"></div>
+				<nav role="navigation">
+					<ul>
+						<li><a href="index.html"><i class="icon-home"></i></a></li>
+					</ul>
+				</nav>
+				<div class="page-title">
+					<img src="images/person_1.jpg" alt="Free HTML5 by FreeHTMl5.co">
+					<span>March 1, 2020</span>
+					<h2>Topological Sort</h2>
+				</div>
+			</div>
+			<div id="fh5co-main-content">
+				<div class="fh5co-post">
+					<div class="fh5co-entry padding">
+						<h1>1. Directed acyclic graphs</h1>
+
+						<p>If any vertex of a directed graph cannot return to itself through some directed edges, it is called a directed
+							acyclic graph (DAG).</p>
+
+						<h1>2. Introduction to Topological Sorting</h1>
+
+						<p>Topological ordering is to arrange all vertices of directed acyclic graph G into a linear sequence such that
+							for any two vertices u and V in graph G, if there are edges u-&gt;v, u must precede V in the sequence. This
+							sequence is also known as topological ordering.</p>
+
+						<h1>3. Ideas of topological ordering</h1>
+
+						<p>As an example of the learning sequence of several courses in the following figure, we can see that
+							mathematical analysis is a leading course in complex function, ordinary differential equation, calculation
+							method, complex function is a leading course in real variable function and functional analysis, real variable
+							function is also a leading course in functional analysis, and so on. Obviously, for a course, it is necessary to
+							learn its leading courses before learning this course well, and the leading courses cannot form a loop between
+							them.</p>
+							<div><img src="images\Topological picture\Topological.jpg" width="70%" height="70%"/></div>
+						<p>It will also be found that if there is no direct or indirect leading relationship between the two courses, then
+							the order of the two courses is arbitrary. The above courses can then be arranged in a sequence, so that the
+							sequence of courses meets the sequence of the pioneer courses shown in the figure above, as shown in the
+							following figure:</p>
+							<div><img src="images\Topological picture\Topological sort.jpg" width="70%" height="70%"/></div>
+						<p>The following explains how to solve a topological sequence. From the examples above, you can see that if there
+							is no pilot course in a class or if the pilot course has already been completed, then it is ready to learn. If
+							there are more than one such course, they will study in any order. For diagrams, this can be abstracted as the
+							following steps:</p>
+
+						<ol>
+							<li>Define a queue Q and join all nodes with 0 degree to the queue</li>
+							<li>Take the first node of the queue and output it. Then delete all the edges that start from it and subtract
+								the entry of the vertices reached by these edges by 1, and join a queue if the entry of a vertex is reduced to
+								0.</li>
+							<li>Repeat 2 operations until the queue is empty. If the number of nodes queued when the queue is empty happens
+								to be N, the topological ordering is successful, and Figure G is directed acyclic; otherwise, the topological
+								ordering fails and there are rings in Figure G.</li>
+						</ol>
+
+						<h1>4. Implementation of Topological Sorting</h1>
+
+						<p>You can use adjacency tables for topological sorting. Obviously, since you need to record the degree of entry
+							of nodes, you need to create an additional array, inDegree[MAXV], and record the degree of entry of each node at
+							the beginning of the program reading in the graph. Next, you just need to follow the steps described above, and
+							the code for sorting the topology is as follows:</p>
+						<pre><code>const int MAXV = 1000;
+vector&lt;int&gt; G[MAXV];
+int n,m,inDegree[MAXV];
+//Topological Sort
+bool topologicalSort() {
+    int num = 0;
+    queue&lt;int&gt; q;
+    for(int i = 0;i &lt; n; i++){
+        if(inDegree[i] == 0) {
+            q.push(i);      //Queue all vertices with 0 entrance.
+        }
+    }
+    while(!q.empty()) {
+        int u = q.front();  
+        q.pop();
+        for (int i = 0; i &lt; G[u].size(); i++) {
+            int v = G[u][v];    //Successor node V of U
+            inDegree[v]--;
+            if(inDegree[v] == 0) {      //Entry of vertex v is reduced to 0.
+                q.push(v);
+            }
+        }
+        G[u].clear();       //Empty all outbound edges of vertex u.
+        num++;        //Number of vertices added to a topological sequence plus 1.
+    }
+    if(num == n)
+        return true;    //The number of vertices added to the topological sequence is n, indicating that the topological ordering is successful.
+    else
+        return false;   //The number of vertices added to the topological sequence is less than n, indicating that the topological ordering failed.
+}</code></pre>
+						<p>An important application of topological ordering is to determine whether a given graph is directed acyclic. As
+							in the code above, if the topologicalSort() function returns true, the topological ordering succeeds and the
+							given graph is directed acyclic; otherwise, the topological ordering fails and the given graph has rings.</p>
+
+						<p>Finally, it is pointed out that if multiple vertices with a degree of 0 are required and the lowest numbered
+							vertex is selected, then the queue is changed to priority_queue and the first element in the priority queue is
+							kept to be the smallest element in the priority queue.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="fh5co-navigation">
+			<div class="fh5co-cover prev fh5co-cover-sm" style="background-image: url(images/project_2.jpg)">
+				<div class="overlay"></div>
+
+				<a class="copy" href="Kruskal.html">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Previous Post</span>
+								<h2>Kruskal</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+			<div class="fh5co-cover next fh5co-cover-sm" style="background-image: url(images/project_3.jpg)">
+				<div class="overlay"></div>
+				<a class="copy" href="#">
+					<div class="display-t">
+						<div class="display-tc">
+							<div>
+								<span>Next Post</span>
+								<h2>How to be an affective web developer</h2>
+							</div>
+						</div>
+					</div>
+				</a>
+
+			</div>
+		</div>
+
+		<footer>
+			<div>
+				&copy; Copyright MyWebSite. Designed by Guangsheng Liu.
+			</div>
+		</footer>
+
+		<div class="gototop js-top">
+			<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+		</div>
+
+		<!-- jQuery -->
+		<script src="js/jquery.min.js"></script>
+		<!-- jQuery Easing -->
+		<script src="js/jquery.easing.1.3.js"></script>
+		<!-- Bootstrap -->
+		<script src="js/bootstrap.min.js"></script>
+		<!-- Waypoints -->
+		<script src="js/jquery.waypoints.min.js"></script>
+		<!-- Stellar Parallax -->
+		<script src="js/jquery.stellar.min.js"></script>
+		<!-- Main -->
+		<script src="js/main.js"></script>
+
+	</body>
+</html>
