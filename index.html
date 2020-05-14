@@ -4,13 +4,40 @@
     <meta charset="utf-8">
     <meta name="viewport" content="Blog-homepage">
 
+    <script src="js/pace.js"></script>
     <link rel="stylesheet" href="css/style.css">
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://at.alicdn.com/t/font_1804991_bvywwu49ah8.js"></script>
+
     <title>博客主页</title>
 </head>
 <body>
+    <!--Loading进度条-->
+    <div class="loader-wrapper">
+        <div class="loader">
+            <span style="--i:1;"></span>
+            <span style="--i:2;"></span>
+            <span style="--i:3;"></span>
+            <span style="--i:4;"></span>
+            <span style="--i:5;"></span>
+            <span style="--i:6;"></span>
+            <span style="--i:7;"></span>
+            <div id="rectangle"> Loading</div>
+        </div>
+        <h id="tranfont">Loading</h>
+        <svg>
+            <filter id="gooey">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10"/>
+                <feColorMatrix values="
+                1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 20 -10" />
+            </filter>
+        </svg>
+    </div>
+
     <!--window是可视化窗口-->
     <div class="window">
         <canvas id="canvas"></canvas>
@@ -146,6 +173,6 @@
     </div>
 
     <script src="js/particle.js"></script>
-    <script src="js/script.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
