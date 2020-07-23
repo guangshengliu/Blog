@@ -62,3 +62,20 @@ function time() {
     $('.bg h1').html(hour+':'+min);
     $('.bg p').html(year+'年'+month+'月'+day+'日');
 }
+
+//to show and hide the box
+$('.btn-choose').click(function(){
+    $('.box-choose').toggleClass("box-choose-show");
+});
+
+//to have a preview of color
+$('#hex').keyup(function(){
+    $('.prev').css("background",$('#hex').val());
+});
+
+//to apply color
+$('.apply').click(function(){
+    $('body').css("background",$('#hex').val());
+    //to hide the box after aplying the color
+    $('.box-choose').toggleClass("box-choose-show");
+});

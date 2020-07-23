@@ -9,7 +9,10 @@
 
     <script src="js/jquery-3.1.1.min.js"></script>
     <script src="js/sketch/sketch.min.js"></script>
-    <script src="https://at.alicdn.com/t/font_1804991_bvywwu49ah8.js"></script>
+    <script src="https://at.alicdn.com/t/font_1804991_ukhvg7meahc.js"></script>
+    
+    <script src="js/particles/particles.min.js"></script>
+    <script src="js/particles/app.js"></script>
 
     <title>博客主页</title>
 </head>
@@ -80,8 +83,25 @@
                 </i>
             </div>
 
+            
             <!--下半部分-->
             <div class="container">
+                <div class="btn-choose">
+                    <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#icon-shezhi"></use></svg>
+                </div>
+                
+                <div class="box-choose">
+                    <h2>输入色彩代码以改变背景色</h2>
+                    <div class="box-choose-c">
+                        <div class="txtb">
+                            <input type="text" placeholder="#000000" id="hex">
+                            <div class="prev"></div>
+                        </div>
+                        <button class="apply">应用</button>
+                    </div>
+                </div>
+
                 <div class="con">
                     <div class="box">
                         <div class="content">
@@ -176,8 +196,8 @@
         </div>
     </div>
     
-    <script src="js/main.js"></script>
     <script src="js/particles/particles.min.js"></script>
     <script src="js/particles/app.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
