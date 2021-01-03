@@ -1,0 +1,100 @@
+<html lang="en" class="no-js">
+	<head>
+
+		<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700i" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jScrollPane/2.2.1/style/jquery.jscrollpane.min.css">
+		<link rel="stylesheet" type="text/css" href="css/bookblock.css" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+		<link rel="stylesheet" href="css/style.css">
+
+	</head>
+	<body>
+		<div id="container" class="container">
+
+			<div class="menu-panel">
+				<h3>Table of Contents</h3>
+				<ul id="menu-toc" class="menu-toc">
+					<li class="menu-toc-current"><a href="#item1">PAGE FLIP</a></li>
+					<li><a href="#item2">RESPONSIVE DESIGN</a></li>
+					<li><a href="#item3">FULL SUPPORTS</a></li>
+					<li><a href="#item4">FROM VERY SCRATCH</a></li>
+					<li><a href="#item5">RETINA DISPLAY</a></li>
+				</ul>
+			</div>
+
+			<div class="bb-custom-wrapper">
+				<div id="bb-bookblock" class="bb-bookblock">
+					<div class="bb-item" id="item1">
+						<div class="content">
+							<div class="scroller">
+								<br>
+								<h2><a href="">PAGE FLIP EFFECT</a></h2>
+								<br><br>
+								<p>page1</p>
+							</div>
+						</div>
+					</div>
+					<div class="bb-item" id="item2">
+						<div class="content">
+							<div class="scroller">
+								<br>
+								<h2>RESPONSIVE NOW</h2>
+								<br><br>
+								<p>page2</p>
+							</div>
+						</div>
+					</div>
+					<div class="bb-item" id="item3">
+						<div class="content">
+							<div class="scroller">
+								<br>
+								<h2>FULL SUPPORTS</h2>
+								<br><br>
+								<p>page3</p>
+							</div>
+						</div>
+					</div>
+					<div class="bb-item" id="item4">
+						<div class="content">
+							<div class="scroller">
+								<br>
+								<h2>FROM SCRATCH NOW</h2>
+								<br><br>
+								<p>page4</p>
+							</div>
+						</div>
+					</div>
+					<div class="bb-item" id="item5">
+						<div class="content">
+							<div class="scroller">
+								<br>
+								<h2>RETINA DISPLAY</h2>
+								<br><br>
+								<p>page5</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<nav>
+					<span id="bb-nav-prev">&larr;</span>
+					<span id="bb-nav-next">&rarr;</span>
+				</nav>
+
+				<span id="tblcontents" class="menu-button">Table of Contents</span>
+
+			</div>
+
+		</div><!-- /container -->
+		<script src="../js/jquery-3.1.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jScrollPane/2.2.1/script/jquery.jscrollpane.min.js"></script>
+		<script src="js/jquery.bookblock.js"></script>
+		<script src="js/page.js"></script>
+		<script>
+			$(function() {
+				Page.init();
+			});
+		</script>
+	</body>
+</html>
