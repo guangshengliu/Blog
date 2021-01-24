@@ -233,7 +233,7 @@ a:hover {
 
 }
 
-.content p,pre {
+.content p {
 	font-size: 1.1em;
 	line-height: 1.6;
 	font-weight: 420;
@@ -241,6 +241,17 @@ a:hover {
 	text-align: justify;
 	font-family: 'Roboto Condensed', sans-serif;
 	color: black;
+}
+
+.container pre {
+	font-size: 1.1em;
+	line-height: 1.6;
+	font-weight: 420;
+	background-color: #333;
+	border-radius: 20px;
+	border: 20px solid #333;
+	font-family: 'Roboto Condensed', sans-serif;
+	margin-left: 8%;
 }
 
 .content ol {
@@ -253,11 +264,21 @@ a:hover {
 	color: black;
 }
 
+.content table {
+	font-size: 1.1em;
+	line-height: 1.6;
+	font-weight: 420;
+	padding: 5px;
+	margin-left: 8%;
+	font-family: 'Roboto Condensed', sans-serif;
+	color: black;
+}
+
 .content code {
 	font-size: 0.9em;
 	line-height: 1.6;
 	font-weight: 400;
 	text-align: justify;
 	font-family: 'Roboto Condensed', sans-serif;
-	color: red;
+	color: pink;
 }
