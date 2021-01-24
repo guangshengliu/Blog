@@ -338,7 +338,7 @@ void BSTree&lt;T&gt;::remove(T key)
 								<br>
 								<h2>二叉查找树的其余操作</h2>
 								<br><br>
-								<h3>(1).打印二叉查找树的值</h3>
+								<h3>打印二叉查找树结点的值</h3>
 								<p>将二叉查找树的所有结点值依次打印下来的代码实现如下：</p>
 <pre><code>template &lt; class T &gt;
 void BSTree&lt;T&gt;::print(BSTNode&lt;T&gt;* tree, T key, int direction)
@@ -406,7 +406,7 @@ void BSTree&lt;T&gt;::inOrder()
     inOrder(mRoot);
 }</code></pre>									
 								<h3>(3).后序遍历</h3>
-								<p>对于后序遍历来说，总是先访问左子树，再访问右子树，最后访问根节点，因此后序遍历的遍历顺序是左子树、-&gt;右子树-&gt;根结点。
+								<p>对于后序遍历来说，总是先访问左子树，再访问右子树，最后访问根节点，因此后序遍历的遍历顺序是左子树-&gt;右子树-&gt;根结点。
 									由此可以写出后序遍历的代码：</p>
 <pre><code>template &lt; class T &gt;
 void BSTree&lt;T&gt;::postOrder(BSTNode&lt;T&gt;* tree) const
