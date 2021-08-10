@@ -21,3 +21,30 @@ window.addEventListener('scroll',function(){
     btn.style.marginRight=value*1.5+'px';
     btn.style.marginTop=value*0.5+'px';
 })
+
+window.onload = function () {
+    var topbtn = document.getElementById("rocket");
+    var timer = null;
+    // 获取当前滚动高度
+    var pagelookheight = document.documentElement.clientHeight;
+
+    window.onscroll = function () {
+        var backtop = document.documentElement.scrollTop;
+        if (backtop >= pagelookheight) {
+            topbtn.style.display = "block";
+        } else {
+            topbtn.style.display = "none";
+        }
+    }
+
+    topbtn.onclick = function () {
+        timer = setInterval(function () {
+            var backtop = document.documentElement.scrollTop;
+            var speedtop = backtop / 6;
+            document.documentElement.scrollTop = backtop - speedtop;
+            if (backtop == 0) {
+                clearInterval(timer);
+            }
+        }, 30);
+    }
+}
