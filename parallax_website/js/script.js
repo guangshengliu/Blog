@@ -23,7 +23,7 @@ window.addEventListener('scroll',function(){
 })
 
 window.onload = function () {
-    var topbtn = document.getElementById("rocket");
+    var rocket = document.getElementById("rocket");
     var timer = null;
     // 获取当前滚动高度
     var pagelookheight = document.documentElement.clientHeight;
@@ -31,13 +31,13 @@ window.onload = function () {
     window.onscroll = function () {
         var backtop = document.documentElement.scrollTop;
         if (backtop >= pagelookheight) {
-            topbtn.style.display = "block";
+            rocket.style.display = "block";
         } else {
-            topbtn.style.display = "none";
+            rocket.style.display = "none";
         }
     }
 
-    topbtn.onclick = function () {
+    rocket.onclick = function () {
         timer = setInterval(function () {
             var backtop = document.documentElement.scrollTop;
             var speedtop = backtop / 6;

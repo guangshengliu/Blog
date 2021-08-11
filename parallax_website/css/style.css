@@ -11,7 +11,7 @@ body {
 }
 /*滚动条*/
 ::-webkit-scrollbar {
-    width : 15px;
+    width : 10px;
     height: 1px;
 }
 ::-webkit-scrollbar-thumb {
@@ -81,7 +81,6 @@ section{
     justify-content: center;
     align-items: center;
     overflow: hidden;
-
 }
 section::before{
     content: '';
@@ -131,22 +130,23 @@ section #btn{
     position: relative;
     padding: 100px;
     background-color: #1c0522;
-    z-index: 200px;
 }
 .sec h2{
     font-size: 3.5em;
     color: #fff;
     margin-bottom: 10px;
+    margin: 0px 50px 30px 50px;
 }
 .sec p{
+    text-align: justify;
     color: #fff;
     font-size: 1.2em;
+    margin: 0px 50px 0px 50px;
 }
-
 .scene{
     position: fixed;
-    bottom: 0px;
-    left: 90%;
+    bottom: -30px;
+    left: 92%;
     width: 6%;
     height: 50vh;
     display: flex;
